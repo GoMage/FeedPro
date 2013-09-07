@@ -52,10 +52,17 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit extends Mage_Adminhtml_Block_Widget
             'class'     => 'save',
         ), -100);
         
+        $_data = array();
+        $_data['data'] = GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv::getSystemSections(); 
+        $_data['url'] = $this->getUrl('*/*/mappingimportsection', array('id'=>($feed && $feed->getId() ? $feed->getId() : 0)));
+        
         $this->_formScripts[] = "
             function saveAndContinueEdit(){
                 editForm.submit($('edit_form').action+'back/edit/');
             }
+            
+            var GomageFeedAdmin = new GomageFeedAdminSettings(" . Zend_Json::encode($_data) . ");
+
         ";
     }
     

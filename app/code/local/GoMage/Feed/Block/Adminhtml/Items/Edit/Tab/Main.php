@@ -30,6 +30,18 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Main extends Mage_Adminhtml_Blo
         
         $this->setForm($form);
         $fieldset = $form->addFieldset('main_fieldset', array('legend' => $this->__('Item information')));
+        
+        $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
+                ->setData(array(
+                    'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
+                    'class'   => 'go',
+                    'id'      => 'feed_pro_help',
+                    'onclick' => 'window.open(\'http://www.gomage.com/faq/extensions/feed-pro\')'
+                ));
+        
+        $fieldset->setHeaderBar(
+                    $headerBar->toHtml()
+                );         
      	
      	$fieldset->addField('type', 'hidden', array(
             'name'      => 'type',
@@ -48,9 +60,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Main extends Mage_Adminhtml_Blo
 		            'label'    => $this->__('Access Url'),
 		            'title'    => $this->__('Access Url'),
 		            'text'    => '<a href="'.$url.'" target="_blank">'.$url.'</a>',
-		        ));
-	        
-        	
+		        ));	
         }
         
         $fieldset->addField('filename', 'text', array(
@@ -62,28 +72,12 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Main extends Mage_Adminhtml_Blo
         ));
         
         $fieldset->addField('store_id', 'select', array(
-            'label'     => $this->__('Store'),
+            'label'     => $this->__('Store View'),
             'required'  => true,
             'name'      => 'store_id',
-            'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(),
+            'values'    => Mage::getModel('gomage_feed/adminhtml_system_config_source_store')->getStoreValuesForForm(),
         ));
-       /*
-        $fieldset->addField('content', 'textarea', array(
-            'name'      => 'content',
-            'label'     => $this->__('Content'),
-            'title'     => $this->__('Content'),
-            'required'  => true,
-            'style'     => 'width:500px;height:250px;'
-        ));
-        
-        $fieldset->addField('filter', 'textarea', array(
-            'name'      => 'filter',
-            'label'     => $this->__('Filter Config'),
-            'title'     => $this->__('Filter Config'),
-            'required'  => false,
-            'style'     => 'width:500px;height:150px;'
-        ));
-        */
+
         if(!$item->getType() && $this->getRequest()->getParam('type')){
         	$item->setType($this->getRequest()->getParam('type'));
         }

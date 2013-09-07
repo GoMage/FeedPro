@@ -216,5 +216,61 @@
     	$this->getResponse()->setBody(Zend_Json::encode($result));
     	
     }
+    
+	public function mappingexportAction(){
+		
+		
+		if($id = $this->getRequest()->getParam('id')){
+			
+						
+			$model = Mage::getModel('gomage_feed/custom_attribute')->load($id);
+			
+			$this->getResponse()->setBody($model->getData('data'));
+			$this->getResponse()->setHeader('Content-Type','text');
+			$this->getResponse()->setHeader('Content-Disposition','attachment; filename="mapping-export-'.basename($model->getCode()).'.txt";');
+			
+		}
+		
+	}
+	
+	public function mappingimportAction() {
+		
+		if(($post = $this->getRequest()->getPost()) && ($id = $this->getRequest()->getParam('id')) && isset($_FILES['mappingfile']) && $_FILES['mappingfile']){
+			
+			try{
+				
+				$data = file_get_contents($_FILES['mappingfile']['tmp_name']);
+				
+				$array_data = json_decode($data);
+				
+				if(empty($array_data)){
+					
+					Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Empty or Invalid data file'));
+					
+				}else{
+					
+					Mage::getModel('gomage_feed/custom_attribute')->load($id)->setData('data', $data)->save();
+					Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('Data successfully imported'));
+					
+				}
+				
+			}catch(Exception $e){
+				
+				Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Unknown error'));
+				
+			}
+			
+			return $this->_redirect('*/*/edit', array('id'=>$id, 'tab'=>'data_section'));
+		}
+		
+		$this->_initAction();
+		if($id = $this->getRequest()->getParam('id')){
+        	Mage::register('gomage_custom_attribute', Mage::getModel('gomage_feed/custom_attribute')->load($id));
+			$this->_addContent($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingimport'))
+				->_addLeft($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingimport_tabs'));
+
+		}
+		$this->renderLayout();
+	}
 
 }

@@ -15,7 +15,7 @@
 <config>
     <modules>
         <GoMage_Feed>
-            <version>1.4</version>
+            <version>2.0</version>
         </GoMage_Feed>
     </modules>
 	<frontend>
@@ -50,6 +50,17 @@
 				</GoMage_Feed>
 			</modules>
         </translate>
+        <events>             
+            <admin_system_config_changed_section_gomage_activation>
+                <observers>
+                    <feed_collect_totals_after>
+                        <type>model</type>
+                        <class>gomage_feed/observer</class>
+                        <method>checkK</method>
+                    </feed_collect_totals_after>
+                </observers>
+            </admin_system_config_changed_section_gomage_activation>
+        </events>
         <menu>
             <catalog>
             	<children>
@@ -73,6 +84,30 @@
                 </children>
             </catalog>
         </menu>
+        
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <gomage_feedpro>
+                                            <title>GoMage - Feed Pro</title>
+                                        </gomage_feedpro>
+                                        <gomage_activation>
+                                            <title>GoMage - Activation</title>
+                                        </gomage_activation>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>        
+        
         <acl>
         	<resources>
         		<admin>
@@ -82,13 +117,13 @@
         						<gomage_feed translate="title">
 									<title>Feeds</title>
 									<children>
-									<gomage_feed_items>
-										<title>Manage Feeds</title>
-									</gomage_feed_items>
-									<gomage_feed_attributes>
-										<title>Manage Dynamic Attributes</title>
-									</gomage_feed_attributes>
-								</children>
+									    <gomage_feed_items>
+										    <title>Manage Feeds</title>
+									    </gomage_feed_items>
+									    <gomage_feed_attributes>
+										    <title>Manage Dynamic Attributes</title>
+									    </gomage_feed_attributes>
+								    </children>
 				                </gomage_feed>
         					</children>
         				</catalog>
@@ -157,17 +192,9 @@
 	<crontab>
         <jobs>
         	<gomage_feed_generate_all>
-                <schedule><cron_expr>0 * * * *</cron_expr></schedule>
+                <schedule><cron_expr>01 * * * *</cron_expr></schedule>
                 <run><model>gomage_feed/observer::proccessFeeds</model></run>
 			</gomage_feed_generate_all>
-            <!--<gomage_feed_generate_all>
-                <schedule><cron_expr>* 3 * * *</cron_expr></schedule>
-                <run><model>gomage_feed/observer::generateAll</model></run>
-			</gomage_feed_generate_all>
-			<gomage_feed_upload_all>
-                <schedule><cron_expr>* 3 * * *</cron_expr></schedule>
-                <run><model>gomage_feed/observer::uploadAll</model></run>
-			</gomage_feed_upload_all>-->
         </jobs>
     </crontab>
 </config>

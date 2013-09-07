@@ -46,6 +46,9 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 			
 			$options = array();
 			
+			$options['Category'] = array('code' => "category_id", 'label' => "Category");
+			$options['Qty'] = array('code'=>"qty" , 'label' =>  "Qty");
+			
 			foreach($this->getAttributeCollection() as $attribute){
 				if($attribute->getFrontendLabel()){
 				$options[$attribute->getFrontendLabel()] = array('code'=>$attribute->getAttributeCode(), 'label'=>($attribute->getFrontendLabel() ? $attribute->getFrontendLabel() : $attribute->getAttributeCode()));
@@ -59,18 +62,16 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 			
 		}
 		
-		
-		
 		return $this->options;
 		
 	}
-	public function getAttributeValueField($code = '', $name = '', $current = ''){
+	public function getAttributeValueField($code = '', $name = '', $current = '', $store_id = null){
 		
 		if($code){
 			
 			$attribute = Mage::getModel('catalog/product')->getResource()->getAttribute($code);
     		
-    		if($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect'){
+    		if($attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect')){
 	        	
 	        	$options = array();
 			
@@ -90,7 +91,35 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 				
 				return ('<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>');
 			
-	        	
+    		}
+	        elseif ($code == 'category_id'){
+	            $options = array();
+	            $options[] = "<option value=\"\"></option>";
+	            	            	            	            
+	            if (!$store_id) $store_id = Mage::app()->getStore()->getId();
+	            
+	            $store = Mage::getModel('core/store')->load($store_id);
+	            
+	            $categoryes = Mage::getModel('catalog/category')->load($store->getRootCategoryId())->getAllChildren(true);
+	            
+	            foreach($categoryes as $cat_id){
+
+	                if ($cat_id == $store->getRootCategoryId()) continue;
+	                
+	                $category = Mage::getModel('catalog/category')->load($cat_id);
+	                
+	                $selected = '';
+					
+					if($current == $category->getId()){
+						$selected = 'selected="selected"';
+					}
+					
+					$options[] = "<option value=\"{$category->getId()}\" {$selected}>{$category->getName()}</option>";
+					
+				}
+	            
+	            return ('<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>');
+	            	        	
 	        }else{
 	        	
 	        	return ('<input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="'.$name.'" value="'.$current.'"/>');
@@ -135,6 +164,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 			'<option '.($current == 'lteq' ? 'selected="selected"' : '').' value="lteq">'.$this->__('less than or equal to').'</option>',
 			'<option '.($current == 'like' ? 'selected="selected"' : '').' value="like">'.$this->__('like').'</option>',
 			'<option '.($current == 'nlike' ? 'selected="selected"' : '').' value="nlike">'.$this->__('not like').'</option>',
+		    '<option '.($current == 'nin' ? 'selected="selected"' : '').' value="nin">'.$this->__('xor').'</option>',
 		);
 		
 		return '<select style="width:160px" id="filter-'.$i.'-condition" name="filter['.$i.'][condition]">'.implode('', $options).'</select>';

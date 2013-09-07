@@ -12,36 +12,39 @@
  * @version      Release: 1.1
  */
 
+$installer = $this;
 
-$this->run("
+$installer->startSetup();
+
+$installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `iteration_limit` int(32) default '0';
 ");
-$this->run("
+$installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `upload_day` varchar(32) default NULL;
 ");
-$this->run("
+$installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `upload_hour` smallint(6) default NULL;
 ");
-$this->run("
+$installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `upload_interval` smallint(6) default NULL;
 ");
-$this->run("
+$installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `cron_started_at` datetime NOT NULL default '0000-00-00 00:00:00';
 ");
-$this->run("
+$installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `uploaded_at` datetime NOT NULL default '0000-00-00 00:00:00';
 ");
-$this->run("
+$installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `use_layer` tinyint(1) NOT NULL default '1';
 ");
-$this->run("
+$installer->run("
 CREATE TABLE `{$this->getTable('gomage_feed_custom_attribute')}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(128) NOT NULL,
@@ -49,5 +52,7 @@ CREATE TABLE `{$this->getTable('gomage_feed_custom_attribute')}` (
   `default_value` varchar(128) NOT NULL,
   `data` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='GoMage Catalog Feed';
 ");
+
+$installer->endSetup();

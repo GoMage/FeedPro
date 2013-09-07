@@ -34,22 +34,19 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tab_Main extends Mage_Adminhtm
      	$fieldset->addField('type', 'hidden', array(
             'name'      => 'type',
         ));
-     	/*
-     	$field = $fieldset->addField('attribute_code', 'text', array(
-            'name'      => 'attribute_code',
-            'label'     => $this->__('Catalog Attribute Code'),
-            'title'     => $this->__('Catalog Attribute Code'),
-            'required'  => false,
-            'readonly'  => true,
-            'style'		=> 'background:#eee;color:#666;',
-        ));
         
-     	if(!$item->getId()){
+        $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
+                ->setData(array(
+                    'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
+                    'class'   => 'go',
+                    'id'      => 'feed_pro_help',
+                    'onclick' => 'window.open(\'http://www.gomage.com/faq/extensions/feed-pro\')'
+                ));
         
-        	$field->setValue($this->getRequest()->getParam('code'));
-        
-        }
-        /**/
+        $fieldset->setHeaderBar(
+                    $headerBar->toHtml()
+                ); 
+   
         $fieldset->addField('code', 'text', array(
             'name'      => 'code',
             'label'     => $this->__('Dynamic Attribute Code'),

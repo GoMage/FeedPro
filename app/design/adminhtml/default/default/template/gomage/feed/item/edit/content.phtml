@@ -27,15 +27,12 @@
 	
 ?>
 <div class="entry-edit">
-	<!--
-	<div id="import_feed_data_container">
-		
-		<input type="text" id="import_feed_data_field" />
-	</div>
 	
-	-->
 	<div class="entry-edit-head">
     	<h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Fields Mapping')?></h4>
+    	<div class="form-buttons">
+    		<button style="" onclick="window.open('http://www.gomage.com/faq/extensions/feed-pro')" class="scalable go" type="button" id="feed_pro_help"><span>Feed Pro Help</span></button>
+    	</div>
 	</div>
 	<div id="content_fieldset" class="fieldset ">
 		
@@ -82,11 +79,46 @@
 				</label><br/>
 				<small><?php echo $this->__('This is the specific option that allows to remove line break symbols from a data feed.')?></small>
 			</p>
+			<?php if($feed->getId()>0):?>
+    			<p style="clear:both">
+    				<label style="float: left; margin-right: 20px;">
+    					<span style="float:left;margin-right: 10px;"><?php echo $this->__('System')?></span>
+        				<select name="feed_system" id="feed_system" onchange="GomageFeedAdmin.setSystem(this.value)">    										
+        				</select>
+    				</label>				
+    				<label style="float: left; margin-right: 20px;">
+    					<span style="float:left;margin-right: 10px;"><?php echo $this->__('Template')?></span>
+        				<select name="feed_section" id="feed_section">					
+        				</select>
+    				</label>				
+    				<button onclick="GomageFeedAdmin.submit(1, $('feed_section').value);return false;" class="button"><span><span><?php echo $this->__('Import');?></span></span></button>				
+    			</p>
+			<?php endif; ?>
 		</div>
 		<div class="right">
 			<?php if($feed->getId()>0):?>
-			<p style="clear:both;margin-bottom:7px;overflow:hidden;zoom:1;"><button onclick="setLocation('<?php echo $this->getUrl('*/*/mappingimport', array('id'=>$feed->getId()))?>');return false;" class="button"><span><span><?php echo $this->__('Import Fields Settings');?></span></span></button></p>
+			<p style="clear:both;margin-bottom:7px;overflow:hidden;zoom:1;"><button onclick="$('<?php echo $this->getHtmlId() ?>-flash').setStyle({display:'block'});return false;" class="button"><span><span><?php echo $this->__('Import Fields Settings');?></span></span></button></p>
+			<div id="<?php echo $this->getHtmlId() ?>" class="uploader">
+                <div class="buttons">        
+                    <div id="<?php echo $this->getHtmlId() ?>-install-flash" style="display:none">
+                        <?php echo Mage::helper('media')->__('This content requires last version of Adobe Flash Player. <a href="%s">Get Flash</a>', 'http://www.adobe.com/go/getflash/') ?>
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div class="no-display" id="<?php echo $this->getHtmlId() ?>-template">
+                    <div id="{{id}}" class="file-row">
+                    <span class="file-info">{{name}} ({{size}})</span>
+                    <span class="delete-button"><?php echo $this->getDeleteButtonHtml() ?></span>
+                    <span class="progress-text"></span>
+                    <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="no-display" id="<?php echo $this->getHtmlId() ?>-template-progress">
+                    {{percent}}% {{uploaded}} / {{total}}
+                </div>
+            </div>
 			<p style="clear:both;margin-bottom:7px;overflow:hidden;zoom:1;"><button onclick="setLocation('<?php echo $this->getUrl('*/*/mappingexport', array('id'=>$feed->getId()))?>');return false;" class="button"><span><span><?php echo $this->__('Export Fields Settings');?></span></span></button></p>
+			<p style="clear:both;margin-bottom:7px;overflow:hidden;zoom:1;"><button style="width: 145px;" onclick="setLocation('<?php echo $this->getUrl('*/*/mappingexportftp', array('id'=>$feed->getId()))?>');return false;" class="button"><span><span><?php echo $this->__('Export Fields to Server');?></span></span></button></p>
 			<?php else:?>
 			<script type="text/javascript">
 				function showImportNotice(){
@@ -134,47 +166,16 @@
 				</tr>
 			</thead>
 			<tbody id="mapping-table-body">
-				<?php
-					
-					if(empty($data)){
-						$rows_count = 5;
-					}else{
-						$rows_count = count($data);
-					}
-					
-				?>
-				<?php for($i=0;$i<$rows_count;$i++):?>
-				<tr>
-					<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][order]" value="<?php echo @$data[$i]['order'];?>" /></div></td>
-					<td ><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][name]" value="<?php echo htmlentities(@$data[$i]['name']);?>" /></div></td>
-					<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][prefix]" value="<?php echo htmlentities(@$data[$i]['prefix']);?>" /></div></td>
-					<td>
-						<div style="margin: 2px;">
-						<select style="width:100%;" onchange="changeValueType(this, <?php echo $i;?>)" type="text" name="field[<?php echo $i;?>][type]">
-							<option <?php echo isset($data[$i]['type']) && $data[$i]['type'] == 'attribute' ? 'selected="selected"' : '';?> value="attribute"><?php echo $this->__('Attribute')?></option>
-							<option <?php echo isset($data[$i]['type']) && $data[$i]['type'] == 'static' ? 'selected="selected"' : '';?> value="static"><?php echo $this->__('Static Value')?></option>
-						</select>
-						</div>
-					</td>
-					<td>
-						<input style="width:98%;display:<?php echo isset($data[$i]['type']) && $data[$i]['type'] == 'static' ? 'block' : 'none';?>;"  id="mapping-<?php echo $i;?>-static-value" type="text" class="input-text" name="field[<?php echo $i;?>][static_value]" value="<?php echo htmlentities(@$data[$i]['static_value'])?>" />
-						<?php echo $this->getAttributeSelect($i, @$data[$i]['attribute_value'], (isset($data[$i]['type']) && $data[$i]['type'] == 'attribute' || !isset($data[$i]['type'])))?></td>
-					<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][sufix]" value="<?php echo htmlentities(@$data[$i]['sufix']);?>" /></div></td>
-					<td>
-						<div style="margin: 2px;">
-						<select style="width:100%;" type="text" name="field[<?php echo $i;?>][output_type]">
-							<option <?php echo !isset($data[$i]['output_type']) || $data[$i]['output_type'] == '' ? 'selected="selected"' : '';?> value=""><?php echo $this->__('Default')?></option>
-							<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'int' ? 'selected="selected"' : '';?> value="int"><?php echo $this->__('Integer')?></option>
-							<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'float' ? 'selected="selected"' : '';?> value="float"><?php echo $this->__('Float')?></option>
-							<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'striptags' ? 'selected="selected"' : '';?> value="striptags"><?php echo $this->__('Striptags')?></option>
-							<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'htmlspecialchars' ? 'selected="selected"' : '';?> value="htmlspecialchars"><?php echo $this->__('Encode special chars')?></option>
-							<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'htmlspecialchars_decode' ? 'selected="selected"' : '';?> value="htmlspecialchars_decode"><?php echo $this->__('Decode special chars')?></option>
-						</select>
-						</div>
-					</td>
-					<td><button onclick="removeMappingRow(this);return false;" class="button"><span><span><?php echo $this->__('Remove')?></span></span></button></td>
-				</tr>
-				<?php endfor;?>
+				<?php 
+				    if(empty($data)){
+                		$rows_count = 5;
+                	}else{
+                		$rows_count = count($data);
+                	}				    
+                	echo $this->getLayout()->createBlock('adminhtml/template')
+				                ->setData('feed', $this->getFeed())
+	            				->setTemplate('gomage/feed/item/edit/content/mapping.phtml')->toHtml(); 
+	            ?>
 			</tbody>
 		</table>
 		<div class="button-set">
@@ -232,136 +233,33 @@
 		</div>
 	</div>
 </div>
-<!--
-<script type="text/javascript">
-		
-		
-		var uploaderTemplate = '<div class="no-display" id="[[idName]]-template">' +
-                            '<div id="{{id}}" class="file-row file-row-narrow">' +
-                                '<span class="file-info">' +
-                                    '<span class="file-info-name">{{name}}</span>' +
-                                    ' ' +
-                                    '<span class="file-info-size">({{size}})</span>' +
-                                '</span>' +
-                                '<span class="progress-text"></span>' +
-                                '<div class="clear"></div>' +
-                            '</div>' +
-                        '</div>' +
-                            '<div class="no-display" id="[[idName]]-template-progress">' +
-                            '{{percent}}% {{uploaded}} / {{total}}' +
-                            '</div>';
 
-		var fileListTemplate = '<span class="file-info">' +
-                            '<span class="file-info-name">{{name}}</span>' +
-                            ' ' +
-                            '<span class="file-info-size">({{size}})</span>' +
-                        '</span>';
-                        
-        var dataimport = {
-		    uploaderObj : $H({}),
-		    objCount : 0,
-		    setUploaderObj : function(type, key, obj){
-		        if (!this.uploaderObj.get(type)) {
-		            this.uploaderObj.set(type, $H({}));
-		        }
-		        this.uploaderObj.get(type).set(key, obj);
-		    },
-		    getUploaderObj : function(type, key){
-		        try {
-		            return this.uploaderObj.get(type).get(key);
-		        } catch (e) {
-		            try {
-		                console.log(e);
-		            } catch (e2) {
-		                alert(e.name + '\n' + e.message);
-		            }
-		        }
-		    },
-		    unsetUploaderObj : function(type, key){
-		        try {
-		            this.uploaderObj.get(type).unset(key);
-		        } catch (e) {
-		            try {
-		                console.log(e);
-		            } catch (e2) {
-		                alert(e.name + '\n' + e.message);
-		            }
-		        }
-		    }
-		    
-		};
-		
-		dataimport.FileUploader = Class.create();
-		dataimport.FileUploader.prototype = {
-		    type : null,
-		    key : null, //key, identifier of uploader obj
-		    elmContainer : null, //insert Flex object and templates to elmContainer
-		    fileValueName : null, //name of field of JSON data of saved file
-		    fileValue : null,
-		    idName : null, //id name of elements for unique uploader
-		    uploaderText: uploaderTemplate,
-		    uploaderSyntax : /(^|.|\r|\n)(\[\[(\w+)\]\])/,
-		    uploaderObj : $H({}),
-		    config : null,
-		    initialize: function (type, key, elmContainer, fileValueName, fileValue ,idName, config) {
-		        this.type = type;
-		        this.key = key;
-		        this.elmContainer = elmContainer;
-		        this.fileValueName = fileValueName;
-		        this.fileValue = fileValue;
-		        this.idName = idName;
-		        this.config = config;
-		        uploaderTemplate = new Template(this.uploaderText, this.uploaderSyntax);
-		        
-		        alert(elmContainer);
-		        
-		        Element.insert(
-		            elmContainer,
-		            {'top' : uploaderTemplate.evaluate({
-		                    'idName' : this.idName,
-		                    'fileValueName' : this.fileValueName,
-		                    'uploaderObj' : 'dataimport.getUploaderObj(\''+this.type+'\', \''+this.key+'\')'
-		                })
-		            }
-		        );
-		        if ($(this.idName+'_save')) {
-		            $(this.idName+'_save').value = this.fileValue.toJSON();
-		        }
-		        dataimport.setUploaderObj(
-		            this.type,
-		            this.key,
-		            new Flex.Uploader(this.idName, '<?php echo $this->getSkinUrl('media/uploaderSingle.swf') ?>', this.config)
-		        );
-		        /*
-		        if (varienGlobalEvents) {
-		            varienGlobalEvents.attachEventHandler('tabChangeBefore', Downloadable.getUploaderObj(type, key).onContainerHideBefore);
-		        }
-		        new Downloadable.FileList(this.idName, Downloadable.getUploaderObj(type, key));
-		        */
-		    }
-		}
-		
-		new dataimport.FileUploader(
-            'linkssample',
-            'linkssample_'+1,
-            $('import_feed_data_container'),
-            'downloadable[link]['+1+'][sample]',
-            function(){alert(123);},
-            'downloadable_link_'+1+'_sample_file',
-        	{
-        		url:'<?php echo $this->getUrl();?>',
-        		params:{form_key:'key'},
-        		file_field:'import_feed_data_field',
-        		replace_browse_with_remove:1,
-        		width:32
-        	
-        	}
-        );
-        
-	
-	</script>
+<?php if($feed->getId()>0):?>
+    <script type="text/javascript">
+    //<![CDATA[
+    
+    var maxUploadFileSizeInBytes = <?php echo $this->getDataMaxSizeInBytes() ?>;
+    var maxUploadFileSize = '<?php echo $this->getDataMaxSize() ?>';
+    
+    <?php echo $this->getJsObjectName() ?> = new Flex.Uploader('<?php echo $this->getHtmlId() ?>', '<?php echo $this->getUploaderUrl('media/uploader.swf') ?>', <?php echo $this->getConfigJson() ?>);
+    
+    <?php echo $this->getJsObjectName() ?>.onFilesComplete = function(completedFiles){
+        completedFiles.each(function(file){
+            GomageFeedAdmin.submit(0, file.name);
+            <?php echo $this->getJsObjectName() ?>.removeFile(file.id);
+        });
+        $('<?php echo $this->getHtmlId() ?>-flash').setStyle({display:'none'});
+    }
+     
+    if ($('<?php echo $this->getHtmlId() ?>-flash') != undefined) {
+        $('<?php echo $this->getHtmlId() ?>-flash').setStyle({display:'none'});
+    } 
+    
+    //]]>
+    </script>
+<?php endif; ?> 
 
--->
+
 
 
 

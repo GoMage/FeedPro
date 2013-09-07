@@ -51,7 +51,7 @@
 	}
 	
 	public function mappingimportAction() {
-		
+			    
 		if(($post = $this->getRequest()->getPost()) && ($id = $this->getRequest()->getParam('id')) && isset($_FILES['mappingfile']) && $_FILES['mappingfile']){
 			
 			try{
@@ -91,6 +91,71 @@
 		$this->renderLayout();
 	}
 	
+	public function ajaxuploadAction()
+    {
+        $result = array();
+        try {            
+            $uploader = new Varien_File_Uploader('file');				   		
+			$uploader->setAllowRenameFiles(true);			
+			$uploader->setFilesDispersion(false);			
+			$path = Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'tmp';			
+			if(!file_exists($path)){
+				mkdir($path);
+				chmod($path, 0755);
+			}						
+            $result = $uploader->save($path, $_FILES['file']['name'] );
+            $result['file'] = Mage::helper('core/file_storage_database')->saveUploadedFile($result);            
+            $result['file'] = $result['file'];            
+        } catch (Exception $e) {
+            $result = array('error'=>$e->getMessage(), 'errorcode'=>$e->getCode());
+        }
+        $this->getResponse()->setBody(Zend_Json::encode($result)); 
+    } 
+	
+	public function mappingimportsectionAction() {
+	    
+	    $result = array();
+	    $result['error'] = false;
+	    
+		if(($file = $this->getRequest()->getParam('file')) && ($id = $this->getRequest()->getParam('id'))){
+		    
+			try{
+				
+			    if ($this->getRequest()->getParam('section') == 1)
+				    $data = file_get_contents(Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'examples' . DS . $file);
+				else
+				    $data = file_get_contents(Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'tmp' . DS . $file);   
+				
+				$array_data = json_decode($data);
+				
+				if(empty($array_data)){
+					
+				    $result['error'] = true;
+				    $result['error_text'] = Mage::helper('core')->__('Empty or Invalid data file');					
+					
+				}else{
+										
+				    $feed = Mage::getModel('gomage_feed/item')->load($id)->setContent($data);										
+				}
+				
+			}catch(Exception $e){
+				
+			    $result['error'] = true;
+				$result['error_text'] = Mage::helper('core')->__('Unknown error');
+				
+			}
+			
+			if (!$result['error'])
+			{
+    			$result['feed'] = $this->getLayout()->createBlock('adminhtml/template')
+    				                ->setData('feed', $feed)
+    	            				->setTemplate('gomage/feed/item/edit/content/mapping.phtml')->toHtml();
+			}						
+			echo Zend_Json::encode($result);
+		}
+				
+	}
+	
 	public function mappingexportAction(){
 		
 		
@@ -106,7 +171,51 @@
 		
 	}
 	
+	public function mappingexportftpAction() {
+			    
+		if(($post = $this->getRequest()->getPost()) && ($id = $this->getRequest()->getParam('id'))){
+			
+			try{
+				
+                $system = basename($this->getRequest()->getParam('feed_system'));
+                $section = basename($this->getRequest()->getParam('feed_section'));
+                
+    			$fileDir	= Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'examples' . DS . $system;        	        	
+            	if(!file_exists($fileDir)){            		
+            		mkdir($fileDir);            		
+            		chmod($fileDir, 0777);            		
+            	}
+            	
+            	$feed = Mage::getModel('gomage_feed/item')->load($id);
+            	
+            	$fp = fopen($fileDir . DS . $section, 'a');
+ 				fwrite($fp, $feed->getContent());
+				fclose($fp);
+				
+			    Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('Data successfully exported'));
+				
+			}catch(Exception $e){
+				
+				Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Unknown error'));
+				
+			}
+			
+			return $this->_redirect('*/*/edit', array('id'=>$id, 'tab'=>'content_section'));
+		}
+		
+		$this->_initAction();
+		if($id = $this->getRequest()->getParam('id')){
+        	Mage::register('gomage_feed', Mage::getModel('gomage_feed/item')->load($id));
+			$this->_addContent($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingexportftp'))
+				->_addLeft($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingexportftp_tabs'));
+		
+		
+		}
+		$this->renderLayout();
+	}
+	
 	public function saveAction(){
+	    
 		if ($data = $this->getRequest()->getPost()) {
 			
 			try{
@@ -230,8 +339,27 @@
 			    	
 			    	}catch(Exception $e){
 			    		
-		            	Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Can’t generate feed file "%s"', $feed->getFilename()));
-		            	
+    			    	if (!ini_get('allow_url_fopen'))
+                    	{
+                    	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Check the "allow_url_fopen" option.
+                                    Check that the "allow_url_fopen" option it enabled.
+                                    This option enables the URL-aware fopen wrappers that enable accessing URL object like files.
+                                    Learn more at <a target="_blank" href="http://php.net/manual/en/filesystem.configuration.php">http://php.net/manual/en/filesystem.configuration.php</a>'));
+                    	}
+                    	elseif (strpos(strtolower($e->getMessage()), 'permission'))
+                    	{
+                    	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Check the Permission for the "Media" directory.
+        							Check that the "media" directory of your Magento has permission equal to 777 or 0777.'));
+                    	}
+                    	else
+                    	{
+                    	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Can\'t generate feed file'));
+                    	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Change "Number of Products" in the Advanced Settings.
+                                    Try to change "Number of Products" in the Advanced Settings.
+                                    For example: set "Number of Products" equal 50 or 100.'));
+                    	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('If "Time out" error.
+        							Please ask your server administrator to increase script run times. Learn more at <a target="_blank" href="http://php.net/manual/en/function.set-time-limit.php">http://php.net/manual/en/function.set-time-limit.php</a>'));
+                    	}		            	
 		            }
 	            }
 			}
@@ -270,7 +398,7 @@
 		            	
 		            }catch(Exception $e){
 		            	
-		            	Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('%s - Can’t upload. Please, check your FTP Settings or Hosting Settings', $item->getFilename()));
+		            	Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('%s - Can\'t upload. Please, check your FTP Settings or Hosting Settings', $item->getFilename()));
 		            	
 		            }
 	            }
@@ -342,7 +470,7 @@
             	
             }catch(Exception $e){
             	
-            	Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('%s - Can’t upload. Please, check your FTP Settings or Hosting Settings', $item->getFilename()));
+            	Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('%s - Can\'t upload. Please, check your FTP Settings or Hosting Settings', $item->getFilename()));
             	
             }
             
@@ -354,7 +482,7 @@
     	
     }
     public function generateAction(){
-		
+		 
 		if($id = $this->getRequest()->getParam('id')){
 			
         	try{
@@ -366,14 +494,35 @@
 		        $feed->generate();
 		        
 		        Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('File was generated!'));
-	    	
+		        	    	
 	    	}catch(Mage_Core_Exception $e){
             	
             	Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             	
             }catch(Exception $e){
-            	
-            	Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Can’t generate feed file'));
+            	            	
+                if (!ini_get('allow_url_fopen'))
+            	{
+            	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Check the "allow_url_fopen" option.
+                            Check that the "allow_url_fopen" option it enabled.
+                            This option enables the URL-aware fopen wrappers that enable accessing URL object like files.
+                            Learn more at <a target="_blank" href="http://php.net/manual/en/filesystem.configuration.php">http://php.net/manual/en/filesystem.configuration.php</a>'));
+            	}
+            	elseif (strpos(strtolower($e->getMessage()), 'permission'))
+            	{
+            	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Check the Permission for the "Media" directory.
+							Check that the "media" directory of your Magento has permission equal to 777 or 0777.'));
+            	}
+            	else
+            	{
+            	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Can\'t generate feed file'));
+            	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Change "Number of Products" in the Advanced Settings.
+                            Try to change "Number of Products" in the Advanced Settings.
+                            For example: set "Number of Products" equal 50 or 100.'));
+            	    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('If "Time out" error.
+							Please ask your server administrator to increase script run times. Learn more at <a target="_blank" href="http://php.net/manual/en/function.set-time-limit.php">http://php.net/manual/en/function.set-time-limit.php</a>'));
+            	}
+            	            	
             	
             }
             
@@ -408,7 +557,31 @@
 				$this->getResponse()->setBody('<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>');
 			
 	        	
-	        }else{
+	        }
+	        elseif ($code == 'category_id'){
+	            $options = array();
+	            $options[] = "<option value=\"\"></option>";
+	            	            	            
+	            $store_id = $this->getRequest()->getParam('store_id');
+	            if (!$store_id) $store_id = Mage::app()->getStore()->getId();
+	            
+	            $store = Mage::getModel('core/store')->load($store_id);
+	            
+	            $categoryes = Mage::getModel('catalog/category')->load($store->getRootCategoryId())->getAllChildren(true);
+	            
+	            foreach($categoryes as $cat_id){
+
+	                if ($cat_id == $store->getRootCategoryId()) continue;
+	                
+	                $category = Mage::getModel('catalog/category')->load($cat_id);
+					
+					$options[] = "<option value=\"{$category->getId()}\">{$category->getName()}</option>";
+					
+				}
+	            
+	            $this->getResponse()->setBody('<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>');
+	        }
+	        else{
 	        	
 	        	$this->getResponse()->setBody('<input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="'.$name.'" value=""/>');
 	        	

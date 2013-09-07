@@ -31,6 +31,18 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Xml extends Mage_Adminh
         $this->setForm($form);
         $fieldset = $form->addFieldset('main_fieldset', array('legend' => $this->__('Content Settings')));
         
+        $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
+                ->setData(array(
+                    'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
+                    'class'   => 'go',
+                    'id'      => 'feed_pro_help',
+                    'onclick' => 'window.open(\'http://www.gomage.com/faq/extensions/feed-pro\')'
+                ));
+        
+        $fieldset->setHeaderBar(
+                    $headerBar->toHtml()
+                ); 
+        
         $fieldset->addField('content', 'textarea', array(
             'name'      => 'content',
             'label'     => $this->__('Content'),

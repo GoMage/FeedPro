@@ -42,8 +42,11 @@ CREATE TABLE `{$this->getTable('gomage_feed_entity')}` (
   `iteration_limit` int(32) default '0',
   `upload_day` varchar(32) default NULL,
   `upload_hour` smallint(6) default NULL,
+  `upload_hour_to` smallint(6) default NULL,
   `upload_interval` smallint(6) default NULL,
   `use_layer` tinyint(1) NOT NULL default '1',
+  `use_disabled` tinyint(1) NOT NULL default '1',
+  `restart_cron` smallint(6) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='GoMage Catalog Feed' AUTO_INCREMENT=1;
 ");

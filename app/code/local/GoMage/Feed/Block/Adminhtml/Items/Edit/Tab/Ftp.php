@@ -31,6 +31,18 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Ftp extends Mage_Adminhtml_Bloc
         $this->setForm($form);
         $fieldset = $form->addFieldset('ftp_fieldset', array('legend' => $this->__('FTP Settings')));
         
+        $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
+                ->setData(array(
+                    'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
+                    'class'   => 'go',
+                    'id'      => 'feed_pro_help',
+                    'onclick' => 'window.open(\'http://www.gomage.com/faq/extensions/feed-pro\')'
+                ));
+        
+        $fieldset->setHeaderBar(
+                    $headerBar->toHtml()
+                ); 
+        
         
         $fieldset->addField('ftp_active', 'select', array(
             'name'      => 'ftp_active',

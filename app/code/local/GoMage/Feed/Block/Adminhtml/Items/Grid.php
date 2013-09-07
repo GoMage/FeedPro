@@ -74,11 +74,10 @@ class GoMage_Feed_Block_Adminhtml_Items_Grid extends Mage_Adminhtml_Block_Widget
         
         
         $this->addColumn('store_id', array(
-            'header'    =>  $this->__('Store'),
+            'header'    =>  $this->__('Store View'),
             'align'     =>  'left',
             'index'     =>  'store_id',
-            'type'      => 'options',
-            'options'   => Mage::getModel('core/store')->getCollection()->toOptionHash(),
+            'type'      =>  'store',            
         ));
         /*
         $this->addColumn('type', array(

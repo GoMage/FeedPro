@@ -220,10 +220,10 @@ class GoMage_Feed_Model_Item_Block extends Varien_Object
     					
     				break;
     				
-    				case 'htmlspecialchars':
-    					
-    					$value = htmlspecialchars($value);
-    					
+    				case 'htmlspecialchars':    					
+    					$encoding = mb_detect_encoding($value);
+                        $value = mb_convert_encoding($value, "UTF-8", $encoding);				    				    				    				                      				    				        				    				              
+                        $value = htmlentities($value, null, "UTF-8");    					
     				break;
     				
     				case 'htmlspecialchars_decode':

@@ -35,8 +35,20 @@
 <div class="entry-edit">
 	<div class="entry-edit-head">
     	<h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Products Filter Configuration')?></h4>
-	</div>
+    	<div class="form-buttons">
+    		<button style="" onclick="window.open('http://www.gomage.com/faq/extensions/feed-pro')" class="scalable go" type="button" id="feed_pro_help"><span>Feed Pro Help</span></button>
+    	</div>
+	</div>		
 	<div id="filter_fieldset" class="fieldset ">
+		<?php if ($attribute->getId()): ?>		
+    		<div class="right">
+            	<p style="clear:both;margin-bottom:7px;overflow:hidden;zoom:1;">
+                	<button onclick="setLocation('<?php echo $this->getUrl('*/*/mappingimport', array('id'=>$attribute->getId()))?>');return false;" class="button"><span><span><?php echo $this->__('Import Conditions');?></span></span></button>
+                	<button onclick="setLocation('<?php echo $this->getUrl('*/*/mappingexport', array('id'=>$attribute->getId()))?>');return false;" class="button"><span><span><?php echo $this->__('Export Conditions');?></span></span></button>
+            	</p>
+            </div>
+            <br clear="all" />
+        <?php endif; ?>        
 		<div class="grid">
 			<script type="text/javascript">
 				
@@ -96,7 +108,7 @@
 					
 					td = document.createElement('td');
 					td.innerHTML = content;
-					td.addClassName(td_class);
+					if (td_class) td.setAttribute('class', td_class);
 					tr.appendChild(td);
 					
 				}
