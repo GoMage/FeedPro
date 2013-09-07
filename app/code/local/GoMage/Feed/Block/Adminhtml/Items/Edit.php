@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.1
+ * @version      Release: 3.0
  * @since        Class available since Release 1.0
  */
 
@@ -31,8 +31,17 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit extends Mage_Adminhtml_Block_Widget
 		if($feed && $feed->getId() > 0){
 			
 			$this->_addButton('generate', array(
-	            'label'     => $this->__('Generate File'),
-	            'onclick'   => 'if($(\'loading-mask\')){$(\'loading-mask\').show();}setLocation(\''.$this->getUrl('*/*/generate', array('id'=>$feed->getId())).'\')',
+				'id' 		=> 'gomage_feed_generate',
+	            'label'     => $this->__('Generate File'),				
+	            'onclick'   => 'GomageFeedGenerator.generate()',
+	        ), -100);
+	        
+	        $this->_addButton('stop', array(
+	        	'id' 		=> 'gomage_feed_stop',
+	            'label'     => $this->__('Stop'),	        	
+	            'onclick'   => 'GomageFeedGenerator.stopped()',
+	        	'class'		=> 'delete',
+	        	'style'		=> 'display:none;'
 	        ), -100);
 	        
 	        if($feed->getFtpActive()){
@@ -53,16 +62,21 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit extends Mage_Adminhtml_Block_Widget
         ), -100);
         
         $_data = array();
-        $_data['data'] = GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv::getSystemSections(); 
+        $_data['data'] = Mage::helper('gomage_feed')->getSystemSections(); 
         $_data['url'] = $this->getUrl('*/*/mappingimportsection', array('id'=>($feed && $feed->getId() ? $feed->getId() : 0)));
+        
+        $_generator_data = array(
+        	'feed_id' => ($feed && $feed->getId() ? $feed->getId() : 0),
+        	'generate_url' => $this->getUrl('feed/index/generate'),        	
+            'info_url' => $this->getUrl('*/*/processInfo'),    	
+        );        
         
         $this->_formScripts[] = "
             function saveAndContinueEdit(){
                 editForm.submit($('edit_form').action+'back/edit/');
-            }
-            
-            var GomageFeedAdmin = new GomageFeedAdminSettings(" . Zend_Json::encode($_data) . ");
-
+            }            
+            var GomageFeedAdmin = new GomageFeedAdminSettings(" . Zend_Json::encode($_data) . ");            
+            var GomageFeedGenerator = new GomageFeedGeneratorClass(" . Zend_Json::encode($_generator_data) . ");
         ";
         
         if ($this->getRequest()->getActionName() == 'new' &&

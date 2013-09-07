@@ -5,23 +5,15 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.1
+ * @version      Release: 3.0
  * @since        Class available since Release 1.0
  */
 
-	class GoMage_Feed_Adminhtml_AttributesController extends Mage_Adminhtml_Controller_Action{
-	/*
-	protected function _redirect($path, $arguments=array()){
-    	
-        $this->getResponse()->setRedirect(Mage::getModel('core/store')->load('0')->getUrl($path, $arguments));
-        
-        return $this;
-    }
-    /**/
+class GoMage_Feed_Adminhtml_AttributesController extends Mage_Adminhtml_Controller_Action{
 	
 	protected function _initAction() {
 		$this->loadLayout()
@@ -33,8 +25,7 @@
  	
 	public function indexAction() {
 		$this->_initAction();
-		$this->renderLayout();
-		
+		$this->renderLayout();		
 	}
 	
 	public function newAction(){
@@ -76,7 +67,7 @@
 				
 				if(isset($data['option'])){
 				
-				$data['data'] = Zend_Json::encode((array)$data['option']);
+					$data['data'] = Zend_Json::encode((array)$data['option']);
 				
 				}
 				

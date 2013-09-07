@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.1
+ * @version      Release: 3.0
  * @since        Class available since Release 2.0
  */
 
@@ -19,7 +19,8 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
     protected $_feed_categories = array();
     protected $_prepared_feed_categories = array(
     										'inclusion' => array(),
-											'exclusion' => array());
+											'exclusion' => array());    
+    protected $_filter_type = GoMage_Feed_Model_Adminhtml_System_Config_Source_Filter::TOGETHER;
     
     public function isEnabledFlat()
     {        
@@ -87,14 +88,16 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
                 ->quoteInto('cat_index.visibility IN(?)', $filters['visibility']);
         }
         
-        if (count($this->_feed_categories)){
-            $conditions[] = $this->getConnection()
-                ->quoteInto('cat_index.category_id IN(?)', $this->_feed_categories);
+        if (count($this->_feed_categories)){        	
+        	if ($this->_filter_type == GoMage_Feed_Model_Adminhtml_System_Config_Source_Filter::TOGETHER){        	
+            	$conditions[] = $this->getConnection()->quoteInto('cat_index.category_id IN(?)', $this->_feed_categories);
+        	}    
             $this->getSelect()->distinct();    
         }    
-        else
+        else {
             $conditions[] = $this->getConnection()
                 ->quoteInto('cat_index.category_id=?', $filters['category_id']);
+        }        
 
             
         if (isset($filters['category_is_anchor'])) {
@@ -189,5 +192,57 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
     	return $this;
     }
     
+	public function addAttributeToFilter($attribute, $condition = null, $joinType = 'inner')
+    {
+        if ($attribute === null) {
+            $this->getSelect();
+            return $this;
+        }
+
+        if (is_numeric($attribute)) {
+            $attribute = $this->getEntity()->getAttribute($attribute)->getAttributeCode();
+        } else if ($attribute instanceof Mage_Eav_Model_Entity_Attribute_Interface) {
+            $attribute = $attribute->getAttributeCode();
+        }
+
+        if (is_array($attribute)) {
+            $sqlArr = array();
+            foreach ($attribute as $condition) {
+                $sqlArr[] = $this->_getAttributeConditionSql($condition['attribute'], $condition, $joinType);
+            }            
+	        if (count($this->_feed_categories)){        	
+	        	if ($this->_filter_type == GoMage_Feed_Model_Adminhtml_System_Config_Source_Filter::SPLIT){        	
+	            	$sqlArr[] = $this->getConnection()->quoteInto('cat_index.category_id IN(?)', $this->_feed_categories);
+	        	}    	                
+	        }            
+            $conditionSql = '('.implode(') OR (', $sqlArr).')';
+        } else if (is_string($attribute)) {
+            if ($condition === null) {
+                $condition = '';
+            }
+            $conditionSql = $this->_getAttributeConditionSql($attribute, $condition, $joinType);
+        }
+
+        if (!empty($conditionSql)) {
+            $this->getSelect()->where($conditionSql, null, Varien_Db_Select::TYPE_CONDITION);
+        } else {
+            Mage::throwException('Invalid attribute identifier for filter ('.get_class($attribute).')');
+        }
+
+        return $this;
+    }
+
+    public function setFilterType($filter_type){
+    	$this->_filter_type = $filter_type;
+    	return $this;
+    }
+    
+    public function applyFeedCategoryFilter(){
+    	if (count($this->_feed_categories)){
+    		$conditionSql = $this->getConnection()->quoteInto('cat_index.category_id IN(?)', $this->_feed_categories);        	
+    		$this->getSelect()->where($conditionSql, null, Varien_Db_Select::TYPE_CONDITION);        
+	    }
+    	return $this;
+    }
 
 }

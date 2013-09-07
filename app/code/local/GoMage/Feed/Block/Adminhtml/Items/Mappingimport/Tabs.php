@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.1
+ * @version      Release: 3.0
  * @since        Class available since Release 1.0
  */
 
@@ -26,14 +26,6 @@ class GoMage_Feed_Block_Adminhtml_Items_Mappingimport_Tabs extends Mage_Adminhtm
     
     protected function _prepareLayout(){
         
-        
-        /*
-    	$this->addTab('import_section', array(
-            'label'     => $this->__('Import Mapping'),
-            'title'     => $this->__('Import Mapping'),
-            'content'   => $this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingimport_tab_file')->toHtml(),
-        ));
-        /**/
         $this->addTab('filter_section', array(
 	            'label'     =>  $this->__('Filter Configuration'),
 	            'title'     =>  $this->__('Filter Configuration'),

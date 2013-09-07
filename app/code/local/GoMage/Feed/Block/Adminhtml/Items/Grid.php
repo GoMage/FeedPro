@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.1
+ * @version      Release: 3.0
  * @since        Class available since Release 1.0
  */
 
@@ -61,8 +61,8 @@ class GoMage_Feed_Block_Adminhtml_Items_Grid extends Mage_Adminhtml_Block_Widget
             'align'     =>  'left',
             'index'     =>  'generated_at',
             'type'		=> 'datetime',
-            'renderer'  => 'GoMage_Feed_Block_Adminhtml_Items_Grid_Renderer_Datetime'
-        ));
+            'renderer'  => 'GoMage_Feed_Block_Adminhtml_Items_Grid_Renderer_Datetime'            
+        ));                
         
         $this->addColumn('uploaded_at', array(
             'header'    =>  $this->__('Last Uploaded'),
@@ -70,22 +70,13 @@ class GoMage_Feed_Block_Adminhtml_Items_Grid extends Mage_Adminhtml_Block_Widget
             'index'     =>  'uploaded_at',
             'type'		=> 'datetime',
             'renderer'  => 'GoMage_Feed_Block_Adminhtml_Items_Grid_Renderer_Datetime'
-        ));
-        
-        
+        ));                
         $this->addColumn('store_id', array(
             'header'    =>  $this->__('Store View'),
             'align'     =>  'left',
             'index'     =>  'store_id',
             'type'      =>  'store',            
         ));
-        /*
-        $this->addColumn('type', array(
-            'header'    =>  $this->__('Content Type'),
-            'align'     =>  'left',
-            'index'     =>  'type',
-        ));
-        */
         $this->addColumn('ftp_active', array(
             'header'    =>  $this->__('FTP Status'),
             'align'     =>  'left',
@@ -94,8 +85,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Grid extends Mage_Adminhtml_Block_Widget
             'options'   => array(
             	0=>$this->__('Disabled'),
             	1=>$this->__('Enabled'),
-            ),
-            
+            ),            
         ));
 	    
         $this->addColumn('action', array(

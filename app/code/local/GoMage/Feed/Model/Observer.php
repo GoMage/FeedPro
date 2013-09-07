@@ -6,141 +6,111 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.1
+ * @version      Release: 3.0
  * @since        Class available since Release 1.0
  */
+
+class GoMage_Feed_Model_Observer {
 	
-class GoMage_Feed_Model_Observer{
-	
-	static function proccessFeeds(){
+	public static function generateFeeds() {
 		$collection = Mage::getResourceModel('gomage_feed/item_collection');
+						
+		$collection->getSelect()->where('`generate_day` like "%' . strtolower(date('D')) . '%"');
 		
-		$current_time = date('G');
-		
-		$collection->getSelect()->where('`upload_day` like "%'.strtolower(date('D')).'%"');
-				
-		foreach($collection as $feed){
+		foreach ($collection as $feed) {
 			
-			if(date('d.m.Y:H') == date('d.m.Y:H', strtotime($feed->getData('cron_started_at')))){
-				
+			if (!$feed->getData('generate_status')){
 				continue;
-				
 			}
 			
-			switch (intval($feed->getData('upload_interval')))
-			{
-			    case 12:
-			    case 24:
-			    		$upload_hour_from = intval($feed->getData('upload_hour'));
-			    		
-			    		if($upload_hour_from != $current_time){
-			    			continue 2;
-			    		}
-			    		
-                        if ((strtotime($feed->getData('cron_started_at')) + $feed->getData('upload_interval')*60*60) > time())
-                        {
-                            continue 2;
-                        } 
-			        break;
-			    default:    
-    			        $current_time = date('G');
-    			        $upload_hour_from = intval($feed->getData('upload_hour'));
-    			        $upload_hour_to = intval($feed->getData('upload_hour_to'));
-    			        if (!$upload_hour_to) $upload_hour_to = 24;
-    			        
-    			        $hours = array();
-    			        if ($upload_hour_from > $upload_hour_to)
-    			        {
-    			            for($i = $upload_hour_from; $i <= 23; $i++)
-    			                $hours[] = $i;
-    			            for($i = 0; $i <= $upload_hour_to; $i++)
-    			                $hours[] = $i;    
-    			        }           			         
-    			        else
-    			        {
-    			            for($i = $upload_hour_from; $i <= $upload_hour_to; $i++)
-    			            {
-    			                if ($i == 24)
-    			                    $hours[] = 0;
-    			                else
-    			                    $hours[] = $i;
-    			            }        
-    			        }
-    			        
-    			        if (!in_array($current_time, $hours)){
-    			            continue 2;
-    			        }    
-    			            
-    			        if ((strtotime($feed->getData('cron_started_at')) + $feed->getData('upload_interval')*60*60) > time())
-                        {
-                            continue 2;
-                        }    
+			if (date('d.m.Y:H') == date('d.m.Y:H', strtotime($feed->getData('cron_started_at')))) {				
+				continue;			
 			}
 			
-			try{
-				Mage::app()->setCurrentStore($feed->getStoreId());
-				
+			if (!Mage::helper('gomage_feed/generator')->needRunCron($feed->getData('generate_interval'), 
+						  $feed->getData('generate_hour'), 
+						  $feed->getData('generate_hour_to'), 
+						  $feed->getData('cron_started_at'))){
+				continue;			  	
+			}
+			
+			try {				
 				$cron_started_at = date('Y-m-j H:00:00', time());
 				$feed->setData('cron_started_at', $cron_started_at);
 				$feed->save();
-								
+				
 				$feed->generate();
-				$feed->ftpUpload();
-				
-				$feed->setData('restart_cron', 0);
-				$feed->save();				
-				
-			}catch(Exception $e){
-				
-			    $feed->setData('restart_cron', intval($feed->getData('restart_cron')) + 1);
-			    $feed->save();
-			    
-				continue;
-				
-			}
 
-		}
-		
+				$feed->setData('restart_cron', 0);
+				$feed->save();	
+
+				$generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($feed->getId());
+				$errors = $generate_info->getData('errors');
+				if (empty($errors)){
+					$message = Mage::helper('gomage_feed')->__('File was generated.');
+					Mage::helper('gomage_feed/notification')->sendMessage($feed, $message, GoMage_Feed_Model_Adminhtml_System_Config_Source_Notify::SUCCESSFULLY_GENERATED);
+				}else{
+					$message = implode(',', $errors);
+					Mage::helper('gomage_feed/notification')->sendMessage($feed, $message, GoMage_Feed_Model_Adminhtml_System_Config_Source_Notify::ERRORS); 
+				} 				
+			}
+			catch (Exception $e) {
+				Mage::helper('gomage_feed/notification')->sendMessage($feed, $e->getMessage(), GoMage_Feed_Model_Adminhtml_System_Config_Source_Notify::ERRORS);				
+				$feed->setData('restart_cron', intval($feed->getData('restart_cron')) + 1);
+				$feed->save();				
+				continue;			
+			}		
+		}	
 	}
 	
-	static function generateAll(){
-		
-		
+	public static function uploadFeeds() {
 		$collection = Mage::getResourceModel('gomage_feed/item_collection');
 		
-		foreach($collection as $feed){
-			try{
-				Mage::app()->setCurrentStore($feed->getStoreId());
-				$feed->generate();
-			}catch(Exception $e){
+		$collection->getSelect()->where('`upload_day` like "%' . strtolower(date('D')) . '%"');
+						
+		foreach ($collection as $feed) {
+			
+			if (!$feed->getData('upload_status')){
 				continue;
 			}
-		}
-		
-	}
-	
-	static function uploadAll(){
-		
-		$collection = Mage::getResourceModel('gomage_feed/item_collection');
-		
-		foreach($collection as $feed){
-			try{
-				Mage::app()->setCurrentStore($feed->getStoreId());
+			
+			if (date('d.m.Y:H') == date('d.m.Y:H', strtotime($feed->getData('cron_uploaded_at')))) {				
+				continue;			
+			}
+			
+			if (!Mage::helper('gomage_feed/generator')->needRunCron($feed->getData('upload_interval'), 
+							  $feed->getData('upload_hour'), 
+							  $feed->getData('upload_hour_to'), 
+							  $feed->getData('cron_uploaded_at'))){
+				continue;			  	
+			}
+			
+			$generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($feed->getId());
+			if (!$generate_info->getData('finished')){
+				continue;
+			}
+			
+			try {
+				$cron_uploaded_at = date('Y-m-j H:00:00', time());
+				$feed->setData('cron_uploaded_at', $cron_uploaded_at);
+				$feed->save();
 				$feed->ftpUpload();
-			}catch(Exception $e){
-				continue;
+				$message = Mage::helper('gomage_feed')->__('File was uploaded.');
+				Mage::helper('gomage_feed/notification')->sendMessage($feed, $message, GoMage_Feed_Model_Adminhtml_System_Config_Source_Notify::SUCCESSFULLY_UPLOADED);
 			}
-		}			
+			catch (Exception $e) {
+				Mage::helper('gomage_feed/notification')->sendMessage($feed, $e->getMessage(), GoMage_Feed_Model_Adminhtml_System_Config_Source_Notify::ERRORS);			
+			}		
+		}	
 	}
 	
-	static public function checkK($event)
-    {			
-		$key = Mage::getStoreConfig('gomage_activation/feed/key');			
-		Mage::helper('gomage_feed')->a($key);			
-	} 
-	
+	public static function checkK($event) {
+		$key = Mage::getStoreConfig('gomage_activation/feed/key');
+		Mage::helper('gomage_feed')->a($key);
+	}
+
 }

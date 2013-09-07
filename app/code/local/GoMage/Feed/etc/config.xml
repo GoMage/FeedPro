@@ -5,18 +5,18 @@
  *
  * GoMage Feed Pro
  * @category     Extension
- * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.1
+ * @version      Release: 3.0
  * @since        Class available since Release 1.0
  */ 
  -->
 <config>
     <modules>
         <GoMage_Feed>
-            <version>2.2</version>
+            <version>3.0</version>
         </GoMage_Feed>
     </modules>
 	<frontend>
@@ -107,8 +107,7 @@
                     </children>
                 </admin>
             </resources>
-        </acl>        
-        
+        </acl>                
         <acl>
         	<resources>
         		<admin>
@@ -189,13 +188,36 @@
         <helpers>
 			<gomage_feed><class>GoMage_Feed_Helper</class></gomage_feed>
 		</helpers>
+		<template>
+            <email>            
+                <gomage_feedpro_notifications_email_template>
+                    <label>Feed Pro Notifications</label>
+                    <file>feed_pro_notifications.html</file>
+                    <type>text</type>
+                </gomage_feedpro_notifications_email_template>
+            </email>
+        </template> 
 	</global>
 	<crontab>
         <jobs>
-        	<gomage_feed_generate_all>
+        	<gomage_feed_generate>
                 <schedule><cron_expr>01 * * * *</cron_expr></schedule>
-                <run><model>gomage_feed/observer::proccessFeeds</model></run>
-			</gomage_feed_generate_all>
+                <run><model>gomage_feed/observer::generateFeeds</model></run>
+			</gomage_feed_generate>
+			<gomage_feed_upload>
+                <schedule><cron_expr>01 * * * *</cron_expr></schedule>
+                <run><model>gomage_feed/observer::uploadFeeds</model></run>
+			</gomage_feed_upload>
         </jobs>
     </crontab>
+    <default> 
+    	<gomage_feedpro>
+    		<configuration>
+    			<system>1</system>
+    		</configuration>
+    		<notifications>
+    			<email_template>gomage_feedpro_notifications_email_template</email_template>
+    		</notifications>
+    	</gomage_feedpro>
+    </default>
 </config>

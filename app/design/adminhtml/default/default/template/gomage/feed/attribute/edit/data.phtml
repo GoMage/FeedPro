@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.1
+ * @version      Release: 3.0
  * @since        Class available since Release 1.0
  */
 	
@@ -53,54 +53,40 @@
 			<script type="text/javascript">
 				
 				var totalRows = <?php echo $rows_count?>;
-				
-				
-				
+
 				function removeConditionRow(e, option_id){
 					
 					table = e.parentNode.parentNode.parentNode;
 					
-					if(table.getElementsByTagName('tr').length > 1){
-						
-						
-						table.removeChild(e.parentNode.parentNode);
-						
-						if(rows = table.getElementsByTagName('tr')){
-							
-							//if(rows.length == 1){
-							if(rows.length == 0){
-								
-								
-								var separator = $('option-row-'+option_id+'-separator');
-								
-								if(separator){
-								
-								separator.parentNode.removeChild(separator);
-								
-								}
-								
+					if(table.getElementsByTagName('tr').length > 1){												
+						table.removeChild(e.parentNode.parentNode);						
+						if(rows = table.getElementsByTagName('tr')){							
+							if(rows.length == 0){																
+								var separator = $('option-row-'+option_id+'-separator');								
+								if(separator){								
+									separator.parentNode.removeChild(separator);								
+								}								
 								$('option-row-'+option_id).parentNode.removeChild($('option-row-'+option_id));
-								//rows[0].getElementsByTagName('button')[0].addClassName('disabled');
-								
 							}
 						}
 					}
+				}
+
+				function removeAttributeRow(e, option_id){
+					table = e.parentNode.parentNode.parentNode;					
+					table.removeChild(e.parentNode.parentNode);					
 				}
 				
 				function removeDataRow(e){
 					
 					if($$('#filter-table-body tr.option-row').length > 1){
 					
-					if(e.parentNode.parentNode.id){
+						if(e.parentNode.parentNode.id){							
+							var separator = $(e.parentNode.parentNode.id+'-separator');							
+							separator.parentNode.removeChild(separator);							
+						}
 						
-						var separator = $(e.parentNode.parentNode.id+'-separator');
-						
-						separator.parentNode.removeChild(separator);
-						
-					}
-					
-					e.parentNode.parentNode.parentNode.removeChild(e.parentNode.parentNode);
-					
+						e.parentNode.parentNode.parentNode.removeChild(e.parentNode.parentNode);					
 					}
 				}
 				
@@ -114,17 +100,36 @@
 				}
 
 				function ChangeOutputType(control, iterator){
+
+					$$('#table-attribute' + iterator + ' tr').each(function(w) {
+					       w.remove();
+					});
 					if (control.value == 'static'){
-						$('value-type-attribute-' + iterator).style.display = 'none';	
+						$('value-type-attribute-' + iterator).style.display = 'none';						
+						$('option_' + iterator + '_value').up().style.display = 'block';	
 						$('option_' + iterator + '_value').enable();
+						$('add-attribute-' + iterator).style.display = 'none';
 					}else if (control.value == 'percent'){
 						$('value-type-attribute-' + iterator).style.display = 'block';
+						$('option_' + iterator + '_value').up().style.display = 'block';						
 						$('option_' + iterator + '_value').enable();
+						$('add-attribute-' + iterator).style.display = 'none';
+						addAttributeRow($('table-attribute' + iterator), iterator, false);
 					}else if (control.value == 'attribute'){
 						$('value-type-attribute-' + iterator).style.display = 'block';
+						$('option_' + iterator + '_value').up().style.display = 'none';
 						$('option_' + iterator + '_value').value = '';
 						$('option_' + iterator + '_value').disable();
-					}										
+						$('add-attribute-' + iterator).style.display = '';
+						addAttributeRow($('table-attribute' + iterator), iterator, true);
+					}else if (control.value == 'conf_values'){
+						$('value-type-attribute-' + iterator).style.display = 'block';
+						$('option_' + iterator + '_value').up().style.display = 'none';
+						$('option_' + iterator + '_value').value = '';
+						$('option_' + iterator + '_value').disable();
+						$('add-attribute-' + iterator).style.display = 'none';
+						addAttributeRow($('table-attribute' + iterator), iterator, true, false);
+					}											
 				}
 				
 				function getConditionTable(){
@@ -144,11 +149,10 @@
 				}
 				
 				function addDataRow(){
-					
-					
+										
 					if(totalRows == 0){
 						if(e = $('no-data')){
-						e.parentNode.removeChild(e);
+							e.parentNode.removeChild(e);
 						}
 					}
 					
@@ -159,17 +163,19 @@
 					tr.className = "option-row";
 					
 					condition_counter[i] = 1;
+					attributes_counter[i] = 1;
 					
 					addColumn(tr, getConditionTable().replace(/\[iterator\]/g, i).replace(/\[cond_iterator\]/g, 0));
 										
-					var type_select = '<div class="type-field-wrapper"><select onchange="ChangeOutputType(this, [iterator])" name="option[[iterator]][value_type]" value="" ><option value="static" selected="selected"><?php echo $this->__('Static')?></option><option value="percent"><?php echo $this->__('Percent from value')?></option><option value="attribute"><?php echo $this->__('Attribute value')?></option></select></div><div id="value-type-attribute-[iterator]" class="type-attribute-field-wrapper"><?php echo addslashes($this->getAttributeSelect('value', 'type', '', true, 'option[[iterator]][value_type_attribute]', true))?></div>';
-					
+					var type_select = '<div class="type-field-wrapper"><select onchange="ChangeOutputType(this, [iterator])" name="option[[iterator]][value_type]" value="" ><option value="static" selected="selected"><?php echo $this->__('Static')?></option><option value="percent"><?php echo $this->__('Percent from value')?></option><option value="attribute"><?php echo $this->__('Attribute value')?></option><option value="conf_values"><?php echo $this->__('Configurable values')?></option></select></div>';					
 					type_select = type_select.replace(/\[iterator\]/g, i);
+
+					var option_value = '<div class="value-field-wrapper"><input type="text" class="input-text" name="option[[iterator]][value]" id="option_[iterator]_value" value="" /></div><div style="display:none;" id="value-type-attribute-[iterator]" class="type-attribute-field-wrapper"><table class="attributes-grid" id="table-attribute[iterator]"></table><button style="display:none;" id="add-attribute-[iterator]" class="button" onclick="addAttributeRow($(\'table-attribute[iterator]\'), [iterator], true);return false;"><span><span><?php echo $this->__('Add Attribute') ?></span></span></button></div>';
+					option_value = option_value.replace(/\[iterator\]/g, i); 
 					
-					addColumn(tr, '<div class="value-field-wrapper"><input type="text" class="input-text" name="option['+i+'][value]" id="option_'+i+'_value" value="" /></div>', 'result-column');
+					addColumn(tr, option_value, 'result-column');
 					addColumn(tr, type_select, 'type-column');
-					
-								
+													
 					addColumn(tr, '<button onclick="addConditionRow($(\'condition'+i+'\'), '+i+');return false;" class="button"><span><span><?php echo $this->__('Add Condition')?></span></span></button> <button onclick="removeDataRow(this);return false;" class="button delete"><span><?php echo $this->__('Remove')?></span></button>', 'action-column');
 					
 					$('filter-table-body').appendChild(tr);
@@ -185,22 +191,19 @@
 					tr.appendChild(td);
 					
 					$('filter-table-body').appendChild(tr);
-					
-					
-					
+
 					totalRows++;
 					
 				}
 				
 				var condition_counter = new Array();
+				var attributes_counter = new Array();
 				
 				function addConditionRow(table, i){
-					
-					
-					
+
 					if(sections = table.getElementsByTagName('tbody')){
 						if(sections.length){
-						table = sections[0];
+							table = sections[0];
 						}
 					}
 					
@@ -219,15 +222,43 @@
 					addColumn(tr, '<button onclick="removeConditionRow(this, '+i+');return false;" class="button delete"><span></span></button>', 'condition-actions');
 					
 					rows = table.getElementsByTagName('tr');
-					/*
-					if(rows.length == 1){
-						rows[0].getElementsByTagName('button')[0].removeClassName('disabled');
-					}
-					*/
 					
 					table.appendChild(tr);
 					
 					condition_counter[i]++;
+					
+				}
+
+				function addAttributeRow(table, i, with_prefix, can_remove){
+
+					 if (typeof(can_remove) == 'undefined'){
+						 can_remove = true;
+					 }
+					
+					if(sections = table.getElementsByTagName('tbody')){
+						if(sections.length){
+							table = sections[0];
+						}
+					}
+					
+					var j = attributes_counter[i];
+					var tr = document.createElement('tr');
+
+					if (with_prefix){
+						var prefix = '<input type="text" name="option[[iterator]][value_type_attribute][[attr_iterator]][prefix]" value="" />';	
+						addColumn(tr, prefix.replace(/\[iterator\]/g, i).replace(/\[attr_iterator\]/g, j));											
+					}
+					
+					var attribute = '<?php echo addslashes($this->getAttributeSelect('value', 'type', '', true, 'option[[iterator]][value_type_attribute][[attr_iterator]][attribute]', true, true))?>';					
+					addColumn(tr, attribute.replace(/\[iterator\]/g, i).replace(/\[attr_iterator\]/g, j));
+					
+					if (with_prefix && can_remove){						
+						addColumn(tr, '<button class="delete button" onclick="removeAttributeRow(this, '+i+');return false;"><span></span></button>');
+					}
+					
+					rows = table.getElementsByTagName('tr');					
+					table.appendChild(tr);					
+					attributes_counter[i]++;
 					
 				}
 				
@@ -252,9 +283,7 @@
 				                        if(response.ajaxExpired && response.ajaxRedirect) {
 				                            setLocation(response.ajaxRedirect);
 				                        }
-				                        
-				                        
-				                        
+
 				                        $(condition_area).update(response.condition);
 				                        $(area).update(response.select);
 				                        
@@ -289,66 +318,80 @@
 					<?php foreach($data as $i=>$row):?>
 					<tr id="option-row-<?php echo $i?>" class="option-row">
 						<td class="feed-row-first">
-							<table class="condition-grid" id="condition<?php echo $i;?>">
-								
-								<?php if(isset($data[$i]['condition'])):?>
-									
-									<?php $cond_i = 0; $cond_length = count($data[$i]['condition']); foreach($data[$i]['condition'] as $_condition):?>
-									
+							<table class="condition-grid" id="condition<?php echo $i;?>">								
+								<?php if(isset($data[$i]['condition'])):?>									
+									<?php $cond_i = 0; $cond_length = count($data[$i]['condition']); ?> 
+									<?php foreach($data[$i]['condition'] as $_condition):?>									
+										<tr>
+											<td><?php echo $this->getAttributeSelect($i, $cond_i, @$_condition['attribute_code'], true, '', false, true)?></td>
+											<td>
+												<div id="condition-<?php echo $i;?>-<?php echo $cond_i;?>-condition-wraper"><?php echo $this->getConditionSelect($i, $cond_i, @$_condition['condition'], '', @$_condition['attribute_code'])?></div></td>
+											<td>
+												<div id="condition-<?php echo $i;?>-<?php echo $cond_i;?>-value-wraper" class="condition-value-wraper">
+													<?php echo $this->getAttributeValueField(@$_condition['attribute_code'], $i, $cond_i, @$_condition['value']);?>
+												</div>
+											</td>
+											<td class="condition-actions"><button onclick="removeConditionRow(this, <?php echo $i;?>);return false;" class="delete button"><span></span></button></td>
+										</tr>									
+										<?php $cond_i++; ?> 
+									<?php endforeach;?>									
+									<script type="text/javascript">
+										condition_counter[<?php echo $i;?>] = <?php echo $cond_i;?>;
+									</script>									
+								<?php else:?>								
 									<tr>
-										<td><?php echo $this->getAttributeSelect($i, $cond_i, @$_condition['attribute_code'], true, '', false, true)?></td>
+										<td><?php echo $this->getAttributeSelect($i, 0, '', true,'', false, true)?></td>
+										<td><div id="condition-0-0-condition-wraper"><?php echo $this->getConditionSelect($i, 0, '')?></div></td>
 										<td>
-											<div id="condition-<?php echo $i;?>-<?php echo $cond_i;?>-condition-wraper"><?php echo $this->getConditionSelect($i, $cond_i, @$_condition['condition'], '', @$_condition['attribute_code'])?></div></td>
-										<td>
-											<div id="condition-<?php echo $i;?>-<?php echo $cond_i;?>-value-wraper" class="condition-value-wraper">
-												<?php echo $this->getAttributeValueField(@$_condition['attribute_code'], $i, $cond_i, @$_condition['value']);?>
+											<div id="condition-0-0-value-wraper" class="condition-value-wraper">
+												<?php echo $this->getAttributeValueField(@$data[$i]['attribute_code'], $i, 0, '');?>
 											</div>
 										</td>
 										<td class="condition-actions"><button onclick="removeConditionRow(this, <?php echo $i;?>);return false;" class="delete button"><span></span></button></td>
 									</tr>
-									
-									<?php $cond_i++; 	endforeach;?>
-									
-									<script type="text/javascript">condition_counter[<?php echo $i;?>] = <?php echo $cond_i;?>;</script>
-									
-								<?php else:?>
-								
-								<tr>
-									<td><?php echo $this->getAttributeSelect($i, 0, '', true,'', false, true)?></td>
-									<td><div id="condition-0-0-condition-wraper"><?php echo $this->getConditionSelect($i, 0, '')?></div></td>
-									<td>
-										<div id="condition-0-0-value-wraper" class="condition-value-wraper">
-											<?php echo $this->getAttributeValueField(@$data[$i]['attribute_code'], $i, 0, '');?>
-										</div>
-									</td>
-									<td class="condition-actions"><button onclick="removeConditionRow(this, <?php echo $i;?>);return false;" class="delete button"><span></span></button></td>
-								</tr>
-								<script type="text/javascript">condition_counter[<?php echo $i;?>] = 1;</script>
-								
+									<script type="text/javascript">
+										condition_counter[<?php echo $i;?>] = 1;
+									</script>								
 								<?php endif;?>
 							</table>
-						</td>
-						
+						</td>						
 						<td class="result-column">
-							<div class="result-field-wrapper">
+							<div class="result-field-wrapper" <?php if(@$data[$i]['value_type'] == 'attribute' || @$data[$i]['value_type'] == 'conf_values'):?>style="display:none;"<?php endif;?>>
 								<input type="text" class="input-text" id="option_<?php echo $i;?>_value" name="option[<?php echo $i;?>][value]" value="<?php echo @$data[$i]['value'];?>" <?php if(@$data[$i]['value_type'] == 'attribute'):?>disabled="disabled"<?php endif;?> />
 							</div>
-						</td>
-						
-						<td class="type-column">
-							
-							<div class="type-field-wrapper">
-							<select onchange="ChangeOutputType(this, <?php echo $i;?>)" name="option[<?php echo $i;?>][value_type]" value="<?php echo @$data[$i]['value_type'];?>" >
-								<option value="static" <?php if(@$data[$i]['value_type'] == 'static'):?>selected="selected"<?php endif;?>><?php echo $this->__('Static')?></option>
-								<option value="percent" <?php if(@$data[$i]['value_type'] == 'percent'):?>selected="selected"<?php endif;?>><?php echo $this->__('Percent from value')?></option>
-								<option value="attribute" <?php if(@$data[$i]['value_type'] == 'attribute'):?>selected="selected"<?php endif;?>><?php echo $this->__('Attribute value')?></option>
-							</select>
-							</div>
 							<div id="value-type-attribute-<?php echo $i;?>" class="type-attribute-field-wrapper" style="display:<?php echo (@$data[$i]['value_type'] == 'static' ? 'none' : 'block');?>">
-								
-								<?php echo $this->getAttributeSelect('value', 'type', @$data[$i]['value_type_attribute'], true, 'option['.$i.'][value_type_attribute]', true)?>
-								
+								<table class="attributes-grid" id="table-attribute<?php echo $i;?>">
+								<?php if (@$data[$i]['value_type'] != 'static' && isset($data[$i]['value_type_attribute'])): ?>
+									<?php $attr_i = 0; ?>
+									<?php foreach($data[$i]['value_type_attribute'] as $_attribute): ?>
+										<tr>
+											<?php if (@$data[$i]['value_type'] == 'attribute' || @$data[$i]['value_type'] == 'conf_values'): ?>
+												<td><input type="text" name="option[<?php echo $i ?>][value_type_attribute][<?php echo $attr_i; ?>][prefix]" value="<?php echo @$_attribute['prefix'] ?>" /></td>
+											<?php endif; ?>
+											<td><?php echo $this->getAttributeSelect('value', 'type', $_attribute['attribute'], true, 'option['.$i.'][value_type_attribute]['.$attr_i.'][attribute]', true, true)?></td>
+											<?php if (@$data[$i]['value_type'] == 'attribute'): ?>												
+												<td><button class="delete button" onclick="removeAttributeRow(this, <?php echo $i;?>);return false;"><span></span></button></td>
+											<?php endif; ?>											
+										</tr>																		
+										<?php $attr_i++; ?>
+									<?php endforeach; ?>
+									<script type="text/javascript">
+				        				attributes_counter[<?php echo $i;?>] = <?php echo $attr_i;?>;
+									</script>	
+								<?php  endif; ?>
+								</table>
+								<button <?php if (@$data[$i]['value_type'] != 'attribute'): ?>style="display:none;"<?php endif; ?> id="add-attribute-<?php echo $i; ?>" class="button" onclick="addAttributeRow($('table-attribute<?php echo $i ?>'), <?php echo $i ?>, true);return false;"><span><span><?php echo $this->__('Add Attribute') ?></span></span></button>								
 							</div>
+						</td>						
+						<td class="type-column">							
+							<div class="type-field-wrapper">
+								<select onchange="ChangeOutputType(this, <?php echo $i;?>)" name="option[<?php echo $i;?>][value_type]" value="<?php echo @$data[$i]['value_type'];?>" >
+									<option value="static" <?php if(@$data[$i]['value_type'] == 'static'):?>selected="selected"<?php endif;?>><?php echo $this->__('Static')?></option>
+									<option value="percent" <?php if(@$data[$i]['value_type'] == 'percent'):?>selected="selected"<?php endif;?>><?php echo $this->__('Percent from value')?></option>
+									<option value="attribute" <?php if(@$data[$i]['value_type'] == 'attribute'):?>selected="selected"<?php endif;?>><?php echo $this->__('Attribute value')?></option>
+									<option value="conf_values" <?php if(@$data[$i]['value_type'] == 'conf_values'):?>selected="selected"<?php endif;?>><?php echo $this->__('Configurable values')?></option>
+								</select>
+							</div>							
 						</td>						
 						<td class="action-column">
 							<button onclick="addConditionRow($('condition<?php echo $i;?>'), <?php echo $i;?>);return false;" class="button"><span><span><?php echo $this->__('Add Condition')?></span></span></button>
@@ -383,44 +426,45 @@
 									
 									<script type="text/javascript">condition_counter[<?php echo $i;?>] = <?php echo $cond_i;?>;</script>
 									
-								<?php else:?>
-								
-								<tr class="condition-row">
-									<td><?php echo $this->getAttributeSelect($i, 0, '', true,'', false, true)?></td>
-									<td><div id="condition-0-0-condition-wraper"><?php echo $this->getConditionSelect($i, 0, '')?></div></td>
-									<td>
-										<div id="condition-0-0-value-wraper" class="condition-value-wraper">
-											<?php echo $this->getAttributeValueField('', $i, 0, '');?>
-										</div>
-									</td>
-									<td class="condition-actions"><button onclick="removeConditionRow(this, <?php echo $i;?>);return false;" class="delete button"><span></span></button></td>
-								</tr>
-								<script type="text/javascript">condition_counter[<?php echo $i;?>] = 1;</script>
-								
+								<?php else:?>								
+									<tr class="condition-row">
+										<td><?php echo $this->getAttributeSelect($i, 0, '', true,'', false, true)?></td>
+										<td><div id="condition-0-0-condition-wraper"><?php echo $this->getConditionSelect($i, 0, '')?></div></td>
+										<td>
+											<div id="condition-0-0-value-wraper" class="condition-value-wraper">
+												<?php echo $this->getAttributeValueField('', $i, 0, '');?>
+											</div>
+										</td>
+										<td class="condition-actions"><button onclick="removeConditionRow(this, <?php echo $i;?>);return false;" class="delete button"><span></span></button></td>
+									</tr>
+									<script type="text/javascript">
+										condition_counter[<?php echo $i;?>] = 1;
+									</script>								
 								<?php endif;?>
 							</table>
-						</td>
-						
+						</td>						
 						<td class="result-column">
-							<div class="result-wrapper">
-							<input type="text" class="input-text" name="option[<?php echo $i;?>][value]" value="" />
+							<div class="result-field-wrapper">
+								<input type="text" class="input-text" id="option_<?php echo $i;?>_value" name="option[<?php echo $i;?>][value]" value=""  />
+							</div>							
+							<div class="type-attribute-field-wrapper" id="value-type-attribute-<?php echo $i;?>" style="display:none">								
+								<table class="attributes-grid" id="table-attribute<?php echo $i;?>">
+								</table>
+								<script type="text/javascript">
+				        			attributes_counter[<?php echo $i;?>] = 1;
+								</script>
+								<button style="display:none;" id="add-attribute-<?php echo $i; ?>" class="button" onclick="addAttributeRow($('table-attribute<?php echo $i ?>'), <?php echo $i ?>, true);return false;"><span><span><?php echo $this->__('Add Attribute') ?></span></span></button>								
 							</div>
-						</td>
-						
-						<td class="type-column">
-							
+						</td>						
+						<td class="type-column">							
 							<div class="type-field-wrapper">
-							<select onchange="ChangeOutputType(this, <?php echo $i;?>)" name="option[<?php echo $i;?>][value_type]" value="" >
-								<option value="static" selected="selected"><?php echo $this->__('Static')?></option>
-								<option value="percent" ><?php echo $this->__('Percent from value')?></option>
-								<option value="attribute" ><?php echo $this->__('Attribute value')?></option>
-							</select>
-							</div>
-							<div class="type-attribute-field-wrapper" id="value-type-attribute-<?php echo $i;?>" style="display:none">
-								
-								<?php echo $this->getAttributeSelect('value', 'type', '', true, 'option['.$i.'][value_type_attribute]', true)?>
-								
-							</div>
+								<select onchange="ChangeOutputType(this, <?php echo $i;?>)" name="option[<?php echo $i;?>][value_type]">
+									<option value="static" selected="selected"><?php echo $this->__('Static')?></option>
+									<option value="percent"><?php echo $this->__('Percent from value')?></option>
+									<option value="attribute"><?php echo $this->__('Attribute value')?></option>
+									<option value="conf_values"><?php echo $this->__('Configurable values')?></option>
+								</select>
+							</div>							
 						</td>
 						<td class="action-column">
 							<button onclick="addConditionRow($('condition<?php echo $i;?>'), <?php echo $i;?>);return false;" class="button"><span><span><?php echo $this->__('Add Condition')?></span></span></button>
