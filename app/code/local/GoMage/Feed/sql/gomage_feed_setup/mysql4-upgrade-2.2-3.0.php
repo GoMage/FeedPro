@@ -9,7 +9,7 @@
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.0
+ * @version      Release: 3.1
  * @since        Class available since Release 3.0
  */
 
@@ -37,7 +37,8 @@ $installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `filename_ext` varchar(10) default NULL;
 ");
 
-$sql = $installer->getConnection()->quoteInto("SELECT * FROM `{$installer->getTable('gomage_feed_custom_attribute')}`");
+$sql = $installer->getConnection()->quoteInto("SELECT * FROM `{$installer->getTable('gomage_feed_custom_attribute')}`",array());
+
 $data = $installer->getConnection()->fetchAll($sql);
 
 foreach ($data as $row) {

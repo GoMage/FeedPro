@@ -9,7 +9,7 @@
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.0
+ * @version      Release: 3.1
  * @since        Class available since Release 1.0
  */
 
@@ -211,6 +211,7 @@ class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract{
 	    	$this->attribute_options['Image 3'] = array('code'=>"image_3", 'label' =>  "Image 3");
 	    	$this->attribute_options['Image 4'] = array('code'=>"image_4", 'label' =>  "Image 4");
 	    	$this->attribute_options['Image 5'] = array('code'=>"image_5", 'label' =>  "Image 5");
+	    	$this->attribute_options['SKU Amazon'] = array('code'=>"sku_amazon", 'label' =>  "SKU Amazon");
 	    	$this->attribute_options['Category > SubCategory'] = array('code'=>"category_subcategory", 'label' => "Category > SubCategory");    	
 					
 			$custom_attributes = Mage::getResourceModel('gomage_feed/custom_attribute_collection');
@@ -311,4 +312,40 @@ class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract{
 		return '<select '.$multiple.' id="'.$select_id.'" name="field['.$i.'][output_type][]">'.implode('', $options).'</select><a class="gfp-toggle-multi" href="javascript:void(0)" onclick="gfp_toggle_multi(this, \''.$select_id.'\')">'.(count($values)>1 ? '-' : '+').'</a>';		
 	}
      
+	public function getIsAnymoreVersion($major, $minor, $revision = 0)
+    {
+        $version_info = Mage::getVersion();
+        $version_info = explode('.', $version_info);
+        
+        if ($version_info[0] > $major)
+        {
+           return true;
+        }   
+        elseif ($version_info[0] == $major)
+        {
+            if ($version_info[1] > $minor)
+            {
+                return true; 
+            }
+            elseif ($version_info[1] == $minor)
+            {
+                if ($version_info[2] >= $revision)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }        
+        }
+        else
+        { 
+           return false;
+        }                                
+    }
 }

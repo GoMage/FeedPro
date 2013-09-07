@@ -9,7 +9,7 @@
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.0
+ * @version      Release: 3.1
  * @since        Class available since Release 1.0
  */
 
@@ -184,6 +184,13 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 							}
 							
 							$collection_filters[] = array('attribute' => 'type_id', 'condition' => 'in', 'value' => $all_product_type);
+							
+							break;
+						}
+						elseif ( ($code == 'special_from_date' || $code == 'special_to_date') && count($value) == 1 && $value[0] == 'today' ) {
+														
+							$date = strftime("%Y-%m-%d", time()) . ' 00:00:00';
+							$collection_filters[] = array('attribute' => $code, 'condition' => 'eq', 'value' => $date);
 							
 							break;
 						}
@@ -429,13 +436,30 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 							}
 						}
 						elseif ($col->type == 'parent_attribute') {
+							
 							if ($col->attribute_value) {
 								$parent_product = $this->getParentProduct($product);
 								if ($parent_product->getId()) {
-									$value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);
+									
+									if ( $col->attribute_value == 'sku_amazon' )
+									{
+										$value = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
+									}
+									else 
+									{
+										$value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);	
+									}
 								}
 								else {
-									$value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
+									
+									if ( $col->attribute_value == 'sku_amazon' )
+									{
+										$value = '';
+									}
+									else 
+									{
+										$value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
+									}
 								}
 							}
 							else {
@@ -598,6 +622,8 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 						else {
 							$image_url = ( string ) Mage::helper('catalog/image')->init($_prod, 'image');
 						}
+						
+						$image_url = str_replace(Mage::getBaseUrl('media'), $store->getBaseUrl('media', false), $image_url);
 					}
 					catch (Exception $e) {
 						$image_url = '';
@@ -679,7 +705,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 						foreach ($options as $option) {
 							
 							foreach ($option['condition'] as $condition) {
-								
+							
 								switch ($condition['attribute_code']) {
 									
 									case ('product_type'):
@@ -697,6 +723,17 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 										$attr_value = $store->convertPrice($product->getFinalPrice(), false, false);
 									break;
 									
+									case ('parent_sku_amazon'):
+										$parent_product = $this->getParentProduct($product);
+										if ($parent_product->getId()) {
+											
+											$attr_value = 'true';
+										}
+										else {
+											$attr_value = 'false';
+										}
+									break;									
+									
 									case ('image'):
 									case ('gallery'):
 									case ('media_gallery'):
@@ -711,7 +748,8 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 												else {
 													$image_url = ( string ) Mage::helper('catalog/image')->init($_prod, 'image');
 												}
-											
+												
+												$image_url = str_replace(Mage::getBaseUrl('media'), $store->getBaseUrl('media', false), $image_url);
 											}
 											catch (Exception $e) {
 												$image_url = '';
@@ -861,13 +899,15 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 									break;
 								}
 							}
+
 							
 							if (in_array($option['value_type'], array('percent', 'attribute'))) {
 								$attribute_value = '';
 								foreach ($option['value_type_attribute'] as $_value_type_attribute) {
 									$attribute_value_tmp = '';
+
 									switch ($_value_type_attribute['attribute']) {
-										
+							
 										case ('price'):
 											
 											if (in_array($product->getTypeId(), array(Mage_Catalog_Model_Product_Type::TYPE_GROUPED, Mage_Catalog_Model_Product_Type::TYPE_BUNDLE)))
@@ -881,6 +921,17 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 											
 											$attribute_value_tmp = $store->convertPrice($product->getFinalPrice(), false, false);
 										
+										break;
+										
+										case ('parent_url'):
+											$parent_product = $this->getParentProduct($product);
+											if ($parent_product->getId()) {
+												
+												$attribute_value_tmp = $parent_product->getProductUrl(false);
+											}
+											else {
+												$attribute_value_tmp = $product->getProductUrl(false);
+											}
 										break;
 										
 										case ('image'):
@@ -898,6 +949,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 														$image_url = ( string ) Mage::helper('catalog/image')->init($_prod, 'image');
 													}
 												
+													$image_url = str_replace(Mage::getBaseUrl('media'), $store->getBaseUrl('media', false), $image_url);
 												}
 												catch (Exception $e) {
 													$image_url = '';
@@ -970,8 +1022,10 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 									}
 								
 								}
+								
 							}
 							elseif ($option['value_type'] == 'conf_values') {
+								
 								if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
 									$conf_values = array();
 									$conf_values_attribute = '';
@@ -1038,6 +1092,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 												$image_url = ( string ) Mage::helper('catalog/image')->init($_prod, 'image');
 											}
 										
+											$image_url = str_replace(Mage::getBaseUrl('media'), $store->getBaseUrl('media', false), $image_url);
 										}
 										catch (Exception $e) {
 											$image_url = '';

@@ -9,12 +9,13 @@
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.0
+ * @version      Release: 3.1
  * @since        Class available since Release 2.0
  */
 
 class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
 {
+    const TYPE_CONDITION    = 'TYPE_CONDITION';
     
     protected $_feed_categories = array();
     protected $_prepared_feed_categories = array(
@@ -224,7 +225,11 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
         }
 
         if (!empty($conditionSql)) {
-            $this->getSelect()->where($conditionSql, null, Varien_Db_Select::TYPE_CONDITION);
+	        if(!Mage::helper('gomage_feed')->getIsAnymoreVersion(1, 4, 1)){
+	        	$this->getSelect()->where($conditionSql, null, GoMage_Feed_Model_Product_Collection::TYPE_CONDITION);
+			}else{
+				$this->getSelect()->where($conditionSql, null, Varien_Db_Select::TYPE_CONDITION);
+			}
         } else {
             Mage::throwException('Invalid attribute identifier for filter ('.get_class($attribute).')');
         }
@@ -240,7 +245,7 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
     public function applyFeedCategoryFilter(){
     	if (count($this->_feed_categories)){
     		$conditionSql = $this->getConnection()->quoteInto('cat_index.category_id IN(?)', $this->_feed_categories);        	
-    		$this->getSelect()->where($conditionSql, null, Varien_Db_Select::TYPE_CONDITION);        
+    		$this->getSelect()->where($conditionSql, null, $this->TYPE_CONDITION);        
 	    }
     	return $this;
     }

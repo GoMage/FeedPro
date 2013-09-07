@@ -9,7 +9,7 @@
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.0
+ * @version      Release: 3.1
  * @since        Class available since Release 1.0
  */
 
@@ -94,8 +94,7 @@ class GoMage_Feed_Model_Item_Block_Product extends GoMage_Feed_Model_Item_Block 
 			
 			}
 			
-			$product->setDescription(strip_tags(preg_replace('/<br.*?>/s', "\r\n", $_product->getDescription())));
-			$product->setShortDescription(strip_tags(preg_replace('/<br.*?>/s', "\r\n", $_product->getShortDescription())));
+
 			
 			$fp = fopen($this->getFeed()->getTempFilePath(), 'a');
 			fwrite($fp, parent::setVars($content, $product) . "\r\n");

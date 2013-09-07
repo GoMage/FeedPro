@@ -9,7 +9,7 @@
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.0
+ * @version      Release: 3.1
  * @since        Class available since Release 1.0
  */
 
@@ -54,6 +54,8 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tab_Data extends Mage_Adminhtm
 	    	$options['Category ID'] = array('code'=>"category_id", 'label' =>  "Category ID");
 	    	$options['Final Price'] = array('code'=>"final_price", 'label' =>  "Final Price");
 	    	$options['Product Type'] = array('code'=>"product_type" , 'label' =>  "Product Type");
+	    	$options['Parent SKU Amazon'] = array('code'=>"parent_sku_amazon" , 'label' =>  "Parent SKU Amazon");
+	    	$options['Parent URL'] = array('code'=>"parent_url" , 'label' =>  "Parent URL");
 						
 			foreach($this->getAttributeCollection() as $attribute){
 				if($attribute->getFrontendLabel()){
