@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 
@@ -165,15 +165,21 @@
     	$condition_name = $this->getRequest()->getParam('condition_name');
     		
     	if($code = $this->getRequest()->getParam('attribute_code')){
-    		
-    		
+    		    		
     		$attribute = Mage::getModel('catalog/product')->getResource()->getAttribute($code);
     		
-    		if( $attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect') ){
+    		if( ($attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect')) ||
+    			($code == 'product_type') ){
 	        	
 	        	$options = array();
+	        	
+	        	if ($code == 'product_type'){
+	        		$attribute_options = Mage_Catalog_Model_Product_Type::getOptions();
+	        	}else{
+	        		$attribute_options = $attribute->getSource()->getAllOptions();
+	        	}
 			
-				foreach($attribute->getSource()->getAllOptions() as $option){
+				foreach($attribute_options as $option){
 					
 					extract($option);
 					
@@ -188,11 +194,9 @@
 				'<option '.($current == 'neq' ? 'selected="selected"' : '').' value="neq">'.$this->__('not equal').'</option>',
 				);
 				$result['condition']	= '<select style="width:120px" name="' . $condition_name . '">'.implode('', $conditions).'</select>';
-				$result['select'] = '<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>';
-				
-	        	
+				$result['select'] = '<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>';					        	
 	        }
-    		
+	        
     	}
     	
     	if(empty($result)){

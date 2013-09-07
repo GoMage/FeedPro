@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 
@@ -78,6 +78,21 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
         	$field ->setValue('1');        
         }
         
+        $options = Mage_Catalog_Model_Product_Visibility::getOptionArray();
+        array_unshift($options, array('value'=>'', 'label'=>$this->__('Not Use Option')));
+        array_push($options, array('value'=>'5', 'label'=>$this->__('Only Catalog')));
+        array_push($options, array('value'=>'6', 'label'=>$this->__('Only Search')));
+        
+    	$field = $fieldset->addField('visibility', 'select', array(
+            'name'      => 'visibility',
+            'label'     => $this->__('Products Visibility'),
+            'title'     => $this->__('Products Visibility'),
+            'required'  => false,
+            'values'	=> $options
+        	));                
+        if(!$item->getId()){        
+        	$field ->setValue('4');        
+        }
         
         $fieldset = $form->addFieldset('upload_settings', array('legend' => $this->__('Generate and Upload Settings')));
         

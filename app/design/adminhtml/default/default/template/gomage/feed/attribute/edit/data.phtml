@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 	
@@ -112,6 +112,20 @@
 					tr.appendChild(td);
 					
 				}
+
+				function ChangeOutputType(control, iterator){
+					if (control.value == 'static'){
+						$('value-type-attribute-' + iterator).style.display = 'none';	
+						$('option_' + iterator + '_value').enable();
+					}else if (control.value == 'percent'){
+						$('value-type-attribute-' + iterator).style.display = 'block';
+						$('option_' + iterator + '_value').enable();
+					}else if (control.value == 'attribute'){
+						$('value-type-attribute-' + iterator).style.display = 'block';
+						$('option_' + iterator + '_value').value = '';
+						$('option_' + iterator + '_value').disable();
+					}										
+				}
 				
 				function getConditionTable(){
 					
@@ -147,15 +161,12 @@
 					condition_counter[i] = 1;
 					
 					addColumn(tr, getConditionTable().replace(/\[iterator\]/g, i).replace(/\[cond_iterator\]/g, 0));
-					
-					//addColumn(tr, '<button onclick="addConditionRow($(\'condition'+i+'\'), '+i+');return false;" class="button"><span><span><?php echo $this->__('Add Condition')?></span></span></button>');
-					
-					
-					var type_select = '<div class="type-field-wrapper"><select onchange="this.value == \'percent\' ? $(\'value-type-attribute-[iterator]\').style.display = \'block\' : $(\'value-type-attribute-[iterator]\').style.display = \'none\';" name="option[[iterator]][value_type]" value="" ><option value="static" selected="selected"><?php echo $this->__('Static')?></option><option value="percent"><?php echo $this->__('Percent from value')?></option></select></div><div id="value-type-attribute-[iterator]" class="type-attribute-field-wrapper"><?php echo addslashes($this->getAttributeSelect('value', 'type', '', true, 'option[[iterator]][value_type_attribute]', true))?></div>';
+										
+					var type_select = '<div class="type-field-wrapper"><select onchange="ChangeOutputType(this, [iterator])" name="option[[iterator]][value_type]" value="" ><option value="static" selected="selected"><?php echo $this->__('Static')?></option><option value="percent"><?php echo $this->__('Percent from value')?></option><option value="attribute"><?php echo $this->__('Attribute value')?></option></select></div><div id="value-type-attribute-[iterator]" class="type-attribute-field-wrapper"><?php echo addslashes($this->getAttributeSelect('value', 'type', '', true, 'option[[iterator]][value_type_attribute]', true))?></div>';
 					
 					type_select = type_select.replace(/\[iterator\]/g, i);
 					
-					addColumn(tr, '<div class="value-field-wrapper"><input type="text" class="input-text" name="option['+i+'][value]" value="" /></div>', 'result-column');
+					addColumn(tr, '<div class="value-field-wrapper"><input type="text" class="input-text" name="option['+i+'][value]" id="option_'+i+'_value" value="" /></div>', 'result-column');
 					addColumn(tr, type_select, 'type-column');
 					
 								
@@ -320,16 +331,17 @@
 						
 						<td class="result-column">
 							<div class="result-field-wrapper">
-							<input type="text" class="input-text" name="option[<?php echo $i;?>][value]" value="<?php echo @$data[$i]['value'];?>" />
+								<input type="text" class="input-text" id="option_<?php echo $i;?>_value" name="option[<?php echo $i;?>][value]" value="<?php echo @$data[$i]['value'];?>" <?php if(@$data[$i]['value_type'] == 'attribute'):?>disabled="disabled"<?php endif;?> />
 							</div>
 						</td>
 						
 						<td class="type-column">
 							
 							<div class="type-field-wrapper">
-							<select onchange="this.value == 'percent' ? $('value-type-attribute-<?php echo $i;?>').style.display = 'block' : $('value-type-attribute-<?php echo $i;?>').style.display = 'none';" name="option[<?php echo $i;?>][value_type]" value="<?php echo @$data[$i]['value_type'];?>" >
+							<select onchange="ChangeOutputType(this, <?php echo $i;?>)" name="option[<?php echo $i;?>][value_type]" value="<?php echo @$data[$i]['value_type'];?>" >
 								<option value="static" <?php if(@$data[$i]['value_type'] == 'static'):?>selected="selected"<?php endif;?>><?php echo $this->__('Static')?></option>
 								<option value="percent" <?php if(@$data[$i]['value_type'] == 'percent'):?>selected="selected"<?php endif;?>><?php echo $this->__('Percent from value')?></option>
+								<option value="attribute" <?php if(@$data[$i]['value_type'] == 'attribute'):?>selected="selected"<?php endif;?>><?php echo $this->__('Attribute value')?></option>
 							</select>
 							</div>
 							<div id="value-type-attribute-<?php echo $i;?>" class="type-attribute-field-wrapper" style="display:<?php echo (@$data[$i]['value_type'] == 'static' ? 'none' : 'block');?>">
@@ -337,12 +349,7 @@
 								<?php echo $this->getAttributeSelect('value', 'type', @$data[$i]['value_type_attribute'], true, 'option['.$i.'][value_type_attribute]', true)?>
 								
 							</div>
-						</td>
-						<!--<td>
-							
-							<?php echo $this->getAttributeSelect('value', 'type', @$data[$i]['value_default_attribute'], true, 'option['.$i.'][value_default_attribute]', true);?>
-							
-						</td>-->
+						</td>						
 						<td class="action-column">
 							<button onclick="addConditionRow($('condition<?php echo $i;?>'), <?php echo $i;?>);return false;" class="button"><span><span><?php echo $this->__('Add Condition')?></span></span></button>
 							<button onclick="removeDataRow(this);return false;" class="button delete"><span><?php echo $this->__('Remove')?></span></button>
@@ -350,10 +357,7 @@
 					</tr>
 					<tr class="option-row-separator" id="option-row-<?php echo $i?>-separator"><td style="background:#FAFAFA;" colspan="4"><?php echo $this->__('OR')?></td></tr>
 					<?php endforeach;?>
-					<?php else:?>
-					<!--<tr id="no-data">
-						<td colspan="5"><?php echo $this->__('Not found');?></td>
-					</tr>-->
+					<?php else:?>					
 					<?php $i = 0; ?>
 					<tr class="option-row-separator" id="option-row-<?php echo $i?>">
 						<td class="feed-row-first">
@@ -406,9 +410,10 @@
 						<td class="type-column">
 							
 							<div class="type-field-wrapper">
-							<select onchange="this.value == 'percent' ? $('value-type-attribute-<?php echo $i;?>').style.display = 'block' : $('value-type-attribute-<?php echo $i;?>').style.display = 'none';" name="option[<?php echo $i;?>][value_type]" value="" >
+							<select onchange="ChangeOutputType(this, <?php echo $i;?>)" name="option[<?php echo $i;?>][value_type]" value="" >
 								<option value="static" selected="selected"><?php echo $this->__('Static')?></option>
 								<option value="percent" ><?php echo $this->__('Percent from value')?></option>
+								<option value="attribute" ><?php echo $this->__('Attribute value')?></option>
 							</select>
 							</div>
 							<div class="type-attribute-field-wrapper" id="value-type-attribute-<?php echo $i;?>" style="display:none">

@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 	
@@ -42,12 +42,14 @@
 			<script type="text/javascript">
 				
 				var totalRows = <?php echo $rows_count?>;
-				
-				
-				function getAttributeValueField(attribute_code, area, element_name) {
+								
+				function getAttributeValueField(attribute_code, area, element_name, iterator) {
 				    if($(area)) {
 				        
-				        var data = {attribute_code:attribute_code,element_name:element_name,store_id:$('store_id').value};
+				        var data = {attribute_code:attribute_code,
+						        	element_name:element_name,
+						        	store_id:$('store_id').value,
+						        	iterator:iterator};
 				        
 				        var url = '<?php echo $this->getUrl('*/*/getattributevaluefield');?>';
 				        
@@ -56,24 +58,23 @@
 				            parameters: data,
 				            loaderArea: area,
 				            onSuccess: function(transport) {
-				                try {
-				                    if (transport.responseText.isJSON()) {
-				                        var response = transport.responseText.evalJSON()
-				                        if (response.error) {
-				                            alert(response.message);
-				                        }
-				                        if(response.ajaxExpired && response.ajaxRedirect) {
-				                            setLocation(response.ajaxRedirect);
-				                        }
-				                    } else {
-				                        $(area).update(transport.responseText);
+				                try {				                    
+			                        var response = transport.responseText.evalJSON();
+			                        if (response.error) {
+			                            alert(response.message);
+			                        }else if(response.ajaxExpired && response.ajaxRedirect) {
+			                            setLocation(response.ajaxRedirect);			                        
+				                    } else {				        				        				
+				                        $(area).update(response.attributevalue);
+                        				$($('filter-' + response.iterator + '-condition')).update(response.condition);
 				                    }
 				                }
 				                catch (e) {
-				                    $(area).update(transport.responseText);
+				                    
 				                }
 				            }
 				        });
+				        
 				    }
 				}
 				
@@ -100,7 +101,7 @@
 					var i = totalRows;
 					var tr = document.createElement('tr');
 					
-					var attribute = '<?php echo addslashes($this->getAttributeSelect("[iterator]", null, true, "onchange=\"getAttributeValueField(this.value, $('filter-[iterator]-value-wraper'), 'filter[[iterator]][value]')\""));?>';
+					var attribute = '<?php echo addslashes($this->getAttributeSelect("[iterator]", null, true, "onchange=\"getAttributeValueField(this.value, $('filter-[iterator]-value-wraper'), 'filter[[iterator]][value]', [iterator])\""));?>';
 					var condition = '<?php echo $this->getConditionSelect("[iterator]");?>';
 					
 					
@@ -132,13 +133,22 @@
 					
 					<?php for($i=0;$i<$rows_count;$i++):?>
 					<tr>
-						<td style="width:200px;"><?php echo $this->getAttributeSelect($i, @$data[$i]['attribute_code'], true, "onchange=\"getAttributeValueField(this.value, $('filter-".$i."-value-wraper'), 'filter[".$i."][value]')\"")?></td>
-						<td><?php echo $this->getConditionSelect($i, @$data[$i]['condition'])?></td>
-						<td><div id="filter-<?php echo $i;?>-value-wraper" style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;">
-							<!--<input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="filter[<?php echo $i;?>][value]" value="<?php echo @$data[$i]['value'];?>" />-->
-							<?php echo $this->getAttributeValueField(@$data[$i]['attribute_code'], 'filter['.$i.'][value]', @$data[$i]['value'], $feed->getStoreId());?>
-						</div></td>
-						<td><button onclick="removeFilterRow(this);return false;" class="button"><span><span><?php echo $this->__('Remove')?></span></span></button></td>
+						<td style="width:200px;"><?php echo $this->getAttributeSelect($i, @$data[$i]['attribute_code'], true, "onchange=\"getAttributeValueField(this.value, $('filter-".$i."-value-wraper'), 'filter[".$i."][value]',".$i.")\"")?></td>
+						<td>
+							<?php if (@$data[$i]['attribute_code'] == 'product_type'): ?>
+								<?php echo $this->getConditionSelectLight($i, @$data[$i]['condition'])?>
+							<?php else: ?>
+								<?php echo $this->getConditionSelect($i, @$data[$i]['condition'])?>
+							<?php endif; ?>	
+						</td>
+						<td>
+							<div id="filter-<?php echo $i;?>-value-wraper" style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;">							
+								<?php echo $this->getAttributeValueField(@$data[$i]['attribute_code'], 'filter['.$i.'][value]', @$data[$i]['value'], $feed->getStoreId());?>
+							</div>
+						</td>
+						<td>
+							<button onclick="removeFilterRow(this);return false;" class="button"><span><span><?php echo $this->__('Remove')?></span></span></button>
+						</td>
 					</tr>
 					<?php endfor;?>
 					<?php else:?>

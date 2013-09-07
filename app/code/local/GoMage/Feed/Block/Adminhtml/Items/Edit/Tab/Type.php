@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 
@@ -56,7 +56,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Type extends Mage_Adminhtml_Blo
         $form = new Varien_Data_Form();
         
         $this->setForm($form);
-        $fieldset = $form->addFieldset('main_fieldset', array('legend' => $this->__('Setings')));
+        $fieldset = $form->addFieldset('main_fieldset', array('legend' => $this->__('Settings')));
      
     	$fieldset->addField('type', 'select', array(
             'name'      => 'type',

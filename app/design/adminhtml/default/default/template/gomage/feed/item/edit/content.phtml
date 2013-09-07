@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 	
@@ -46,7 +46,6 @@
 				</label>
 	
 				<label style="float:left;margin-right:20px; "><span style="float:left;margin-right:10px;"><?php echo $this->__('Delimiter')?></span>
-				<!--<input class="input-text" style="width:50px;" type="text" name="delimiter" value="<?php echo $feed->hasDelimiter() ? htmlentities($feed->getDelimiter()) : ",";?>"/>-->
 				<select style="width:100px;" name="delimiter">
 					
 					<option value="comma" <?php if(($feed->getDelimiter()) == 'comma' || !$feed->getDelimiter()):?> selected="selected" <?php endif;?>><?php echo $this->__('Comma');?></option>
@@ -60,7 +59,6 @@
 				</label>
 
 				<label style="float:left; margin-right:20px;"><span style="float:left;margin-right:10px; "><?php echo $this->__('Enclosure')?></span>
-				<!--<input class="input-text" style="width:50px;" type="text" name="enclosure" value="<?php echo $feed->hasEnclosure() ? htmlentities($feed->getEnclosure()) : '&quot;';?>"/>-->
 				<select style="width:70px;" name="enclosure">
 					
 					<option value="2" <?php if(($feed->getEnclosure()) == 2 || !$feed->getDelimiter()):?> selected="selected" <?php endif;?>>"</option>
@@ -78,6 +76,24 @@
 				</select>
 				</label><br/>
 				<small><?php echo $this->__('This is the specific option that allows to remove line break symbols from a data feed.')?></small>
+			</p>			
+			<p style="clear:both">
+				<label><?php echo $this->__('Use Amazon Header')?></label>
+				<script type="text/javascript">
+					function gfp_changeAdditionHeader(control){
+						if (control.value == 1){
+							$('addition_header').show();
+						}else{
+							$('addition_header').hide();
+						}
+					}
+				</script>
+				<select name="use_addition_header" onchange="gfp_changeAdditionHeader(this)">
+					<option value="1" <?php if(intval($feed->getUseAdditionHeader()) == 1 ):?> selected="selected" <?php endif;?>><?php echo $this->__('Yes');?></option>
+					<option value="0" <?php if(intval($feed->getUseAdditionHeader()) == 0 ):?> selected="selected" <?php endif;?>><?php echo $this->__('No');?></option>
+				</select>
+				<br/>
+				<textarea id="addition_header" name="addition_header" style="width:470px;margin-top:5px;<?php if(intval($feed->getUseAdditionHeader()) == 0 ):?>display:none;<?php endif; ?>"><?php echo $feed->getData('addition_header'); ?></textarea>
 			</p>
 			<?php if($feed->getId()>0):?>
     			<p style="clear:both">
@@ -120,7 +136,7 @@
 			<p style="clear:both;margin-bottom:7px;overflow:hidden;zoom:1;"><button onclick="setLocation('<?php echo $this->getUrl('*/*/mappingexport', array('id'=>$feed->getId()))?>');return false;" class="button"><span><span><?php echo $this->__('Export Fields Settings');?></span></span></button></p>
 			<p style="clear:both;margin-bottom:7px;overflow:hidden;zoom:1;"><button style="width: 145px;" onclick="setLocation('<?php echo $this->getUrl('*/*/mappingexportftp', array('id'=>$feed->getId()))?>');return false;" class="button"><span><span><?php echo $this->__('Export Fields to Server');?></span></span></button></p>
 			<?php else:?>
-			<script type="text/javascript">
+			<script type="text/javascript">				
 				function showImportNotice(){
 					if(typeof notice_timeout != 'undefined'){
 						clearTimeout(notice_timeout);
@@ -162,6 +178,7 @@
 				<th width="100"><?php echo $this->__('Value')?></th>
 				<th><?php echo $this->__('Suffix')?></th>
 				<th><?php echo $this->__('Output Type')?></th>
+				<th><?php echo $this->__('Symbols Limit')?></th>
 				<th style="width:66px;"><?php echo $this->__('Action')?></th>
 				</tr>
 			</thead>
@@ -220,7 +237,8 @@
 					addColumn(tr, '<div style="margin: 2px;"><select style="width:100%;" onchange="changeValueType(this, '+i+')" type="text" name="field['+i+'][type]"><option value="attribute"><?php echo $this->__('Attribute')?></option><option value="static"><?php echo $this->__('Static Value')?></option></select></div>');
 					addColumn(tr, '<input style="width:98%; display:none;" id="mapping-'+i+'-static-value" type="text" class="input-text" name="field['+i+'][static_value]" value="" />'+attribute.replace(/\[iterator\]/g, i));
 					addColumn(tr, '<div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text"  class="input-text" name="field['+i+'][sufix]" value="" /></div>');
-					addColumn(tr, '<div style="margin: 2px;"><select style="width:100%;" type="text" name="field['+i+'][output_type]"><option selected="selected" value=""><?php echo $this->__('Default')?></option><option value="int"><?php echo $this->__('Integer')?></option><option value="float"><?php echo $this->__('Float')?></option><option value="striptags"><?php echo $this->__('Striptags')?></option><option value="htmlspecialchars"><?php echo $this->__('Encode special chars')?></option><option value="htmlspecialchars_decode"><?php echo $this->__('Decode special chars')?></option></select></div>');
+					addColumn(tr, '<div style="margin: 2px;"><select style="width:100%;" type="text" name="field['+i+'][output_type]"><option selected="selected" value=""><?php echo $this->__('Default')?></option><option value="int"><?php echo $this->__('Integer')?></option><option value="float"><?php echo $this->__('Float')?></option><option value="striptags"><?php echo $this->__('Striptags')?></option><option value="htmlspecialchars"><?php echo $this->__('Encode special chars')?></option><option value="htmlspecialchars_decode"><?php echo $this->__('Decode special chars')?></option><option value="delete_space"><?php echo $this->__('Delete Space')?></option></select></div>');
+					addColumn(tr, '<div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" class="input-text" name="field['+i+'][limit]" value="" /></div>');
 					addColumn(tr, '<button onclick="removeMappingRow(this);return false;" class="button"><span><span><?php echo $this->__('Remove')?></span></span></button>');
 					
 					$('mapping-table-body').appendChild(tr);

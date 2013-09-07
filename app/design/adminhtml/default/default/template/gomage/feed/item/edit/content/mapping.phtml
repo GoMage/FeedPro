@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.0
+ * @version      Release: 2.1
  * @since        Class available since Release 2.0
  */
 	
@@ -56,9 +56,11 @@
     			<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'striptags' ? 'selected="selected"' : '';?> value="striptags"><?php echo $this->__('Striptags')?></option>
     			<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'htmlspecialchars' ? 'selected="selected"' : '';?> value="htmlspecialchars"><?php echo $this->__('Encode special chars')?></option>
     			<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'htmlspecialchars_decode' ? 'selected="selected"' : '';?> value="htmlspecialchars_decode"><?php echo $this->__('Decode special chars')?></option>
+    			<option <?php echo isset($data[$i]['output_type']) && $data[$i]['output_type'] == 'delete_space' ? 'selected="selected"' : '';?> value="delete_space"><?php echo $this->__('Delete Space')?></option>
     		</select>
     		</div>
     	</td>
+    	<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][limit]" value="<?php echo htmlentities(@$data[$i]['limit']);?>" /></div></td>
     	<td><button onclick="removeMappingRow(this);return false;" class="button"><span><span><?php echo $this->__('Remove')?></span></span></button></td>
     </tr>
 <?php endfor;?>

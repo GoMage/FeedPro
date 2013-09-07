@@ -6,11 +6,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2011 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/license-agreement/  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.0
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 	
@@ -35,6 +35,12 @@ class GoMage_Feed_Model_Observer{
 			{
 			    case 12:
 			    case 24:
+			    		$upload_hour_from = intval($feed->getData('upload_hour'));
+			    		
+			    		if($upload_hour_from != $current_time){
+			    			continue 2;
+			    		}
+			    		
                         if ((strtotime($feed->getData('cron_started_at')) + $feed->getData('upload_interval')*60*60) > time())
                         {
                             continue 2;
@@ -65,8 +71,9 @@ class GoMage_Feed_Model_Observer{
     			            }        
     			        }
     			        
-    			        if (!in_array($current_time, $hours))
+    			        if (!in_array($current_time, $hours)){
     			            continue 2;
+    			        }    
     			            
     			        if ((strtotime($feed->getData('cron_started_at')) + $feed->getData('upload_interval')*60*60) > time())
                         {
@@ -78,14 +85,14 @@ class GoMage_Feed_Model_Observer{
 				Mage::app()->setCurrentStore($feed->getStoreId());
 				
 				$cron_started_at = date('Y-m-j H:00:00', time());
+				$feed->setData('cron_started_at', $cron_started_at);
+				$feed->save();
 								
 				$feed->generate();
 				$feed->ftpUpload();
-
-				$feed->setData('cron_started_at', $cron_started_at);
-				$feed->setData('restart_cron', 0);
 				
-				$feed->save();
+				$feed->setData('restart_cron', 0);
+				$feed->save();				
 				
 			}catch(Exception $e){
 				

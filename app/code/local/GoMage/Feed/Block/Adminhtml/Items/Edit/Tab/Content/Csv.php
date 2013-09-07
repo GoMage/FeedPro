@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 
@@ -174,8 +174,9 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv extends Mage_Adminh
     	$options['Image 3'] = array('code'=>"image_3", 'label' =>  "Image 3");
     	$options['Image 4'] = array('code'=>"image_4", 'label' =>  "Image 4");
     	$options['Image 5'] = array('code'=>"image_5", 'label' =>  "Image 5");
-		
-		
+    	$options['Category > SubCategory'] = array('code'=>"category_subcategory", 'label' => "Category > SubCategory");
+    	$options['Parent SKU'] = array('code'=>"parent_sku", 'label' => "Parent SKU");
+				
 		$custom_attributes = Mage::getResourceModel('gomage_feed/custom_attribute_collection');
 		
 		foreach($custom_attributes as $attribute){

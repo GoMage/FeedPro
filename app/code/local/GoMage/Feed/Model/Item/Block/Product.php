@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 	
@@ -24,21 +24,25 @@
 			
 			$content = file_get_contents($this->getFeed()->getDirPath().'/feed-'.$this->getFeed()->getId().'-xml-product-block-template.tmp');
 			
-			//$content = Mage::getSingleton('core/session')->getXmlFeedProductTemplate();
-			//$contents = array();
-			
 			$fp = fopen($this->getFeed()->getTempFilePath(), 'a');
 			
 			$log_fp = fopen(sprintf('%s/productsfeed/%s', Mage::getBaseDir('media'), 'log-'.$this->getFeed()->getId().'.txt'), 'a');
 			
 			$log_content = date("F j, Y, g:i:s a").', page:'.$curr_page.', items selected:'.count($products)."\n";
 			
-			$log_content .= $products->getSelect()."\n";
-			
 			fwrite($log_fp, $log_content);
 			fclose($log_fp);
 			
 			$store = Mage::getModel('core/store')->load($this->getFeed()->getStoreId());
+			$root_category = Mage::getModel('catalog/category')->load($store->getRootCategoryId());  
+			
+			if (Mage::getStoreConfig('gomage_feedpro/imagesettings/enable')){
+    			$image_width = intval(Mage::getStoreConfig('gomage_feedpro/imagesettings/width'));
+    			$image_height = intval(Mage::getStoreConfig('gomage_feedpro/imagesettings/height'));
+    		}else{
+    			$image_width = 0;
+    			$image_height = 0;
+    		}
 			
 			foreach($products as $_product){
 				
@@ -46,15 +50,11 @@
 				
 				$category = null;
 				
-				
-				
-				
-				
 				foreach($_product->getCategoryIds() as $id){
 					
 					$_category = $this->getFeed()->getCategoriesCollection()->getItemById($id);
 					
-					if(is_null($category) || $category->getLevel() < $_category->getLevel()){
+					if(is_null($category) || ($category && $_category && $category->getLevel() < $_category->getLevel())){
 						
 						$category = $_category;
 						
@@ -68,44 +68,33 @@
 					
 					$parent_id = $category->getParentId();
 					
-					if($category->getLevel() > 2){
+					if($category->getLevel() > $root_category->getLevel()){
 						
 						while($_category = $this->getFeed()->getCategoriesCollection()->getItemById($parent_id)){
 							
-							if($_category->getLevel() < 2){
+							if($_category->getLevel() <= $root_category->getLevel()){
 								break;
 							}
 							
 							$category_path[] = $_category->getName();
 							$parent_id = $_category->getParentId();
-							
-							
-						}
-						
-					}
-				
+						}						
+					}				
 				}
-				
-				
 				
 				$product = new Varien_Object();
 				
-				if($category){
-				
+				if($category){				
 					$product->setCategory($category->getName());
-					$product->setCategoryId($category->getEntityId());
-					$product->setCategoryPath(implode(' -&gt; ', array_reverse($category_path)));
-				
-				}else{
-					
-					$product->setCategory('');
-					$product->setCategoryPath('');
-					
+					$product->setCategoryId($category->getEntityId());									
+					$product->setCategorySubcategory(implode(' -&gt; ', array_reverse($category_path)));
+				}else{					
+					$product->setCategory('');										
+					$product->setCategorySubcategory('');
 				}
-				$template_attributes = $this->getAllVars($content);
 				
-				//foreach($_product->getAttributes() as $attribute_code=>$attribute_model){
-
+				$template_attributes = $this->getAllVars($content);
+								
 				$custom_attributes = Mage::getResourceModel('gomage_feed/custom_attribute_collection');
     			$custom_attributes->load();
 				
@@ -113,8 +102,24 @@
 					
 					$value = null;
 					
-
 					switch($attribute_code):
+					
+					case ('parent_sku'):
+						if(($parent_product = $this->getFeed()->getParentProduct($_product, $products)) && $parent_product->getEntityId() > 0){
+						 	$value = $parent_product->getSku();
+						 }else{
+						 	$value = '';
+						 }	
+    				break;
+					
+					case ('price'):
+    								
+    					if(in_array($_product->getTypeId(), array(Mage_Catalog_Model_Product_Type::TYPE_GROUPED, Mage_Catalog_Model_Product_Type::TYPE_BUNDLE)))
+    					    $value =  $store->convertPrice($_product->getMinimalPrice(), false, false);    						           
+    					else 
+    						$value = $store->convertPrice($_product->getPrice(), false, false);
+    							
+    				break;
 					
 					case ('store_price'):
                     case ('final_price'):
@@ -130,7 +135,11 @@
                            $_prod = Mage::getModel('catalog/product')->load($_product->getId());
                            try
                            {
-							   $image_url = (string)Mage::helper('catalog/image')->init($_product, 'image');
+                           	   if ($image_width || $image_height){
+                               		$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image')->resize($image_width, $image_height);
+                               }else{	    						        		    						    		    						     
+    								$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image');
+                               }
 
 						   }catch(Exception $e)
                            {
@@ -153,7 +162,13 @@
                            foreach ($_product->getMediaGalleryImages() as $_image)
                            {
                                $i++;
-                               if (('image_' . $i) == $attribute_code) $product->setData($attribute_code, $_image['url']);;
+                               if (('image_' . $i) == $attribute_code){
+                               		if ($image_width || $image_height){                                           			
+                                         $product->setData($attribute_code, (string)Mage::helper('catalog/image')->init($_product, 'image', $_image->getFile())->resize($image_width, $image_height)); 
+                                    }else{
+                                         $product->setData($attribute_code, $_image['url']);
+                                    }	                                                                   
+                               }
                            } 																		
 					break;
 
@@ -192,6 +207,19 @@
 									
 									switch($condition['attribute_code']):    							    							
     							
+										case ('product_type'):
+    										$attr_value = $_product->getTypeId();
+    									break;
+	    												
+										case ('price'):
+    								
+					    					if(in_array($_product->getTypeId(), array(Mage_Catalog_Model_Product_Type::TYPE_GROUPED, Mage_Catalog_Model_Product_Type::TYPE_BUNDLE)))
+					    					    $attr_value =  $store->convertPrice($_product->getMinimalPrice(), false, false);    						           
+					    					else 
+					    						$attr_value = $store->convertPrice($_product->getPrice(), false, false);
+					    							
+					    				break;
+					    				
             							case ('store_price'):
             								
             								$attr_value = $store->convertPrice($_product->getFinalPrice(), false, false);
@@ -221,10 +249,14 @@
                                            {                                                                                                                                                
                                                $_prod = Mage::getModel('catalog/product')->load($_product->getId());
         
-                                               try{		    						        		    						    		    						     
-            										$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image');
+                                               try{		    						        		    						    		    						                 										
+	                                               if ($image_width || $image_height){
+		                                       			$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image')->resize($image_width, $image_height);
+		                                       	   }else{	    						        		    						    		    						     
+		    											$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image');
+		                                       	   }
             										
-            									}catch(Exception $e){    										
+            								   }catch(Exception $e){    										
             										$image_url = '';    										
             								   }                                                                              
                                                $_product->setData('product_base_image', $image_url);
@@ -263,27 +295,8 @@
 
             								}
             							break;
-            							case('category'):
-            								
-            								$category = null;
-        									
-        									foreach($_product->getCategoryIds() as $id){
-        										
-        										$_category = $this->getFeed()->getCategoriesCollection()->getItemById($id);
-        										
-        										if(is_null($category) || $category && $_category && $category->getLevel() < $_category->getLevel()){
-        											
-        											$category = $_category;
-        											
-        										}
-        										
-        									}
-        									
-        									if($category){
-        									
-        										$attr_value = $category->getName();
-        									
-        									}                        									
+            							case('category'):            								
+            								    $attr_value = $product->getCategory();        									        									                        									
             							break;
             							case('category_id'):
             							        $attr_value = $_product->getCategoryIds();            							                                    							        
@@ -430,14 +443,102 @@
 									
 								
 								}
+
+								if (in_array($option['value_type'], array('percent', 'attribute'))){
+									
+									switch($option['value_type_attribute']):    							    							
+    							
+										case ('price'):
+	    								
+					    					if(in_array($_product->getTypeId(), array(Mage_Catalog_Model_Product_Type::TYPE_GROUPED, Mage_Catalog_Model_Product_Type::TYPE_BUNDLE)))
+					    					    $attribute_value =  $store->convertPrice($_product->getMinimalPrice(), false, false);    						           
+					    					else 
+					    						$attribute_value = $store->convertPrice($_product->getPrice(), false, false);
+					    							
+					    				break;
+					    				
+	        							case ('store_price'):
+	        								
+	        								$attribute_value = $store->convertPrice($_product->getFinalPrice(), false, false);
+	        								
+	        							break;
+	        							
+	        							
+	        							case ('parent_url'):
+	        								
+	        								if(($parent_product = $this->getFeed()->getParentProduct($_product, $products)) && $parent_product->getEntityId() > 0){
+	        									
+	    										$attribute_value = $parent_product->getProductUrl(false);
+	    										
+	    										break;
+	    										
+	        								}
+	        								
+	        								$attribute_value = $_product->getProductUrl(false);
+	        								
+	        							break;
+	        							
+	        							case('image'):
+	        							case('gallery'):
+	        							case('media_gallery'):
+	    
+	        							   if (!$_product->hasData('product_base_image'))
+	                                       {                                                                                                                                                
+	                                           $_prod = Mage::getModel('catalog/product')->load($_product->getId());
+	    
+	                                           try{		    						        		    						    		    						             										
+		                                            if ($image_width || $image_height){
+		                                       			$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image')->resize($image_width, $image_height);
+		                                       		}else{	    						        		    						    		    						     
+		    											$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image');
+		                                       		}
+	        										
+	        								   }catch(Exception $e){    										
+	        										$image_url = '';    										
+	        								   }                                                                              
+	                                           $_product->setData('product_base_image', $image_url);
+	                                           $attribute_value = $image_url;
+	                                              
+	                                       }
+	                                       else 
+	                                       {                                                                                           
+	                                           $attribute_value = $_product->getData('product_base_image');
+	                                       }        							    		    						
+	    																		
+	        							break;
+	        							case('url'):
+	        								$attribute_value = $_product->getProductUrl(false);
+	        							break;
+	        							case('qty'):
+	        								
+	        								if($stock_item = $stock_collection->getItemByColumnValue('product_id', $_product->getId())){
+	        								
+	        									$attribute_value = ceil($stock_collection->getItemByColumnValue('product_id', $_product->getId())->getQty());
+	        								
+	        								}else{
+	        								
+	        									$attribute_value = 0;
+	        								
+	        								}
+	        							break;
+	        							case('category'):
+	    									$attribute_value = $product->getCategory();     									
+	        							break;
+	        							default:	    									    
+								            $attribute_value = $_product->getData($option['value_type_attribute']);
+								  endswitch;
 								
-								
+								}
 								
 								if($option['value_type'] == 'percent'){
 									
-									$value = floatval($_product->getData($option['value_type_attribute']))/100*floatval($option['value']);
-									
-								}else{
+									$value = floatval($attribute_value)/100*floatval($option['value']);
+
+								}elseif($option['value_type'] == 'attribute'){
+	    											
+	    							$value = $attribute_value;
+	    												
+	    						}else{
 									
 									$value = $option['value'];
 									
@@ -451,6 +552,15 @@
 								
 								switch($custom_attribute->getDefaultValue()):    							    							
     							
+									case ('price'):
+    								
+				    					if(in_array($_product->getTypeId(), array(Mage_Catalog_Model_Product_Type::TYPE_GROUPED, Mage_Catalog_Model_Product_Type::TYPE_BUNDLE)))
+				    					    $value =  $store->convertPrice($_product->getMinimalPrice(), false, false);    						           
+				    					else 
+				    						$value = $store->convertPrice($_product->getPrice(), false, false);
+				    							
+				    				break;
+				    				
         							case ('store_price'):
         								
         								$value = $store->convertPrice($_product->getFinalPrice(), false, false);
@@ -480,10 +590,14 @@
                                        {                                                                                                                                                
                                            $_prod = Mage::getModel('catalog/product')->load($_product->getId());
     
-                                           try{		    						        		    						    		    						     
-        										$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image');
+                                           try{		    						        		    						    		    						             										
+	                                            if ($image_width || $image_height){
+	                                       			$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image')->resize($image_width, $image_height);
+	                                       		}else{	    						        		    						    		    						     
+	    											$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image');
+	                                       		}
         										
-        									}catch(Exception $e){    										
+        								   }catch(Exception $e){    										
         										$image_url = '';    										
         								   }                                                                              
                                            $_product->setData('product_base_image', $image_url);
@@ -512,27 +626,7 @@
         								}
         							break;
         							case('category'):
-        								
-        								$category = null;
-    									
-    									foreach($_product->getCategoryIds() as $id){
-    										
-    										$_category = $this->getFeed()->getCategoriesCollection()->getItemById($id);
-    										
-    										if(is_null($category) || $category && $_category && $category->getLevel() < $_category->getLevel()){
-    											
-    											$category = $_category;
-    											
-    										}
-    										
-    									}
-    									
-    									if($category){
-    									
-    										$value = $category->getName();
-    									
-    									}
-    									
+    									  	$value = $product->getCategory();     									
         							break;
         							default:	    									    
 							            $value = $_product->getData($custom_attribute->getDefaultValue());
@@ -576,20 +670,12 @@
 				
 				$product->setDescription(strip_tags(preg_replace('/<br.*?>/s', "\r\n", $_product->getDescription())));
 				$product->setShortDescription(strip_tags(preg_replace('/<br.*?>/s', "\r\n", $_product->getShortDescription())));
-				
+								
 				if($stock_item = $stock_collection->getItemByColumnValue('product_id', $_product->getId())){
-				
-				$product->setQty(ceil($stock_item->getQty()));
-				
-				}else{
-				
-				$product->setQty(0);
-				
-				}
-				
-				$product->setQty(ceil(Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product)->getQty()));
-				
-				//$contents[] = parent::setVars($content, $product);
+            		$product->setQty(ceil($stock_collection->getItemByColumnValue('product_id', $_product->getId())->getQty()));
+            	}else{
+            		$product->setQty(0);
+            	}
 				
 				fwrite($fp, parent::setVars($content, $product)."\r\n");
 				
@@ -605,7 +691,6 @@
 			$template_temp_file = $this->getFeed()->getDirPath().'/feed-'.$this->getFeed()->getId().'-xml-product-block-template.tmp';
 			
 			file_put_contents($template_temp_file, $content);
-			//Mage::getSingleton('core/session')->setXmlFeedProductTemplate($content);
 			
 			$collection = $this->getFeed()->getProductsCollection();
 			$total_products = $collection->getSize();
@@ -626,7 +711,7 @@
 
 			for($i = 0;$i<$pages;$i++){
 
-				if ($_fp = fopen(Mage::getModel('core/store')->load($this->getFeed()->getStoreId())->getUrl('feed/index/index', array('id'=>$this->getFeed()->getId(), 'start'=>$i, 'length'=>$per_page, '_nosid' => true)), 'r')){
+				if ($_fp = fopen(Mage::getSingleton('core/store')->load($this->getFeed()->getStoreId())->getUrl('feed/index/index', array('id'=>$this->getFeed()->getId(), 'start'=>$i, 'length'=>$per_page, '_nosid' => true)), 'r')){
 
 					$contents = '';
 					while (!feof($_fp)) {

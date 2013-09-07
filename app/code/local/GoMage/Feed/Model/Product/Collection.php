@@ -5,18 +5,18 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 2.0
+ * @version      Release: 2.1
  * @since        Class available since Release 2.0
  */
 
 class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
 {
     
-    protected $_feed_categories = null;
+    protected $_feed_categories = array();
     
     public function isEnabledFlat()
     {        
@@ -71,7 +71,7 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
         $this->_productLimitationJoinPrice();
         $filters = $this->_productLimitationFilters;
 
-        if (!isset($filters['category_id']) && !isset($filters['visibility'])) {
+        if (!(isset($filters['category_id']) || count($this->_feed_categories)) && !isset($filters['visibility'])) {
             return $this;
         }
 
@@ -84,7 +84,7 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
                 ->quoteInto('cat_index.visibility IN(?)', $filters['visibility']);
         }
         
-        if (is_array($this->_feed_categories)){
+        if (count($this->_feed_categories)){
             $conditions[] = $this->getConnection()
                 ->quoteInto('cat_index.category_id IN(?)', $this->_feed_categories);
             $this->getSelect()->distinct();    
@@ -124,8 +124,6 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
     }
     
     public function addFeedCategoryFilter($condition, $value){
-                    
-        $this->_feed_categories = array(0);
         
         $categories = Mage::getResourceModel('catalog/category_collection')
                         ->addIsActiveFilter();

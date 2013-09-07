@@ -5,12 +5,12 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.0
- * @since        Class available since Release 1.0
+ * @version      Release: 2.1
+ * @since        Class available since Release 1.3
  */
 
 $installer = $this;

@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 
@@ -96,16 +96,14 @@
         $result = array();
         try {            
             $uploader = new Varien_File_Uploader('file');				   		
-			$uploader->setAllowRenameFiles(true);			
+			$uploader->setAllowRenameFiles(false);			
 			$uploader->setFilesDispersion(false);			
 			$path = Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'tmp';			
 			if(!file_exists($path)){
 				mkdir($path);
 				chmod($path, 0755);
 			}						
-            $result = $uploader->save($path, $_FILES['file']['name'] );
-            $result['file'] = Mage::helper('core/file_storage_database')->saveUploadedFile($result);            
-            $result['file'] = $result['file'];            
+            $result = $uploader->save($path, $_FILES['file']['name']);            
         } catch (Exception $e) {
             $result = array('error'=>$e->getMessage(), 'errorcode'=>$e->getCode());
         }
@@ -534,59 +532,28 @@
     	
     }
     public function getattributevaluefieldAction(){
-    	
-    	
+    	    	
     	if($code = $this->getRequest()->getParam('attribute_code')){
     		
-    		$name = $this->getRequest()->getParam('element_name');
-    		
-    		$attribute = Mage::getModel('catalog/product')->getResource()->getAttribute($code);
-    		
-    		if( $attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect') ){
-	        	
-	        	$options = array();
-			
-				foreach($attribute->getSource()->getAllOptions() as $option){
-					
-					extract($option);
-					
-					$options[] = "<option value=\"{$value}\">{$label}</option>";
-					
-				}
-				
-				$this->getResponse()->setBody('<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>');
-			
-	        	
-	        }
-	        elseif ($code == 'category_id'){
-	            $options = array();
-	            $options[] = "<option value=\"\"></option>";
-	            	            	            
-	            $store_id = $this->getRequest()->getParam('store_id');
-	            if (!$store_id) $store_id = Mage::app()->getStore()->getId();
-	            
-	            $store = Mage::getModel('core/store')->load($store_id);
-	            
-	            $categoryes = Mage::getModel('catalog/category')->load($store->getRootCategoryId())->getAllChildren(true);
-	            
-	            foreach($categoryes as $cat_id){
+    		$name = $this->getRequest()->getParam('element_name');    		
+    		$store_id = $this->getRequest()->getParam('store_id');
+    		$iterator = $this->getRequest()->getParam('iterator');
 
-	                if ($cat_id == $store->getRootCategoryId()) continue;
-	                
-	                $category = Mage::getModel('catalog/category')->load($cat_id);
-					
-					$options[] = "<option value=\"{$category->getId()}\">{$category->getName()}</option>";
-					
-				}
-	            
-	            $this->getResponse()->setBody('<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>');
-	        }
-	        else{
-	        	
-	        	$this->getResponse()->setBody('<input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="'.$name.'" value=""/>');
-	        	
-	        }
+    		if ($code == 'product_type'){
+    			$condition = GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter::getConditionSelectLight($iterator);
+    		}else{
+    			$condition = GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter::getConditionSelect($iterator);
+    		}
     		
+	        $this->getResponse()->setBody(
+	        	Zend_Json::encode(
+	        		array(
+			        	'attributevalue' => GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter::getAttributeValueField($code, $name, null, $store_id),
+			        	'condition' => $condition, 
+	        			'iterator' => $iterator
+			        )	
+	        	)
+	        );
     	}
     	
     }

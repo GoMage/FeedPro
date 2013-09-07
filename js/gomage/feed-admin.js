@@ -1,3 +1,17 @@
+ /**
+ * GoMage.com
+ *
+ * GoMage Feed Pro
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
+ * @author       GoMage.com
+ * @license      http://www.gomage.com/licensing  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 2.1
+ * @since        Class available since Release 1.0
+ */
+
 Validation.add('gomage-feed-validate-interval', 'Time range is small for Upload Interval',		
 function(v) {
 	
@@ -76,9 +90,11 @@ GomageFeedAdminSettings = Class.create({
 		$('feed_section').options[$('feed_section').options.length] = new Option('-Select-', '', false, false);
 		
 		var data = this.system_sections[value];
-		data.each(function(option, i) { 			
-			$('feed_section').options[$('feed_section').options.length] = new Option(option, value + '/' + option, false, false);
-		});
+		if (typeof(data) != 'undefined'){
+			data.each(function(option, i) { 			
+				$('feed_section').options[$('feed_section').options.length] = new Option(option, value + '/' + option, false, false);
+			});
+		}
 		
 	},
 	submit: function(section, file){

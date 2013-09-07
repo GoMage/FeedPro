@@ -88,6 +88,7 @@
 "Striptags","Строка без тегов"
 "Encode special chars","Кодирование спецсимволов"
 "Decode special chars","Раскодирование спецсимволов"
+"Delete Space","Удаление пробелов"
 "Add New Row","Добавить новую строку"
 "Products Filter Configuration","Настройка фильтра товаров"
 "Attribute","Атрибут"

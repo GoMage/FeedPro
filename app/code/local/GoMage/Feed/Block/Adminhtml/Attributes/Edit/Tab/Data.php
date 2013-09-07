@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 
@@ -52,8 +52,8 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tab_Data extends Mage_Adminhtm
 	    	$options['Qty'] = array('code'=>"qty" , 'label' =>  "Qty");
 	    	$options['Category ID'] = array('code'=>"category_id", 'label' =>  "Category ID");
 	    	$options['Final Price'] = array('code'=>"final_price", 'label' =>  "Final Price");
-			
-			
+	    	$options['Product Type'] = array('code'=>"product_type" , 'label' =>  "Product Type");
+						
 			foreach($this->getAttributeCollection() as $attribute){
 				if($attribute->getFrontendLabel()){
 				$options[$attribute->getFrontendLabel()] = array('code'=>$attribute->getAttributeCode(), 'label'=>($attribute->getFrontendLabel() ? $attribute->getFrontendLabel() : $attribute->getAttributeCode()));
@@ -75,19 +75,23 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tab_Data extends Mage_Adminhtm
 	public function getAttributeValueField($code = '', $i, $j, $current = ''){
 		
 		$html = '';
-		
-		
+				
 		if($code){
-			
-			
-			
+
 			$attribute = Mage::getModel('catalog/product')->getResource()->getAttribute($code);
 	    		
-			if($attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect')){
+			if(($attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect')) ||
+			   ($code == 'product_type')){
 	        	
 	        	$options = array();
+	        	
+			   if ($code == 'product_type'){
+	        		$attribute_options = Mage_Catalog_Model_Product_Type::getOptions();
+	        	}else{
+	        		$attribute_options = $attribute->getSource()->getAllOptions();
+	        	}
 			
-				foreach($attribute->getSource()->getAllOptions() as $option){
+				foreach($attribute_options as $option){
 					
 					extract($option);
 					
@@ -155,7 +159,8 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tab_Data extends Mage_Adminhtm
 		if($attribute_code){
 			$attribute = Mage::getModel('catalog/product')->getResource()->getAttribute($attribute_code);
     		
-    		if( $attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect') ){
+    		if( ($attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect')) ||
+    			($attribute_code == 'product_type') ){
 	        	
 				$options = array(
 				'<option '.($current == 'eq' ? 'selected="selected"' : '').' value="eq">'.$this->__('equal').'</option>',

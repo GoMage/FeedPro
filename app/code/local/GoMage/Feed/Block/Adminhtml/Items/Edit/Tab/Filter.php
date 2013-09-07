@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 
@@ -47,7 +47,8 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 			$options = array();
 			
 			$options['Category'] = array('code' => "category_id", 'label' => "Category");
-			$options['Qty'] = array('code'=>"qty" , 'label' =>  "Qty");
+			$options['Qty'] = array('code'=>"qty" , 'label' => "Qty");
+			$options['Product Type'] = array('code'=>"product_type" , 'label' => "Product Type");
 			
 			foreach($this->getAttributeCollection() as $attribute){
 				if($attribute->getFrontendLabel()){
@@ -65,7 +66,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 		return $this->options;
 		
 	}
-	public function getAttributeValueField($code = '', $name = '', $current = '', $store_id = null){
+	public static function getAttributeValueField($code = '', $name = '', $current = '', $store_id = null){
 		
 		if($code){
 			
@@ -119,7 +120,27 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 				}
 	            
 	            return ('<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>');
-	            	        	
+
+	        }elseif ($code == 'product_type'){  
+	        	$options = array();
+	            
+
+	            foreach(Mage_Catalog_Model_Product_Type::getOptions() as $product_type){
+	                
+	                $category = Mage::getModel('catalog/category')->load($cat_id);
+	                
+	                $selected = '';
+					
+					if($current == $product_type['value']){
+						$selected = 'selected="selected"';
+					}
+					
+					$options[] = "<option value=\"{$product_type['value']}\" {$selected}>{$product_type['label']}</option>";
+					
+				}
+	            
+	            return ('<select style="width: 100%; border: 0pt none; padding: 0pt;" name="'.$name.'">'.implode('', $options).'</select>');
+	            
 	        }else{
 	        	
 	        	return ('<input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="'.$name.'" value="'.$current.'"/>');
@@ -153,22 +174,32 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 		return '<select '.$additional.' style="width:260px;display:'.($active ? 'block' : 'none').'" id="filter-'.$i.'-attribute-code" name="filter['.$i.'][attribute_code]">'.implode('', $options).'</select>';
 		
 	}
-	public function getConditionSelect($i, $current = null){
+	
+	public static function getConditionSelect($i, $current = null){
 		
 		$options = array(
-			'<option '.($current == 'eq' ? 'selected="selected"' : '').' value="eq">'.$this->__('equal').'</option>',
-			'<option '.($current == 'neq' ? 'selected="selected"' : '').' value="neq">'.$this->__('not equal').'</option>',
-			'<option '.($current == 'gt' ? 'selected="selected"' : '').' value="gt">'.$this->__('greater than').'</option>',
-			'<option '.($current == 'lt' ? 'selected="selected"' : '').' value="lt">'.$this->__('less than').'</option>',
-			'<option '.($current == 'gteq' ? 'selected="selected"' : '').' value="gteq">'.$this->__('greater than or equal to').'</option>',
-			'<option '.($current == 'lteq' ? 'selected="selected"' : '').' value="lteq">'.$this->__('less than or equal to').'</option>',
-			'<option '.($current == 'like' ? 'selected="selected"' : '').' value="like">'.$this->__('like').'</option>',
-			'<option '.($current == 'nlike' ? 'selected="selected"' : '').' value="nlike">'.$this->__('not like').'</option>',
-		    '<option '.($current == 'nin' ? 'selected="selected"' : '').' value="nin">'.$this->__('xor').'</option>',
+			'<option '.($current == 'eq' ? 'selected="selected"' : '').' value="eq">'.Mage::helper('gomage_feed')->__('equal').'</option>',
+			'<option '.($current == 'neq' ? 'selected="selected"' : '').' value="neq">'.Mage::helper('gomage_feed')->__('not equal').'</option>',
+			'<option '.($current == 'gt' ? 'selected="selected"' : '').' value="gt">'.Mage::helper('gomage_feed')->__('greater than').'</option>',
+			'<option '.($current == 'lt' ? 'selected="selected"' : '').' value="lt">'.Mage::helper('gomage_feed')->__('less than').'</option>',
+			'<option '.($current == 'gteq' ? 'selected="selected"' : '').' value="gteq">'.Mage::helper('gomage_feed')->__('greater than or equal to').'</option>',
+			'<option '.($current == 'lteq' ? 'selected="selected"' : '').' value="lteq">'.Mage::helper('gomage_feed')->__('less than or equal to').'</option>',
+			'<option '.($current == 'like' ? 'selected="selected"' : '').' value="like">'.Mage::helper('gomage_feed')->__('like').'</option>',
+			'<option '.($current == 'nlike' ? 'selected="selected"' : '').' value="nlike">'.Mage::helper('gomage_feed')->__('not like').'</option>',
+		    '<option '.($current == 'nin' ? 'selected="selected"' : '').' value="nin">'.Mage::helper('gomage_feed')->__('xor').'</option>',
 		);
 		
 		return '<select style="width:160px" id="filter-'.$i.'-condition" name="filter['.$i.'][condition]">'.implode('', $options).'</select>';
 	}
     
+	public static function getConditionSelectLight($i, $current = null){
+		
+		$options = array(
+			'<option '.($current == 'eq' ? 'selected="selected"' : '').' value="eq">'.Mage::helper('gomage_feed')->__('equal').'</option>',
+			'<option '.($current == 'neq' ? 'selected="selected"' : '').' value="neq">'.Mage::helper('gomage_feed')->__('not equal').'</option>',			
+		);
+		
+		return '<select style="width:160px" id="filter-'.$i.'-condition" name="filter['.$i.'][condition]">'.implode('', $options).'</select>';
+	}
   
 }

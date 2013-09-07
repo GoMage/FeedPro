@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2011 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 1.1
+ * @version      Release: 2.1
  * @since        Class available since Release 1.0
  */
 
@@ -204,8 +204,6 @@ class GoMage_Feed_Model_Item_Block extends Varien_Object
     					
     					$value = number_format($value, 2, '.', '');
     					
-    					//$value = number_format($value, 2);
-    					
     				break;
     				
     				case 'int':
@@ -217,6 +215,7 @@ class GoMage_Feed_Model_Item_Block extends Varien_Object
     				case 'striptags':
     					
     					$value = strip_tags($value);
+    					$value = trim($value);
     					
     				break;
     				
@@ -232,9 +231,22 @@ class GoMage_Feed_Model_Item_Block extends Varien_Object
     					
     				break;
     				
+    				case 'delete_space':				    					
+
+    				    $value = str_replace(" ", "", $value);
+    					
+    				break;
+    				
     			}
     			
     		break;
+    		
+    		case 'limit':
+    			if(intval($attribute_value) && $value){
+    				$value = substr($value, 0, intval($attribute_value));
+    			}
+    		break;	
+    		
     	}
     	
     	return $value;
@@ -266,8 +278,6 @@ class GoMage_Feed_Model_Item_Block extends Varien_Object
     
     public function setVars($content = null, $dataObject = null, $clearVars = false){
     	
-    	
-    	
     	if(is_null($content)){
     		$content = $this->getContent();
     	}
@@ -294,9 +304,7 @@ class GoMage_Feed_Model_Item_Block extends Varien_Object
 					if($props_count = count($props)){
 						
 						try{
-							
-							
-							
+
 			    			$value = $dataObject->getData($props[0]);
 			    			
 			    			if($props_count > 1){
@@ -338,7 +346,7 @@ class GoMage_Feed_Model_Item_Block extends Varien_Object
 		    			
 		    			if($value !== null || $clearVars == true){
 		    				
-		    				$content = str_replace($match[0][$var_num], htmlspecialchars(strval($value)), $content);
+		    				$content = str_replace($match[0][$var_num], strval($value), $content);
 		    				
 		    			}
 			    	
