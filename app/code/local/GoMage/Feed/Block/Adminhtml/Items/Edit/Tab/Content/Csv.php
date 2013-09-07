@@ -174,6 +174,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv extends Mage_Adminh
     	$options['Image 3'] = array('code'=>"image_3", 'label' =>  "Image 3");
     	$options['Image 4'] = array('code'=>"image_4", 'label' =>  "Image 4");
     	$options['Image 5'] = array('code'=>"image_5", 'label' =>  "Image 5");
+    	$options['Parent Base Image'] = array('code'=>"parent_base_image" , 'label' =>  "Parent Base Image");
     	$options['Category > SubCategory'] = array('code'=>"category_subcategory", 'label' => "Category > SubCategory");
     	$options['Parent SKU'] = array('code'=>"parent_sku", 'label' => "Parent SKU");
 				

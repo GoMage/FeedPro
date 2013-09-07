@@ -33,8 +33,8 @@
 <?php for($i=0;$i<$rows_count;$i++):?>
     <tr>
     	<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][order]" value="<?php echo @$data[$i]['order'];?>" /></div></td>
-    	<td ><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][name]" value="<?php echo htmlentities(@$data[$i]['name']);?>" /></div></td>
-    	<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][prefix]" value="<?php echo htmlentities(@$data[$i]['prefix']);?>" /></div></td>
+    	<td ><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][name]" value="<?php echo @$data[$i]['name'];?>" /></div></td>
+    	<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][prefix]" value="<?php echo @$data[$i]['prefix'];?>" /></div></td>
     	<td>
     		<div style="margin: 2px;">
     		<select style="width:100%;" onchange="changeValueType(this, <?php echo $i;?>)" name="field[<?php echo $i;?>][type]">
@@ -44,9 +44,9 @@
     		</div>
     	</td>
     	<td>
-    		<input style="width:98%;display:<?php echo isset($data[$i]['type']) && $data[$i]['type'] == 'static' ? 'block' : 'none';?>;"  id="mapping-<?php echo $i;?>-static-value" type="text" class="input-text" name="field[<?php echo $i;?>][static_value]" value="<?php echo htmlentities(@$data[$i]['static_value'])?>" />
+    		<input style="width:98%;display:<?php echo isset($data[$i]['type']) && $data[$i]['type'] == 'static' ? 'block' : 'none';?>;"  id="mapping-<?php echo $i;?>-static-value" type="text" class="input-text" name="field[<?php echo $i;?>][static_value]" value="<?php echo @$data[$i]['static_value'] ?>" />
     		<?php echo GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv::getAttributeSelect($i, @$data[$i]['attribute_value'], (isset($data[$i]['type']) && $data[$i]['type'] == 'attribute' || !isset($data[$i]['type'])))?></td>
-    	<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][sufix]" value="<?php echo htmlentities(@$data[$i]['sufix']);?>" /></div></td>
+    	<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][sufix]" value="<?php echo @$data[$i]['sufix'];?>" /></div></td>
     	<td>
     		<div style="margin: 2px;">
     		<select style="width:100%;" name="field[<?php echo $i;?>][output_type]">
@@ -60,7 +60,7 @@
     		</select>
     		</div>
     	</td>
-    	<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][limit]" value="<?php echo htmlentities(@$data[$i]['limit']);?>" /></div></td>
+    	<td><div style="padding:0 2px;border-color:#AAAAAA #C8C8C8 #C8C8C8 #AAAAAA;border-style:solid;border-width:1px;"><input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="field[<?php echo $i;?>][limit]" value="<?php echo @$data[$i]['limit'];?>" /></div></td>
     	<td><button onclick="removeMappingRow(this);return false;" class="button"><span><span><?php echo $this->__('Remove')?></span></span></button></td>
     </tr>
 <?php endfor;?>

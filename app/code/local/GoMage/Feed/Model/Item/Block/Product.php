@@ -111,6 +111,24 @@
 						 	$value = '';
 						 }	
     				break;
+    				
+    				case 'parent_base_image':
+    					if(($parent_product = $this->getFeed()->getParentProduct($_product, $products)) && $parent_product->getEntityId() > 0){    									
+							$_prod = Mage::getModel('catalog/product')->load($parent_product->getId());
+    					}else{
+    						$_prod = Mage::getModel('catalog/product')->load($_product->getId());
+    					}	
+    					try{	
+                           	if ($image_width || $image_height){
+                          		$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image')->resize($image_width, $image_height);
+                           	}else{	    						        		    						    		    						     
+    							$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image');
+                          	}    							
+    					}catch(Exception $e){    										
+    						$image_url = '';    										
+    					}
+    					$value = $image_url;																														    								
+    				break;
 					
 					case ('price'):
     								
@@ -671,11 +689,7 @@
 				$product->setDescription(strip_tags(preg_replace('/<br.*?>/s', "\r\n", $_product->getDescription())));
 				$product->setShortDescription(strip_tags(preg_replace('/<br.*?>/s', "\r\n", $_product->getShortDescription())));
 								
-				if($stock_item = $stock_collection->getItemByColumnValue('product_id', $_product->getId())){
-            		$product->setQty(ceil($stock_collection->getItemByColumnValue('product_id', $_product->getId())->getQty()));
-            	}else{
-            		$product->setQty(0);
-            	}
+				$product->setQty(ceil(Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product)->getQty()));
 				
 				fwrite($fp, parent::setVars($content, $product)."\r\n");
 				

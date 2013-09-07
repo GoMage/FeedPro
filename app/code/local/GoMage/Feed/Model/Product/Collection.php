@@ -17,6 +17,9 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
 {
     
     protected $_feed_categories = array();
+    protected $_prepared_feed_categories = array(
+    										'inclusion' => array(),
+											'exclusion' => array());
     
     public function isEnabledFlat()
     {        
@@ -123,11 +126,25 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
         return $this;
     }
     
-    public function addFeedCategoryFilter($condition, $value){
+    public function prepareFeedCategoryFilter($condition, $value){
         
         $categories = Mage::getResourceModel('catalog/category_collection')
                         ->addIsActiveFilter();
-                        
+
+        $exclusion = in_array($condition, array('neq', 'nlike', 'nin'));
+        if ($exclusion){
+        	switch($condition){
+        		case 'neq':
+        			$condition = 'eq';
+        		break;
+        		case 'nlike':
+        			$condition = 'like';
+        		break;
+        		case 'nin':
+        			$condition = 'in';
+        		break;	
+        	}
+        }                
         if ($condition == 'like' || $condition == 'nlike'){
             $category = Mage::getModel('catalog/category')->load($value);
             $categories->addFieldToFilter('name', array($condition=>'%'.$category->getName().'%'));
@@ -137,12 +154,39 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
         }    
                         
         foreach ($categories as $_cat){
-            $this->_feed_categories[] = intval($_cat->getId()); 
+        	if ($exclusion){        		
+        		$this->_prepared_feed_categories['exclusion'][] = intval($_cat->getId());
+        	}else{
+        		$this->_prepared_feed_categories['inclusion'][] = intval($_cat->getId());
+        	} 
         }
 
-        $this->_applyProductLimitations();
-
         return $this;
+    }
+    
+    public function addFeedCategoryFilter(){
+    	
+    	$categories = Mage::getResourceModel('catalog/category_collection')
+                        ->addIsActiveFilter();
+                        
+        $all_categories_ids = array();
+
+    	foreach ($categories as $_cat){
+        	$all_categories_ids[] = intval($_cat->getId());
+        }
+        
+    	if (count($this->_prepared_feed_categories['exclusion'])){
+			$all_categories_ids = array_diff($all_categories_ids, $this->_prepared_feed_categories['exclusion']);
+		}
+		if (count($this->_prepared_feed_categories['inclusion'])){
+			$all_categories_ids = array_intersect($all_categories_ids, $this->_prepared_feed_categories['inclusion']);
+		}
+		
+		$this->_feed_categories = $all_categories_ids;  
+        
+        $this->_applyProductLimitations();
+    	
+    	return $this;
     }
     
 

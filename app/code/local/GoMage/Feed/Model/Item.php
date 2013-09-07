@@ -173,7 +173,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 					foreach($filter as $condition => $value){
 						if ($code == 'category_id'){
 							foreach($value as $_value){
-					        	$collection->addFeedCategoryFilter($condition, $_value);
+					        	$collection->prepareFeedCategoryFilter($condition, $_value);
 							}
 					    }elseif ($code == 'product_type'){
 					    	$all_product_type = Mage_Catalog_Model_Product_Type::getOptionArray();
@@ -204,25 +204,39 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 					    			$value = min($value);
 					    		break;		
 					    		case 'like':
-					    		case 'nlike':
 					    			if (count($value) > 1){
-										$value = '%' . implode('%', $value) . '%';
+					    				$_attribute = array();
+										foreach($value as $_value){
+											$_attribute[] = array('attribute'=>$code, $condition=>$_value); 
+										}
+										$collection->addAttributeToFilter($_attribute);
+										continue 2;
 					    			}else{
 					    				$value = $value[0];
-					    			} 
+					    			}
+					    		case 'nlike':
+					    			foreach ($value as $_value){
+					    				$collection->addAttributeToFilter($code, array($condition=>$_value));
+					    			}		
+					    			continue 2;					    								    			
 					    		break;	
-					    	}
+					    							    	}
 					    	
 					    	$collection->addAttributeToFilter($code, array($condition=>$value));
 					    }
 					}					
-				}		
+				}	
+
+				if (isset($filters['category_id'])){
+					$collection->addFeedCategoryFilter();
+				}
+				
 			}
 			
 			$this->_productCollection = $collection;
 		
 		}
-		
+						
 		return $this->_productCollection;
     }
     
@@ -356,8 +370,12 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 	    				
 	    				foreach($options as $option){
 		    				
-		    				foreach($option['condition'] as $_condition){
-		    					$codes[] = $_condition['attribute_code'];
+	    					if (isset($option['value_type_attribute']) && $option['value_type_attribute']){
+		    					$codes[] = $option['value_type_attribute'];
+		    				}
+	    					
+		    				foreach($option['condition'] as $_condition){		    					
+		    					$codes[] = $_condition['attribute_code'];		    					
 		    				}
 	    				
 	    				}
@@ -482,6 +500,25 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
     								
     							break;
     							
+    							case 'parent_base_image':
+    								if(($parent_product = $this->getParentProduct($product, $collection)) && $parent_product->getEntityId() > 0){    									
+										$_prod = Mage::getModel('catalog/product')->load($parent_product->getId());
+    								}else{
+    									$_prod = Mage::getModel('catalog/product')->load($product->getId());
+    								}	
+    								try{	
+                                    	if ($image_width || $image_height){
+                                    		$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image')->resize($image_width, $image_height);
+                                    	}else{	    						        		    						    		    						     
+    										$image_url = (string)Mage::helper('catalog/image')->init($_prod, 'image');
+                                       	}
+    										
+    								}catch(Exception $e){    										
+    									$image_url = '';    										
+    								}
+    								$value = $image_url;																														    								
+    							break;	
+    								
     							case('image'):
     							case('gallery'):
     							case('media_gallery'):
@@ -906,7 +943,14 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 	    										}elseif($option['value_type'] == 'attribute'){
 	    											
 	    											$value = $attribute_value;
-	    												
+	    											
+	    											if($value_type_attribute = $attributes->getItemByColumnValue('attribute_code', $option['value_type_attribute'])){	    											
+                                                        if($value_type_attribute->getFrontendInput() == 'select' || 
+                                                           $value_type_attribute->getFrontendInput() == 'multiselect'){                                                    
+                                                             $value = implode(', ', (array)$product->getAttributeText($option['value_type_attribute']));
+                                                         }
+	    											}     
+	    												    												    												
 	    										}else{
 	    											
 	    											$value = $option['value'];

@@ -127,8 +127,6 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 
 	            foreach(Mage_Catalog_Model_Product_Type::getOptions() as $product_type){
 	                
-	                $category = Mage::getModel('catalog/category')->load($cat_id);
-	                
 	                $selected = '';
 					
 					if($current == $product_type['value']){

@@ -259,6 +259,10 @@
 				
 				}
 				
+				if (isset($data['upload_interval']) && in_array($data['upload_interval'], array(12,24))){
+					$data['upload_hour_to'] = null;
+				}
+				
 	            $model->setData($data)->setId($id)->save();
 	            
 	            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('Data successfully saved'));
