@@ -5,11 +5,11 @@
  *
  * GoMage Feed Pro
  * @category     Extension
- * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2013 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.1
+ * @version      Release: 3.2
  * @since        Class available since Release 1.0
  */ 
  -->
@@ -31,7 +31,7 @@
 			<show_in_store>1</show_in_store>
 			<groups>
 				<feed translate="label">
-					<label>GoMage Feed Pro v.3.1</label>
+					<label>GoMage Feed Pro v.3.2</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>30</sort_order>
 					<show_in_default>1</show_in_default>
@@ -58,10 +58,68 @@
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
 						</websites>
+                        <ar>
+							<frontend_type>hidden</frontend_type>
+							<sort_order>25</sort_order>
+							<show_in_default>0</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</ar>
+                        <time>
+							<frontend_type>hidden</frontend_type>
+							<sort_order>25</sort_order>
+							<show_in_default>0</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</time>
+                        <installed>
+							<frontend_type>hidden</frontend_type>
+							<sort_order>25</sort_order>
+							<show_in_default>0</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</installed>
+                        <count>
+							<frontend_type>hidden</frontend_type>
+							<sort_order>25</sort_order>
+							<show_in_default>0</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</count>
 					</fields>
 				</feed>
 			</groups>
 		</gomage_activation>
+        <gomage_notification>
+            <label>Notifications</label>
+            <tab>gomage</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>1100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>0</show_in_website>
+            <show_in_store>0</show_in_store>
+            <groups>
+                <notification>
+                    <label>Notifications</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <enable>
+                            <label>I'd like to get advertising by GoMage</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enable>
+                    </fields>
+                </notification>
+            </groups>
+        </gomage_notification>
 		<gomage_feedpro>
 			<label>Feed Pro</label>
 			<tab>gomage</tab>
@@ -240,6 +298,26 @@
 						</copy_method>
 					</fields>
 				</notifications>
+				
+				<amazon translate="label">
+					<label>UPC Codes Generator (Beta)</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>30</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+							<config>
+							<label>UPC Codes Generator (Beta)</label>
+                             <frontend_model>gomage_feed/adminhtml_config_form_field_config</frontend_model>
+                            <backend_model>gomage_feed/adminhtml_system_config_source_config</backend_model>  
+							<sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+						</config>
+					</fields>
+				</amazon>
 			</groups>
 		</gomage_feedpro>
 	</sections>

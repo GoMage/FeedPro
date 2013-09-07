@@ -5,18 +5,18 @@
  *
  * GoMage Feed Pro
  * @category     Extension
- * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2013 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.1
+ * @version      Release: 3.2
  * @since        Class available since Release 1.0
  */ 
  -->
 <config>
     <modules>
         <GoMage_Feed>
-            <version>3.1</version>
+            <version>3.2</version>
         </GoMage_Feed>
     </modules>
 	<frontend>
@@ -61,6 +61,14 @@
                     </feed_collect_totals_after>
                 </observers>
             </admin_system_config_changed_section_gomage_activation>
+            <controller_action_predispatch>
+                <observers>
+                    <gomage_feed_notify>
+                        <class>gomage_feed/observer_notify</class>
+                        <method>notify</method>
+                    </gomage_feed_notify>
+                </observers>
+            </controller_action_predispatch>
         </events>
         <menu>
             <catalog>
@@ -100,6 +108,9 @@
                                         <gomage_activation>
                                             <title>GoMage - Activation</title>
                                         </gomage_activation>
+                                        <gomage_notification>
+                                            <title>GoMage - Notifications</title>
+                                        </gomage_notification>
                                     </children>
                                 </config>
                             </children>
@@ -219,5 +230,12 @@
     			<email_template>gomage_feedpro_notifications_email_template</email_template>
     		</notifications>
     	</gomage_feedpro>
+
+        <gomage_notification>
+            <notification>
+                <enable>1</enable>
+            </notification>
+        </gomage_notification>
+
     </default>
 </config>

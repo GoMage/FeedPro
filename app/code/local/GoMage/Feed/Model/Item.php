@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2012 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2013 GoMage.com (http://www.gomage.com)
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.1
+ * @version      Release: 3.2
  * @since        Class available since Release 1.0
  */
 
@@ -439,6 +439,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 							
 							if ($col->attribute_value) {
 								$parent_product = $this->getParentProduct($product);
+                                                                
 								if ($parent_product->getId()) {
 									
 									if ( $col->attribute_value == 'sku_amazon' )
@@ -458,8 +459,11 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 									}
 									else 
 									{
+                                                                               if($col->attribute_value != 'sku'){
 										$value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
-									}
+                                                                               }
+                                                                                
+                                                                        }
 								}
 							}
 							else {
