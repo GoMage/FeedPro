@@ -1,0 +1,70 @@
+<?php
+ /**
+ * GoMage.com
+ *
+ * GoMage Feed Pro
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010 GoMage.com (http://www.gomage.com)
+ * @author       GoMage.com
+ * @license      http://www.gomage.com/licensing  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 1.1
+ * @since        Class available since Release 1.0
+ */
+
+class GoMage_Feed_Block_Adminhtml_Items_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
+{
+    public function __construct(){
+    	
+        parent::__construct();
+                 
+        $this->_objectId = 'id';
+        $this->_blockGroup = 'gomage_feed';
+        $this->_controller = 'adminhtml_items';
+        
+        $this->_updateButton('save', 'label', $this->__('Save'));
+        $this->_updateButton('delete', 'label', $this->__('Delete'));
+		
+		$feed = Mage::registry('gomage_feed');
+		
+		if($feed && $feed->getId() > 0){
+			
+			$this->_addButton('generate', array(
+	            'label'     => $this->__('Generate File'),
+	            'onclick'   => 'setLocation(\''.$this->getUrl('*/*/generate', array('id'=>$feed->getId())).'\')',
+	        ), -100);
+	        
+	        if($feed->getFtpActive()){
+	        
+		        $this->_addButton('upload', array(
+		            'label'     => $this->__('Upload File'),
+		            'onclick'   => 'setLocation(\''.$this->getUrl('*/*/upload', array('id'=>$feed->getId())).'\')',
+		        ), -100);
+		        
+	        }
+        
+        }
+		
+        $this->_addButton('saveandcontinue', array(
+            'label'     => $this->__('Save And Continue Edit'),
+            'onclick'   => 'saveAndContinueEdit()',
+            'class'     => 'save',
+        ), -100);
+        
+        $this->_formScripts[] = "
+            function saveAndContinueEdit(){
+                editForm.submit($('edit_form').action+'back/edit/');
+            }
+        ";
+    }
+    
+    public function getHeaderText(){
+    	
+        if( Mage::registry('gomage_feed') && Mage::registry('gomage_feed')->getId() ) {
+            return $this->__("Edit %s", $this->htmlEscape(Mage::registry('gomage_feed')->getName()));
+        } else {
+            return $this->__('Add Item');
+        }
+    }
+}
