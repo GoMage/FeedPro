@@ -1354,73 +1354,110 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 		$this->setData('generation_time', Mage::helper('gomage_feed/generator')->formatGenerationTime($hour, $min, $sec, true));
 		$this->save();
 	}
-	
-	public function ftpUpload() {
-		
-		if (intval($this->getFtpActive())) {
-			
-			$host_info = explode(':', $this->getFtpHost());
-			
-			$host = $host_info[0];
-			$port = 21;
-			
-			if (isset($host_info[1])) {
-				$port = intval($host_info[1]);
-			}
-			
-			if ($connection = ftp_connect($host, $port)) {
-				
-				try {
-					$ligun_result = ftp_login($connection, $this->getFtpUserName(), $this->getFtpUserPass());
-				}
-				catch (Exception $e) {
-					$ligun_result = false;
-				}
-				
-				if ($ligun_result) {
-					if ($this->getFtpPassiveMode()) {
-						ftp_pasv($connection, true);
-					}
-					else {
-						ftp_pasv($connection, false);
-					}
-					
-					if (ftp_chdir($connection, $this->getFtpDir())) {
-						
-						$filePath = sprintf('%s/productsfeed/%s', Mage::getBaseDir('media'), $this->getFileNameWithExt());
-						
-						if (ftp_put($connection, $this->getFileNameWithExt(), $filePath, FTP_BINARY)) {
-							
-							$this->setData('uploaded_at', date('Y-m-j H:i:s', time()));
-							$this->save();
-							
-							return true;
-						
-						}
-						else {
-							throw new Mage_Core_Exception('Cannot upload file.');
-						}
-					
-					}
-					else {
-						throw new Mage_Core_Exception('Cannot change dir.');
-					}
-				
-				}
-				else {
-					throw new Mage_Core_Exception('Authenticate failure.');
-				}
-			
-			}
-			else {
-				throw new Mage_Core_Exception('Cant connect to host.');
-			}
-		
-		}
-		
-		return false;
-	
-	}
+
+    public function ftpUpload() {
+
+        if (intval($this->getFtpActive())) {
+
+            $host_info = explode(':', $this->getFtpHost());
+
+            $host = $host_info[0];
+            $port = 21;
+
+            if (isset($host_info[1])) {
+                $port = intval($host_info[1]);
+            }
+
+
+
+            if($port == 22){
+
+
+
+                    if ($connection =  ssh2_connect($host, $port)) {
+
+                        try {
+                            $ligun_result = ssh2_auth_password($connection, $this->getFtpUserName(), $this->getFtpUserPass());
+                        }
+                        catch (Exception $e) {
+                            $ligun_result = false;
+                        }
+                        if ($ligun_result) {
+                            $filePath = sprintf('%s/productsfeed/%s', Mage::getBaseDir('media'), $this->getFileNameWithExt());
+                            if(ssh2_scp_send($connection, $filePath,  $this->getFtpDir().$this->getFileNameWithExt())){
+
+                                $this->setData('uploaded_at', date('Y-m-j H:i:s', time()));
+                                $this->save();
+
+                                return true;
+                            }else {
+                                throw new Mage_Core_Exception('Cannot upload file.');
+                            }
+                        }
+                        else {
+                            throw new Mage_Core_Exception('Authenticate failure.');
+                        }
+
+
+                    }else {
+                        throw new Mage_Core_Exception('Cant connect to host.');
+                    }
+
+
+            }else{
+                if ($connection = ftp_connect($host, $port)) {
+
+                    try {
+                        $ligun_result = ftp_login($connection, $this->getFtpUserName(), $this->getFtpUserPass());
+                    }
+                    catch (Exception $e) {
+                        $ligun_result = false;
+                    }
+
+                    if ($ligun_result) {
+                        if ($this->getFtpPassiveMode()) {
+                            ftp_pasv($connection, true);
+                        }
+                        else {
+                            ftp_pasv($connection, false);
+                        }
+
+                        if (ftp_chdir($connection, $this->getFtpDir())) {
+
+                            $filePath = sprintf('%s/productsfeed/%s', Mage::getBaseDir('media'), $this->getFileNameWithExt());
+
+                            if (ftp_put($connection, $this->getFileNameWithExt(), $filePath, FTP_BINARY)) {
+
+                                $this->setData('uploaded_at', date('Y-m-j H:i:s', time()));
+                                $this->save();
+
+                                return true;
+
+                            }
+                            else {
+                                throw new Mage_Core_Exception('Cannot upload file.');
+                            }
+
+                        }
+                        else {
+                            throw new Mage_Core_Exception('Cannot change dir.');
+                        }
+
+                    }
+                    else {
+                        throw new Mage_Core_Exception('Authenticate failure.');
+                    }
+
+                }
+                else {
+                    throw new Mage_Core_Exception('Cant connect to host.');
+                }
+            }
+        }
+
+        return false;
+
+    }
 	
 	public function getUrl() {
 		
