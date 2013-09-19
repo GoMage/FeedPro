@@ -426,53 +426,72 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 					foreach ($maping as $col) {
 						
 						$value = null;
-						
-						if ($col->type == 'attribute') {
-							if ($col->attribute_value) {
-								$value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
-							}
-							else {
-								$value = '';
-							}
-						}
-						elseif ($col->type == 'parent_attribute') {
-							
-							if ($col->attribute_value) {
-								$parent_product = $this->getParentProduct($product);
-                                                                
-								if ($parent_product->getId()) {
-									
-									if ( $col->attribute_value == 'sku_amazon' )
-									{
-										$value = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
-									}
-									else 
-									{
-										$value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);	
-									}
-								}
-								else {
-									
-									if ( $col->attribute_value == 'sku_amazon' )
-									{
-										$value = '';
-									}
-									else 
-									{
-                                                                               if($col->attribute_value != 'sku'){
-										$value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
-                                                                               }
-                                                                                
-                                                                        }
-								}
-							}
-							else {
-								$value = '';
-							}
-						}
-						else {
-							$value = $col->static_value;
-						}
+
+
+                        if ($col->type == 'attribute') {
+                            if ($col->attribute_value) {
+                                $value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
+                            }
+                            else {
+                                $value = '';
+                            }
+                        }
+                        elseif ($col->type == 'parent_attribute') {
+
+                            if ($col->attribute_value) {
+                                $parent_product = $this->getParentProduct($product);
+
+                                if ($parent_product->getId()) {
+                                    if($col->attribute_value == 'url'){
+                                        $value = '';
+                                    }else{
+                                        $value = $parent_product->getAttributeText($col->attribute_value);
+                                    }
+
+
+                                    if(empty($value)){
+                                        if ( $col->attribute_value == 'sku_amazon' )
+                                        {
+                                            $value = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
+                                        }
+                                        else
+                                        {
+
+                                            $value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);
+                                        }
+                                    }
+                                }
+                                else {
+                                    if($col->attribute_value == 'url'){
+                                        $value = '';
+                                    }else{
+                                        $value = $product->getAttributeText($col->attribute_value);
+                                    }
+
+
+                                    if(empty($value)){
+                                        if ( $col->attribute_value == 'sku_amazon' )
+                                        {
+                                            $value = '';
+                                        }
+                                        else
+                                        {
+                                            if($col->attribute_value != 'sku'){
+                                                $value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                $value = '';
+                            }
+
+                        }
+                        else {
+                            $value = $col->static_value;
+                        }
 						
 						if ($output_type = $col->output_type) {
 							$value = $this->applyValueFilter('format', $output_type, $value);
