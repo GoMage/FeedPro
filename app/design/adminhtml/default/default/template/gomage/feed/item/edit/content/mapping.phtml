@@ -56,7 +56,7 @@ if(empty($data)){
         </td>
         <td>
             <div style="margin: 2px;">
-                <select style="width:100%;" onchange="changeValueType(this, <?php echo $i;?>)" name="field[<?php echo $i;?>][type]">
+                <select style="width:100%;" id="mapping-<?php echo $i;?>-value-type" onchange="changeValueType(this, <?php echo $i;?>)" name="field[<?php echo $i;?>][type]">
                     <option <?php echo isset($data[$i]['type']) && $data[$i]['type'] == 'attribute' ? 'selected="selected"' : '';?> value="attribute"><?php echo $this->__('Attribute')?></option>
                     <option <?php echo isset($data[$i]['type']) && $data[$i]['type'] == 'parent_attribute' ? 'selected="selected"' : '';?> value="parent_attribute"><?php echo $this->__('Parent Attribute')?></option>
                     <option <?php echo isset($data[$i]['type']) && $data[$i]['type'] == 'static' ? 'selected="selected"' : '';?> value="static"><?php echo $this->__('Static Value')?></option>
@@ -112,6 +112,7 @@ if(empty($data)){
 
         var prefix = $('mapping-'+i+'-prefix-type');
         var suffix = $('mapping-'+i+'-suffix-type');
+        var val = $('mapping-'+i+'-value-type');
         if(prefix.value == 'static'){
             $('mapping-'+i+'-static-prefix-value').style.display = 'block';
             $('mapping-'+i+'-attribute-prefix-value').style.display = 'none';
@@ -125,6 +126,14 @@ if(empty($data)){
         }else{
             $('mapping-'+i+'-static-suffix-value').style.display = 'none';
             $('mapping-'+i+'-attribute-suffix-value').style.display = 'block';
+        }
+
+        if(val.value == 'static'){
+            $('mapping-'+i+'-static-value').style.display = 'block';
+            $('mapping-'+i+'-attribute-value').style.display = 'none';
+        }else{
+            $('mapping-'+i+'-static-value').style.display = 'none';
+            $('mapping-'+i+'-attribute-value').style.display = 'block';
         }
 
 
