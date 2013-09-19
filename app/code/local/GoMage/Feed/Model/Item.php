@@ -527,6 +527,8 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                         // prefix value
                         if ($col->prefix_type == 'attribute') {
                             if ($col->attribute_prefix_value) {
+                                $value_prefix = $product->getAttributeText($col->attribute_prefix_value);
+                                if(empty($value_prefix))
                                 $value_prefix = $this->getProductAttributeValue($product, $col->attribute_prefix_value, $attributes, $custom_attributes);
                             }
                             else {
@@ -593,6 +595,8 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                         // suffix value
                         if ($col->suffix_type == 'attribute') {
                             if ($col->attribute_suffix_value) {
+                                $value_suffix = $product->getAttributeText($col->attribute_prefix_value);
+                                if(empty($value_suffix))
                                 $value_suffix = $this->getProductAttributeValue($product, $col->attribute_suffix_value, $attributes, $custom_attributes);
                             }
                             else {
