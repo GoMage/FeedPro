@@ -22,8 +22,7 @@ class GoMage_Feed_Adminhtml_AmazonController extends Mage_Adminhtml_Controller_A
           $amazon = Mage::getModel('gomage_feed/amazon');
           $data= Mage::getStoreConfig('gomage_feedpro/amazon/config');
           $array = @unserialize($data);
-          $content = $amazon->getContent();
-            if(!empty($content)){                 
+
             foreach ($array as $key=>$val){              
                if($key == $code_id){                   
                    if($val['type'] == 1) {
@@ -53,9 +52,7 @@ class GoMage_Feed_Adminhtml_AmazonController extends Mage_Adminhtml_Controller_A
                     }
                } 
              }        
-         }else{            
-               $session->addError(Mage::helper('gomage_feed')->__('Remote server does not answer.  Please wait a few minutes.'));
-         }
+
 
   return $this->getResponse()->setBody(Zend_Json::encode($error));
         }
