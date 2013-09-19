@@ -1369,10 +1369,10 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
             }
 
 
-
+          
             if($port == 22){
 
-
+                if (extension_loaded('ssh2')) {
 
                     if ($connection =  ssh2_connect($host, $port)) {
 
@@ -1402,7 +1402,11 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                     }else {
                         throw new Mage_Core_Exception('Cant connect to host.');
                     }
-
+                }else {
+                    throw new Mage_Core_Exception('You can’t upload the file via SSH because PHP5-SSH2 extension is not installed.
+Please contact your hosting provider to install the extension. More information at:
+http://www.php.net/manual/en/book.ssh2.php');
+                }
 
             }else{
                 if ($connection = ftp_connect($host, $port)) {
