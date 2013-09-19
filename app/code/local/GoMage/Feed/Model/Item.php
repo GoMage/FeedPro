@@ -494,8 +494,10 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 
                                 if(empty($value)){
                                     $parent_product = $this->getParentProduct($product);
-                                    if ($parent_product->getId()) {
-                                        $value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);
+                                    if($parent_product){
+                                        if ($parent_product->getId()) {
+                                            $value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);
+                                        }
                                     }
                                 }
                             }else {
@@ -506,14 +508,16 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                         elseif ($col->type == 'if_empty_parent_attribute') {
                             if ($col->attribute_value) {
                                 $value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
-
                                 if(empty($value)){
                                     $child_product = $this->getChildProduct($product);
+                                  if($child_product){
                                     if ($child_product->getId()) {
                                         $value = $this->getProductAttributeValue($child_product, $col->attribute_value, $attributes, $custom_attributes);
                                     }
+                                  }
                                 }
-                            }else {
+                            }
+                            else {
                                 $value = '';
                             }
 
