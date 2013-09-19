@@ -492,8 +492,139 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                         else {
                             $value = $col->static_value;
                         }
-						
-						if ($output_type = $col->output_type) {
+
+
+                        // prefix value
+                        if ($col->prefix_type == 'attribute') {
+                            if ($col->attribute_prefix_value) {
+                                $value_prefix = $this->getProductAttributeValue($product, $col->attribute_prefix_value, $attributes, $custom_attributes);
+                            }
+                            else {
+                                $value_prefix = '';
+                            }
+                        }
+                        elseif ($col->prefix_type == 'parent_attribute') {
+
+                            if ($col->attribute_prefix_value) {
+                                $parent_product = $this->getParentProduct($product);
+
+                                if ($parent_product->getId()) {
+
+                                    if($col->attribute_prefix_value == 'url'){
+                                        $value_prefix = '';
+                                    }else{
+                                        $value_prefix = $parent_product->getAttributeText($col->attribute_prefix_value);
+                                    }
+
+                                    if(empty($value_prefix)){
+                                        if ( $col->attribute_prefix_value == 'sku_amazon' )
+                                        {
+                                            $value_prefix = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
+                                        }
+                                        else
+                                        {
+                                            $value_prefix = $this->getProductAttributeValue($parent_product, $col->attribute_prefix_value, $attributes, $custom_attributes);
+                                        }
+                                    }
+                                }
+                                else {
+                                    if($col->attribute_prefix_value == 'url'){
+                                        $value_prefix = '';
+                                    }else{
+                                        $value_prefix = $product->getAttributeText($col->attribute_prefix_value);
+                                    }
+
+                                    if(empty($value_prefix)){
+
+                                        if ( $col->attribute_prefix_value == 'sku_amazon' )
+                                        {
+                                            $value_prefix = '';
+                                        }
+                                        else
+                                        {
+                                            if($col->attribute_prefix_value != 'sku'){
+                                                $value_prefix = $this->getProductAttributeValue($product, $col->attribute_prefix_value, $attributes, $custom_attributes);
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                $value_prefix = '';
+                            }
+                        }
+                        else {
+                            $value_prefix = $col->prefix_value;
+                        }
+
+
+
+                        // suffix value
+                        if ($col->suffix_type == 'attribute') {
+                            if ($col->attribute_suffix_value) {
+                                $value_suffix = $this->getProductAttributeValue($product, $col->attribute_suffix_value, $attributes, $custom_attributes);
+                            }
+                            else {
+                                $value_suffix = '';
+                            }
+                        }
+                        elseif ($col->suffix_type == 'parent_attribute') {
+
+                            if ($col->attribute_suffix_value) {
+                                $parent_product = $this->getParentProduct($product);
+
+                                if ($parent_product->getId()) {
+
+
+                                    if($col->attribute_suffix_value == 'url'){
+                                        $value_suffix = '';
+                                    }else{
+                                        $value_suffix = $parent_product->getAttributeText($col->attribute_suffix_value);
+                                    }
+                                    if(empty($value_suffix)){
+                                        if ( $col->attribute_suffix_value == 'sku_amazon' )
+                                        {
+                                            $value_suffix = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
+                                        }
+                                        else
+                                        {
+                                            $value_suffix = $this->getProductAttributeValue($parent_product, $col->attribute_suffix_value, $attributes, $custom_attributes);
+                                        }
+                                    }
+                                }
+                                else {
+                                    if($col->attribute_suffix_value == 'url'){
+                                        $value_suffix = '';
+                                    }else{
+                                        $value_suffix = $product->getAttributeText($col->attribute_suffix_value);
+                                    }
+
+                                    if(empty($value_suffix)){
+                                        if ( $col->attribute_suffix_value == 'sku_amazon' )
+                                        {
+                                            $value_suffix = '';
+                                        }
+                                        else
+                                        {
+                                            if($col->attribute_suffix_value != 'sku'){
+                                                $value_suffix = $this->getProductAttributeValue($product, $col->attribute_suffix_value, $attributes, $custom_attributes);
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                $value_suffix = '';
+                            }
+                        }
+                        else {
+                            $value_suffix = $col->suffix_value;
+                        }
+
+
+                        if ($output_type = $col->output_type) {
 							$value = $this->applyValueFilter('format', $output_type, $value);
 						}
 						
@@ -503,8 +634,8 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 						}
 						
 						$value = $this->applyValueFilter('limit', $col->limit, $value);
-						
-						$fields[] = $col->prefix . $value . $col->sufix;
+
+                        $fields[] = $value_prefix. $this->getDelimiterPrefix(). $value . $this->getDelimiterSufix() . $value_suffix;
 					
 					}
 					
