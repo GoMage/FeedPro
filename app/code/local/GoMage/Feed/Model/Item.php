@@ -1547,18 +1547,15 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
 
         if (intval($this->getFtpActive())) {
 
-            $host_info = explode(':', $this->getFtpHost());
+            $host = $this->getFtpHost();
 
-            $host = $host_info[0];
-            $port = 21;
-
-            if (isset($host_info[1])) {
-                $port = intval($host_info[1]);
+            if($this->getFtpPort()){
+                $port =  $this->getFtpPort();
+            }else{
+                $port = 21;
             }
 
-
-
-            if($port == 22){
+            if($this->getFtpPort()){
 
                 if (extension_loaded('ssh2')) {
 

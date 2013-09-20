@@ -51,14 +51,33 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Ftp extends Mage_Adminhtml_Bloc
             'required'  => false,
             'values'	=> array($this->__('No'), $this->__('Yes'))
         ));
+
+        $fieldset->addField('ftp_protocol', 'select', array(
+            'name'      => 'ftp_protocol',
+            'label'     => $this->__('Protocol'),
+            'title'     => $this->__('Protocol'),
+            'required'  => false,
+            'values'	=> array($this->__('FTP / FTPS'), $this->__('SFTP (SSH)'))
+        ));
+
+
         
     	$fieldset->addField('ftp_host', 'text', array(
             'name'      => 'ftp_host',
             'label'     => $this->__('Host Name'),
             'title'     => $this->__('Host Name'),
             'required'  => false,
-			'note'	=> $this->__('e.g. "ftp.domain.com"<br/>FTP Server uses port #21 by default. <br/>Use "domain.com:portnumber" to change the port.'),
+			'note'	=> $this->__('e.g. "ftp.domain.com"'),
         ));
+
+        $fieldset->addField('ftp_port', 'text', array(
+            'name'      => 'ftp_port',
+            'label'     => $this->__('Port'),
+            'title'     => $this->__('Port'),
+            'required'  => false,
+
+        ));
+
         $fieldset->addField('ftp_user_name', 'text', array(
             'name'      => 'ftp_user_name',
             'label'     => $this->__('User Name'),

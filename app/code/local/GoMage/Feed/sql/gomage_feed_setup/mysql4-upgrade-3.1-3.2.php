@@ -9,15 +9,43 @@
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.2
- * @since        Class available since Release 3.0
+ * @version      Release: 3.3
+ * @since        Class available since Release 3.3
  */
 
 $installer = $this;
 $installer->startSetup();
+
 $installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `delimiter_prefix` varchar(32) default NULL;
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `delimiter_sufix` varchar(32) default NULL;
+ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `ftp_port` varchar(128) DEFAULT '';
+ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `ftp_protocol` varchar(128) DEFAULT '';
+
 ");
+
+
+$gomage_feed_entity = $installer->getConnection()->fetchAll("
+    SELECT * FROM {$this->getTable('gomage_feed_entity')}
+");
+
+
+foreach ($gomage_feed_entity as $data){
+    $host_info = explode(':', $data['ftp_host']);
+    var_dump($data);
+
+    if(isset($host_info[1])){
+        $port = $host_info[1];
+    }else{
+        $port = 21;
+    }
+
+    $protocol = $port == 22 ? 1 : 0;
+
+    $installer->run("UPDATE {$this->getTable('gomage_feed_entity')}
+                 SET ftp_protocol={$protocol}, ftp_host='".$host_info[0]."', ftp_port={$port}
+                WHERE id = {$data['id']}");
+
+}
 
 $installer->endSetup();
