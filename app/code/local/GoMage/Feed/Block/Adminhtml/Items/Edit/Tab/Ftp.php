@@ -57,7 +57,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Ftp extends Mage_Adminhtml_Bloc
             'label'     => $this->__('Protocol'),
             'title'     => $this->__('Protocol'),
             'required'  => false,
-            'values'	=> array($this->__('FTP / FTPS'), $this->__('SFTP (SSH)'))
+            'values'	=>  Mage::getModel('gomage_feed/adminhtml_system_config_source_ftp')->toOptionArray()
         ));
 
 

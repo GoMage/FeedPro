@@ -532,8 +532,9 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                         if ($col->prefix_type == 'attribute') {
                             if ($col->attribute_prefix_value) {
                                 $value_prefix = $product->getAttributeText($col->attribute_prefix_value);
-                                if(empty($value_prefix))
+                                if(empty($value_prefix)){
                                 $value_prefix = $this->getProductAttributeValue($product, $col->attribute_prefix_value, $attributes, $custom_attributes);
+                                }
                             }
                             else {
                                 $value_prefix = '';
@@ -600,8 +601,9 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                         if ($col->suffix_type == 'attribute') {
                             if ($col->attribute_suffix_value) {
                                 $value_suffix = $product->getAttributeText($col->attribute_prefix_value);
-                                if(empty($value_suffix))
+                                if(empty($value_suffix)){
                                 $value_suffix = $this->getProductAttributeValue($product, $col->attribute_suffix_value, $attributes, $custom_attributes);
+                                }
                             }
                             else {
                                 $value_suffix = '';
@@ -1555,7 +1557,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                 $port = 21;
             }
 
-            if($this->getFtpPort()){
+            if($this->getFtpPort()== GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp::SFTP){
 
                 if (extension_loaded('ssh2')) {
 
