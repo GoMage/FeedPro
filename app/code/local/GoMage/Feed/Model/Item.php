@@ -1557,7 +1557,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract {
                 $port = 21;
             }
 
-            if($this->getFtpPort()== GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp::SFTP){
+            if($this->getFtpProtocol()== GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp::SFTP){
 
                 if (extension_loaded('ssh2')) {
 
