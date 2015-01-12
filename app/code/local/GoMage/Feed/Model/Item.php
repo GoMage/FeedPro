@@ -1578,15 +1578,10 @@ Please contact your hosting provider to install the extension. More information 
 
     public function getUrl()
     {
-
         $file_path = sprintf('productsfeed/%s', $this->getFileNameWithExt());
-
         if (file_exists(Mage::getBaseDir('media') . '/' . $file_path)) {
-
-            return Mage::getBaseUrl('media', false) . $file_path;
-
+            return Mage::app()->getStore($this->getStoreId())->getBaseUrl('media', false) . $file_path;
         }
-
         return '';
     }
 
