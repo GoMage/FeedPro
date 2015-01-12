@@ -263,7 +263,7 @@ class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $data    = array();
         $fileDir = Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'examples';
-        if ($handle = opendir($fileDir)) {
+        if (is_dir($fileDir) && $handle = opendir($fileDir)) {
             while (false !== ($dir = readdir($handle))) {
                 if ($dir != '.' && $dir != '..') {
                     if (is_dir($fileDir . DS . $dir) && ($sub_handle = opendir($fileDir . DS . $dir))) {
