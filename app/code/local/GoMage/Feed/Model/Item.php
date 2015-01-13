@@ -376,8 +376,14 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
                 $codes = array();
 
                 foreach ($maping as $col) {
-                    if ($col->type == 'attribute') {
+                    if ($col->type == 'attribute' && $col->attribute_value) {
                         $codes[] = $col->attribute_value;
+                    }
+                    if ($col->prefix_type == 'attribute' && $col->attribute_prefix_value) {
+                        $codes[] = $col->attribute_prefix_value;
+                    }
+                    if ($col->suffix_type == 'attribute' && $col->attribute_suffix_value) {
+                        $codes[] = $col->attribute_suffix_value;
                     }
                 }
 
@@ -403,6 +409,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
                     }
                 }
 
+                $codes         = array_unique($codes);
                 $attributes    = Mage::getModel('eav/entity_attribute')->getCollection()->setEntityTypeFilter(Mage::getResourceModel('catalog/product')->getEntityType()->getData('entity_type_id'))->setCodeFilter($codes);
                 $root_category = $this->getRootCategory();
 
@@ -426,87 +433,55 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 
                     foreach ($maping as $col) {
 
-                        $value = null;
+                        $value        = '';
+                        $value_prefix = '';
+                        $value_suffix = '';
 
                         if ($col->type == 'attribute') {
                             if ($col->attribute_value) {
                                 $value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
-                            } else {
-                                $value = '';
                             }
                         } elseif ($col->type == 'parent_attribute') {
 
                             if ($col->attribute_value) {
                                 $parent_product = $this->getParentProduct($product);
-
-                                if ($parent_product->getId()) {
-                                    if ($col->attribute_value == 'url') {
-                                        $value = '';
-                                    } else {
-                                        $value = $parent_product->getAttributeText($col->attribute_value);
+                                if ($parent_product && $parent_product->getId()) {
+                                    if ($col->attribute_value != 'url') {
+                                        $value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);
                                     }
-
-                                    if (empty($value)) {
-                                        if ($col->attribute_value == 'sku_amazon') {
-                                            $value = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
-                                        } else {
-
-                                            $value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);
-                                        }
+                                    if ($col->attribute_value == 'sku_amazon' && empty($value)) {
+                                        $value = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
                                     }
                                 } else {
-                                    if ($col->attribute_value == 'url') {
-                                        $value = '';
-                                    } else {
-                                        $value = $product->getAttributeText($col->attribute_value);
+                                    if ($col->attribute_value != 'url') {
+                                        $value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
                                     }
-
-                                    if (empty($value)) {
-                                        if ($col->attribute_value == 'sku_amazon') {
-                                            $value = '';
-                                        } else {
-                                            if ($col->attribute_value != 'sku') {
-                                                $value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
-                                            }
-
-                                        }
+                                    if ($col->attribute_value == 'sku_amazon' && empty($value)) {
+                                        $value = $this->getProductAttributeValue($product, 'sku', $attributes, $custom_attributes);
                                     }
                                 }
-                            } else {
-                                $value = '';
                             }
-                            // if empty
+
                         } elseif ($col->type == 'if_empty_child_attribute') {
                             if ($col->attribute_value) {
                                 $value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
-
                                 if (empty($value)) {
                                     $parent_product = $this->getParentProduct($product);
-                                    if ($parent_product) {
-                                        if ($parent_product->getId()) {
-                                            $value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);
-                                        }
+                                    if ($parent_product && $parent_product->getId()) {
+                                        $value = $this->getProductAttributeValue($parent_product, $col->attribute_value, $attributes, $custom_attributes);
                                     }
                                 }
-                            } else {
-                                $value = '';
                             }
-
                         } elseif ($col->type == 'if_empty_parent_attribute') {
                             if ($col->attribute_value) {
                                 $value = $this->getProductAttributeValue($product, $col->attribute_value, $attributes, $custom_attributes);
                                 if (empty($value)) {
                                     $child_product = $this->getChildProduct($product);
-                                    if ($child_product) {
-                                        if ($child_product->getId()) {
-                                            $value = $this->getProductAttributeValue($child_product, $col->attribute_value, $attributes, $custom_attributes);
-                                        }
+                                    if ($child_product && $child_product->getId()) {
+                                        $value = $this->getProductAttributeValue($child_product, $col->attribute_value, $attributes, $custom_attributes);
                                     }
                                 }
-                            } else {
-                                $value = '';
                             }
-
                         } else {
                             $value = $col->static_value;
                         }
@@ -514,52 +489,26 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
                         // prefix value
                         if ($col->prefix_type == 'attribute') {
                             if ($col->attribute_prefix_value) {
-                                $value_prefix = $product->getAttributeText($col->attribute_prefix_value);
-                                if (empty($value_prefix)) {
-                                    $value_prefix = $this->getProductAttributeValue($product, $col->attribute_prefix_value, $attributes, $custom_attributes);
-                                }
-                            } else {
-                                $value_prefix = '';
+                                $value_prefix = $this->getProductAttributeValue($product, $col->attribute_prefix_value, $attributes, $custom_attributes);
                             }
                         } elseif ($col->prefix_type == 'parent_attribute') {
-
                             if ($col->attribute_prefix_value) {
                                 $parent_product = $this->getParentProduct($product);
-
-                                if ($parent_product->getId()) {
-
-                                    if ($col->attribute_prefix_value == 'url') {
-                                        $value_prefix = '';
-                                    } else {
-                                        $value_prefix = $parent_product->getAttributeText($col->attribute_prefix_value);
+                                if ($parent_product && $parent_product->getId()) {
+                                    if ($col->attribute_prefix_value != 'url') {
+                                        $value_prefix = $this->getProductAttributeValue($parent_product, $col->attribute_prefix_value, $attributes, $custom_attributes);
                                     }
-
-                                    if (empty($value_prefix)) {
-                                        if ($col->attribute_prefix_value == 'sku_amazon') {
-                                            $value_prefix = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
-                                        } else {
-                                            $value_prefix = $this->getProductAttributeValue($parent_product, $col->attribute_prefix_value, $attributes, $custom_attributes);
-                                        }
+                                    if ($col->attribute_prefix_value == 'sku_amazon' && empty($value_prefix)) {
+                                        $value_prefix = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
                                     }
                                 } else {
-                                    if ($col->attribute_prefix_value == 'url') {
-                                        $value_prefix = '';
-                                    } else {
-                                        $value_prefix = $product->getAttributeText($col->attribute_prefix_value);
+                                    if ($col->attribute_prefix_value != 'url') {
+                                        $value_prefix = $this->getProductAttributeValue($product, $col->attribute_prefix_value, $attributes, $custom_attributes);
                                     }
-
-                                    if (empty($value_prefix)) {
-                                        if ($col->attribute_prefix_value == 'sku_amazon') {
-                                            $value_prefix = '';
-                                        } else {
-                                            if ($col->attribute_prefix_value != 'sku') {
-                                                $value_prefix = $this->getProductAttributeValue($product, $col->attribute_prefix_value, $attributes, $custom_attributes);
-                                            }
-                                        }
+                                    if ($col->attribute_prefix_value == 'sku_amazon' && empty($value_prefix)) {
+                                        $value_prefix = $this->getProductAttributeValue($product, 'sku', $attributes, $custom_attributes);
                                     }
                                 }
-                            } else {
-                                $value_prefix = '';
                             }
                         } else {
                             $value_prefix = $col->prefix_value;
@@ -568,51 +517,26 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
                         // suffix value
                         if ($col->suffix_type == 'attribute') {
                             if ($col->attribute_suffix_value) {
-                                $value_suffix = $product->getAttributeText($col->attribute_suffix_value);
-                                if (empty($value_suffix)) {
-                                    $value_suffix = $this->getProductAttributeValue($product, $col->attribute_suffix_value, $attributes, $custom_attributes);
-                                }
-                            } else {
-                                $value_suffix = '';
+                                $value_suffix = $this->getProductAttributeValue($product, $col->attribute_suffix_value, $attributes, $custom_attributes);
                             }
                         } elseif ($col->suffix_type == 'parent_attribute') {
-
                             if ($col->attribute_suffix_value) {
                                 $parent_product = $this->getParentProduct($product);
-
-                                if ($parent_product->getId()) {
-
-                                    if ($col->attribute_suffix_value == 'url') {
-                                        $value_suffix = '';
-                                    } else {
-                                        $value_suffix = $parent_product->getAttributeText($col->attribute_suffix_value);
+                                if ($parent_product && $parent_product->getId()) {
+                                    if ($col->attribute_suffix_value != 'url') {
+                                        $value_suffix = $this->getProductAttributeValue($parent_product, $col->attribute_suffix_value, $attributes, $custom_attributes);
                                     }
-                                    if (empty($value_suffix)) {
-                                        if ($col->attribute_suffix_value == 'sku_amazon') {
-                                            $value_suffix = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
-                                        } else {
-                                            $value_suffix = $this->getProductAttributeValue($parent_product, $col->attribute_suffix_value, $attributes, $custom_attributes);
-                                        }
+                                    if ($col->attribute_suffix_value == 'sku_amazon' && empty($value_suffix)) {
+                                        $value_suffix = $this->getProductAttributeValue($parent_product, 'sku', $attributes, $custom_attributes);
                                     }
                                 } else {
-                                    if ($col->attribute_suffix_value == 'url') {
-                                        $value_suffix = '';
-                                    } else {
-                                        $value_suffix = $product->getAttributeText($col->attribute_suffix_value);
+                                    if ($col->attribute_suffix_value != 'url') {
+                                        $value_suffix = $this->getProductAttributeValue($product, $col->attribute_suffix_value, $attributes, $custom_attributes);
                                     }
-
-                                    if (empty($value_suffix)) {
-                                        if ($col->attribute_suffix_value == 'sku_amazon') {
-                                            $value_suffix = '';
-                                        } else {
-                                            if ($col->attribute_suffix_value != 'sku') {
-                                                $value_suffix = $this->getProductAttributeValue($product, $col->attribute_suffix_value, $attributes, $custom_attributes);
-                                            }
-                                        }
+                                    if ($col->attribute_suffix_value == 'sku_amazon' && empty($value_suffix)) {
+                                        $value_suffix = $this->getProductAttributeValue($product, 'sku', $attributes, $custom_attributes);
                                     }
                                 }
-                            } else {
-                                $value_suffix = '';
                             }
                         } else {
                             $value_suffix = $col->suffix_value;
@@ -735,9 +659,13 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 
     public function getProductAttributeValue(&$product, $coll_attribute_value, $attributes, $custom_attributes)
     {
-        $store = $this->getStore();
-        $value = null;
+        $value = '';
 
+        if (!$coll_attribute_value) {
+            return $value;
+        }
+
+        $store        = $this->getStore();
         $image_width  = $this->getProductImageWidth();
         $image_height = $this->getProductImageHeight();
 
