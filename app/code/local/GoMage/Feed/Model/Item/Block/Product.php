@@ -138,7 +138,7 @@ class GoMage_Feed_Model_Item_Block_Product extends GoMage_Feed_Model_Item_Block 
 		
 		for($i = 0; $i < $pages; $i ++) {
 			
-			$feed_url = $store->getUrl('feed/index/index', array('id' => $this->getFeed()->getId(), 'start' => $i, 'length' => $per_page, '_nosid' => true));
+			$feed_url = $store->getUrl('gomage_feed/index/index', array('id' => $this->getFeed()->getId(), 'start' => $i, 'length' => $per_page, '_nosid' => true));
 			$contents = '';
 			
 			if (Mage::getStoreConfig('gomage_feedpro/configuration/system', $store) == GoMage_Feed_Model_Adminhtml_System_Config_Source_System::FOPEN) {

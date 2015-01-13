@@ -1388,7 +1388,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 
                 for ($i = 0; $i < $pages; $i++) {
 
-                    $feed_url = $store->getUrl('feed/index/index', array('id' => $this->getId(), 'start' => $i, 'length' => $per_page, '_nosid' => true));
+                    $feed_url = $store->getUrl('gomage_feed/index/index', array('id' => $this->getId(), 'start' => $i, 'length' => $per_page, '_nosid' => true));
                     $contents = '';
 
                     if (Mage::getStoreConfig('gomage_feedpro/configuration/system', $store) == GoMage_Feed_Model_Adminhtml_System_Config_Source_System::FOPEN) {

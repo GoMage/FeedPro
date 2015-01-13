@@ -16,7 +16,7 @@
 <config>
     <modules>
         <GoMage_Feed>
-            <version>3.3</version>
+            <version>3.4</version>
         </GoMage_Feed>
     </modules>
 	<frontend>
@@ -25,7 +25,7 @@
                 <use>standard</use>
                 <args>
                     <module>GoMage_Feed</module>
-                    <frontName>feed</frontName>
+                    <frontName>gomage_feed</frontName>
                 </args>
             </gomage_feed>
         </routers>

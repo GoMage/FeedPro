@@ -67,7 +67,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit extends Mage_Adminhtml_Block_Widget
         
         $_generator_data = array(
         	'feed_id' => ($feed && $feed->getId() ? $feed->getId() : 0),
-        	'generate_url' => $this->getUrl('feed/index/generate'),        	
+        	'generate_url' => $this->getUrl('gomage_feed/index/generate'),
             'info_url' => $this->getUrl('*/*/processInfo'),    	
         );        
         
