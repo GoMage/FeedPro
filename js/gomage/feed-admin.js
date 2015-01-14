@@ -82,8 +82,10 @@ function gomagefeed_setinterval(control, element_id) {
 
 GomageFeedAdminSettings = Class.create({
     system_sections: null,
+    code_mirror: null,
 
     initialize: function (data) {
+
         this.system_sections = data.data;
         this.url = data.url;
 
@@ -99,6 +101,23 @@ GomageFeedAdminSettings = Class.create({
                         key, key, false, false);
                 }
             }
+        }
+
+        if ($$('textarea#content').length > 0) {
+            var textarea_xml = $$('textarea#content')[0];
+            this.code_mirror = CodeMirror.fromTextArea(textarea_xml, {
+                lineNumbers: true,
+                matchBrackets: true
+            });
+            this.code_mirror.on("change", function (cm, change) {
+                textarea_xml.value = cm.getValue();
+            });
+
+            var self = this;
+            Event.observe("gomage_feed_tabs_content_section", "click", function () {
+                self.code_mirror.refresh();
+            });
+
         }
     },
     setSystem: function (value) {
