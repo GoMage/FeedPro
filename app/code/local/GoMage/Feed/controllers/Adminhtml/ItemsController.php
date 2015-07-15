@@ -16,6 +16,11 @@
 class GoMage_Feed_Adminhtml_ItemsController extends Mage_Adminhtml_Controller_Action
 {
 
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/gomage_feed/gomage_feed_items');
+    }
+
     protected function _initAction()
     {
         $this->loadLayout()->_setActiveMenu('catalog/gomage_feed')->_addBreadcrumb(Mage::helper('adminhtml')->__('Feed Manager'), Mage::helper('adminhtml')->__('Feed Manager'));
@@ -332,11 +337,11 @@ class GoMage_Feed_Adminhtml_ItemsController extends Mage_Adminhtml_Controller_Ac
                         Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Change "Number of Products" in the Advanced Settings.
                                     Try to change "Number of Products" in the Advanced Settings.
                                     For example: set "Number of Products" equal 50 or 100.'
-                            )
+                        )
                         );
                         Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('If "Time out" error.
         							Please ask your server administrator to increase script run times. Learn more at <a target="_blank" href="http://php.net/manual/en/function.set-time-limit.php">http://php.net/manual/en/function.set-time-limit.php</a>'
-                            )
+                        )
                         );
                     }
                 }
