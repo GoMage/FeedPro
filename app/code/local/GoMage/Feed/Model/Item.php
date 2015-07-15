@@ -376,13 +376,13 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
                 $codes = array();
 
                 foreach ($maping as $col) {
-                    if ($col->type == 'attribute' && $col->attribute_value) {
+                    if ($col->attribute_value) {
                         $codes[] = $col->attribute_value;
                     }
-                    if ($col->prefix_type == 'attribute' && $col->attribute_prefix_value) {
+                    if ($col->attribute_prefix_value) {
                         $codes[] = $col->attribute_prefix_value;
                     }
-                    if ($col->suffix_type == 'attribute' && $col->attribute_suffix_value) {
+                    if ($col->attribute_suffix_value) {
                         $codes[] = $col->attribute_suffix_value;
                     }
                 }
