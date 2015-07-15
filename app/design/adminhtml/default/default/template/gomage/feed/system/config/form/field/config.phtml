@@ -132,9 +132,12 @@ foreach ($this->getArrayRows() as $_rowId => $_row) {
                         
 var  typevalue = '';
 
-<?php $data= Mage::getStoreConfig('gomage_feedpro/amazon/config'); 
-$array = @unserialize($data);
-
+<?php
+    $array = array();
+    $data  = Mage::getStoreConfig('gomage_feedpro/amazon/config');
+    if ($data) {
+        $array = @unserialize($data);
+    }
 ?>	
   
 <?php foreach ($array as $key=>$val): ?>

@@ -33,15 +33,15 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract {
 			if (! file_exists($base_dir)) {
 				mkdir($base_dir);
 			}
-			chmod($base_dir, 0777);
+			chmod($base_dir, 0750);
 			if (! file_exists($log_dir)) {
 				mkdir($log_dir);
 			}
-			chmod($log_dir, 0777);
+			chmod($log_dir, 0750);
 		}
 		catch (Exception $e) {
 			$errors[] = Mage::helper('gomage_feed')->__('Check the Permission for the "Media" directory.
-							Check that the "media" directory of your Magento has permission equal to 777 or 0777.');
+							Check that the "media" directory of your Magento has permission equal to 750 or 0750.');
 		}
 		
 		return $errors;

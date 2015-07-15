@@ -158,7 +158,7 @@ class GoMage_Feed_Adminhtml_ItemsController extends Mage_Adminhtml_Controller_Ac
                 $fileDir = Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'examples' . DS . $system;
                 if (!file_exists($fileDir)) {
                     mkdir($fileDir);
-                    chmod($fileDir, 0777);
+                    chmod($fileDir, 0750);
                 }
 
                 $feed = Mage::getModel('gomage_feed/item')->load($id);
