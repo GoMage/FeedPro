@@ -83,7 +83,7 @@ class GoMage_Feed_Adminhtml_ItemsController extends Mage_Adminhtml_Controller_Ac
             $path = Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'tmp';
             if (!file_exists($path)) {
                 mkdir($path);
-                chmod($path, 0755);
+                chmod($path, 0777);
             }
             $result = $uploader->save($path, $_FILES['file']['name']);
         } catch (Exception $e) {
@@ -163,7 +163,7 @@ class GoMage_Feed_Adminhtml_ItemsController extends Mage_Adminhtml_Controller_Ac
                 $fileDir = Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'examples' . DS . $system;
                 if (!file_exists($fileDir)) {
                     mkdir($fileDir);
-                    chmod($fileDir, 0750);
+                    chmod($fileDir, 0777);
                 }
 
                 $feed = Mage::getModel('gomage_feed/item')->load($id);

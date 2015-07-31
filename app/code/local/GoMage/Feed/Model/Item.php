@@ -324,7 +324,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 
         if (!file_exists($fileDir)) {
             mkdir($fileDir);
-            chmod($fileDir, 0750);
+            chmod($fileDir, 0777);
         }
 
         if (is_dir($fileDir)) {
@@ -1253,7 +1253,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
 
         if (!file_exists($fileDir)) {
             mkdir($fileDir);
-            chmod($fileDir, 0750);
+            chmod($fileDir, 0777);
         }
 
         if (is_dir($fileDir)) {
