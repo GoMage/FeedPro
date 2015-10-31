@@ -11,9 +11,9 @@
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
  * @version      Release: 3.5
- * @since        Class available since Release 3.2
+ * @since        Class available since Release 3.6
  */
-class GoMage_Feed_Adminhtml_AmazonController extends Mage_Adminhtml_Controller_Action
+class GoMage_Feed_Adminhtml_Gomage_Feed_AmazonController extends Mage_Adminhtml_Controller_Action
 {
 
     protected function _isAllowed()
