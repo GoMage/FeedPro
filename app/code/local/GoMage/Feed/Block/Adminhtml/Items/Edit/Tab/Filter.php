@@ -115,7 +115,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter extends Mage_Adminhtml_B
 						$selected = 'selected="selected"';
 					}
 					
-					$options[] = "<option value=\"{$category->getId()}\" {$selected}>{$category->getName()}</option>";
+					$options[] = "<option value=\"{$category->getId()}\" {$selected}>{$category->getName()} (ID:{$category->getId()})</option>";
 					
 				}
 	            
