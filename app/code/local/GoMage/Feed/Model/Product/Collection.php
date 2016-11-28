@@ -176,6 +176,9 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
         $all_categories_ids = array();
 
     	foreach ($categories as $_cat){
+            if ($_cat->isInRootCategoryList()){
+                continue;
+            }
         	$all_categories_ids[] = intval($_cat->getId());
         }
         
@@ -185,8 +188,7 @@ class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_E
 		if (count($this->_prepared_feed_categories['inclusion'])){
 			$all_categories_ids = array_intersect($all_categories_ids, $this->_prepared_feed_categories['inclusion']);
 		}
-		
-		$this->_feed_categories = $all_categories_ids;  
+        $this->_feed_categories = $all_categories_ids;
         
         $this->_applyProductLimitations();
     	
