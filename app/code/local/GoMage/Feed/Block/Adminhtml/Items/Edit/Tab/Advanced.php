@@ -5,11 +5,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2015 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2016 GoMage.com (https://www.gomage.com)
  * @author       GoMage.com
- * @license      http://www.gomage.com/licensing  Single domain license
- * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.6
+ * @license      https://www.gomage.com/licensing  Single domain license
+ * @terms of use https://www.gomage.com/terms-of-use
+ * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
 
@@ -40,7 +40,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
                     'label'   => $this->__('Feed Pro Help'),
                     'class'   => 'go',
                     'id'      => 'feed_pro_help',
-                    'onclick' => 'window.open(\'http://www.gomage.com/faq/extensions/feed-pro\')'
+                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
                 ));
         
         $fieldset->setHeaderBar($headerBar->toHtml()); 
@@ -102,7 +102,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
                     'label'   => $this->__('Feed Pro Help'),
                     'class'   => 'go',
                     'id'      => 'feed_pro_help_2',
-                    'onclick' => 'window.open(\'http://www.gomage.com/faq/extensions/feed-pro\')'
+                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
                 ));
         
         $fieldset->setHeaderBar($headerBar->toHtml());
@@ -183,7 +183,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
                     'label'   => $this->__('Feed Pro Help'),
                     'class'   => 'go',
                     'id'      => 'feed_pro_help_3',
-                    'onclick' => 'window.open(\'http://www.gomage.com/faq/extensions/feed-pro\')'
+                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
                 ));
         
         $fieldset->setHeaderBar($headerBar->toHtml()); 

@@ -6,11 +6,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2015 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2016 GoMage.com (https://www.gomage.com)
  * @author       GoMage.com
- * @license      http://www.gomage.com/licensing  Single domain license
- * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.6
+ * @license      https://www.gomage.com/licensing  Single domain license
+ * @terms of use https://www.gomage.com/terms-of-use
+ * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
 class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract
@@ -19,6 +19,12 @@ class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract
     public function getConfigData($node)
     {
         return Mage::getStoreConfig('gomage_feed/' . $node);
+    }
+
+    public function isModuleExists($moduleName)
+    {
+        $modules = (array)Mage::getConfig()->getNode('modules')->children();
+        return isset($modules[$moduleName]);
     }
 
     public function getAllStoreDomains()
@@ -87,7 +93,7 @@ class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_downloadable/key/check'));
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, 'key=' . urlencode($k) . '&sku=feed-pro&domains=' . urlencode(implode(',', $this->getAllStoreDomains())) . '&ver=' . urlencode('3.6'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'key=' . urlencode($k) . '&sku=feed-pro&domains=' . urlencode(implode(',', $this->getAllStoreDomains())) . '&ver=' . urlencode('3.7.0'));
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -253,7 +259,7 @@ class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, sprintf('https://www.gomage.com/index.php/gomage_notification/index/data'));
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=feed-pro&timestamp=' . $timestamp . '&ver=' . urlencode('3.6'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, 'sku=feed-pro&timestamp=' . $timestamp . '&ver=' . urlencode('3.7.0'));
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 

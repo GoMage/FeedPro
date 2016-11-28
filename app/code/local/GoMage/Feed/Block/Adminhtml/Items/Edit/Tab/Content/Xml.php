@@ -6,11 +6,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2015 GoMage.com (http://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2016 GoMage.com (https://www.gomage.com)
  * @author       GoMage.com
- * @license      http://www.gomage.com/licensing  Single domain license
- * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 3.6
+ * @license      https://www.gomage.com/licensing  Single domain license
+ * @terms of use https://www.gomage.com/terms-of-use
+ * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
 class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Xml extends Mage_Adminhtml_Block_Widget_Form
@@ -34,7 +34,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Xml extends Mage_Adminh
                     'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
                     'class'   => 'go',
                     'id'      => 'feed_pro_help',
-                    'onclick' => 'window.open(\'http://www.gomage.com/faq/extensions/feed-pro\')'
+                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
                 )
             );
 
