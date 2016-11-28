@@ -131,22 +131,40 @@ if($data = $this->getFeed()->getContent()){
                 <div class="right">
                     <div id="<?php echo $this->getHtmlId() ?>" class="uploader">
                         <div class="buttons">
-                            <div id="<?php echo $this->getHtmlId() ?>-install-flash" style="display:none">
-                                <?php echo Mage::helper('media')->__('This content requires last version of Adobe Flash Player. <a href="%s">Get Flash</a>', 'http://www.adobe.com/go/getflash/') ?>
-                            </div>
+                            <?php if (Mage::helper('gomage_feed')->isModuleExists('Mage_Uploader')): ?>
+                                <div id="<?php echo $this->getHtmlId() ?>-flash">
+                                    <div id="<?php echo $this->getHtmlId() ?>-browse" style="display: inline-block;">
+                                        <button id="<?php echo $this->getHtmlId() ?>-browse_button" title="Browse" type="button" class="scalable"><span><span><span>Browse</span></span></span></button>
+                                    </div>
+                                    <button id="<?php echo $this->getHtmlId() ?>-upload" title="Upload" type="button" class="scalable"><span><span><span>Upload</span></span></span></button>
+                                    <div id="<?php echo $this->getHtmlId() ?>-container" class="file-row-info"></div>
+                                </div>
+                                <div class="no-display" id="<?php echo $this->getHtmlId() ?>-template">
+                                    <div id="{{id}}-container" class="file-row">
+                                        <span class="file-info">{{name}} {{size}}</span>
+                                        <span class="delete-button"><button  id="{{id}}" title="Remove" type="button" class="scalable delete" onclick="" style=""><span><span><span><?php echo $this->__('Remove') ?></span></span></span></button></span>
+                                        <span class="progress-text"></span>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div id="<?php echo $this->getHtmlId() ?>-install-flash" style="display:none">
+                                    <?php echo Mage::helper('media')->__('This content requires last version of Adobe Flash Player. <a href="%s">Get Flash</a>', 'http://www.adobe.com/go/getflash/') ?>
+                                </div>
+                                <div class="no-display" id="<?php echo $this->getHtmlId() ?>-template">
+                                    <div id="{{id}}" class="file-row">
+                                        <span class="file-info">{{name}} ({{size}})</span>
+                                        <span class="delete-button"><?php echo $this->getDeleteButtonHtml() ?></span>
+                                        <span class="progress-text"></span>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                                <div class="no-display" id="<?php echo $this->getHtmlId() ?>-template-progress">
+                                    {{percent}}% {{uploaded}} / {{total}}
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <div class="clear"></div>
-                        <div class="no-display" id="<?php echo $this->getHtmlId() ?>-template">
-                            <div id="{{id}}" class="file-row">
-                                <span class="file-info">{{name}} ({{size}})</span>
-                                <span class="delete-button"><?php echo $this->getDeleteButtonHtml() ?></span>
-                                <span class="progress-text"></span>
-                                <div class="clear"></div>
-                            </div>
-                        </div>
-                        <div class="no-display" id="<?php echo $this->getHtmlId() ?>-template-progress">
-                            {{percent}}% {{uploaded}} / {{total}}
-                        </div>
                     </div>
                 </div>
             <?php else: ?>
@@ -295,18 +313,26 @@ if($data = $this->getFeed()->getContent()){
     <script type="text/javascript">
         //<![CDATA[
 
-        var maxUploadFileSizeInBytes = <?php echo $this->getDataMaxSizeInBytes() ?>;
-        var maxUploadFileSize = '<?php echo $this->getDataMaxSize() ?>';
-
-        <?php echo $this->getJsObjectName() ?> = new Flex.Uploader('<?php echo $this->getHtmlId() ?>', '<?php echo $this->getUploaderUrl('media/uploader.swf') ?>', <?php echo $this->getConfigJson() ?>);
-
-        <?php echo $this->getJsObjectName() ?>.onFilesComplete = function(completedFiles){
-            completedFiles.each(function(file){
-                GomageFeedAdmin.submit(0, file.name);
-                <?php echo $this->getJsObjectName() ?>.removeFile(file.id);
+        <?php if (Mage::helper('gomage_feed')->isModuleExists('Mage_Uploader')): ?>
+            <?php echo $this->getJsObjectName() ?> = new Uploader(<?php echo $this->getConfigJson() ?>);
+            document.observe("uploader:success", function(event) {
+                event.memo.files.each(function(file){
+                    GomageFeedAdmin.submit(0, file.name);
+                });
+                $('<?php echo $this->getHtmlId() ?>-flash').setStyle({display:'none'});
             });
-            $('<?php echo $this->getHtmlId() ?>-flash').setStyle({display:'none'});
-        }
+        <?php else: ?>
+            var maxUploadFileSizeInBytes = <?php echo $this->getDataMaxSizeInBytes() ?>;
+            var maxUploadFileSize = '<?php echo $this->getDataMaxSize() ?>';
+            <?php echo $this->getJsObjectName() ?> = new Flex.Uploader('<?php echo $this->getHtmlId() ?>', '<?php echo $this->getUploaderUrl('media/uploader.swf') ?>', <?php echo $this->getConfigJson() ?>);
+            <?php echo $this->getJsObjectName() ?>.onFilesComplete = function(completedFiles){
+                completedFiles.each(function(file){
+                    GomageFeedAdmin.submit(0, file.name);
+                    <?php echo $this->getJsObjectName() ?>.removeFile(file.id);
+                });
+                $('<?php echo $this->getHtmlId() ?>-flash').setStyle({display:'none'});
+            };
+        <?php endif; ?>
 
         if ($('<?php echo $this->getHtmlId() ?>-flash') != undefined) {
             $('<?php echo $this->getHtmlId() ?>-flash').setStyle({display:'none'});

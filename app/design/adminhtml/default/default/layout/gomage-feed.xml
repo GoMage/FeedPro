@@ -43,25 +43,21 @@
         <reference name="head">
         	<action method="addItem"><type>skin_css</type><name>gomage/feed.css</name><params>media="screen, projection"</params></action>
     		<action method="addJs"><script>gomage/feed-admin.js</script></action>
-    		<action method="addJs"><script>lib/flex.js</script></action>
-    		<action method="addJs"><script>lib/FABridge.js</script></action>
-    		<action method="addJs"><script>mage/adminhtml/flexuploader.js</script></action>
     		<action method="addJs"><script>mage/adminhtml/uploader.js</script></action>
             <action method="addJs"><script>gomage/feedpro/codemirror-compressed.js</script></action>
             <action method="addItem"><type>skin_css</type><name>gomage/codemirror.css</name></action>
     	</reference>
     	<reference name="before_body_end">
     		<block name="gomage.feed.loader" type="core/template" template="gomage/feed/loader.phtml"/> 
-    	</reference>    	    	
+    	</reference>
+		<update handle="editor"/>
     </adminhtml_gomage_feed_items_edit>
     <adminhtml_gomage_feed_items_new>
         <reference name="head">
         	<action method="addItem"><type>skin_css</type><name>gomage/feed.css</name><params>media="screen, projection"</params></action>
     		<action method="addJs"><script>gomage/feed-admin.js</script></action>
-    		<action method="addJs"><script>lib/flex.js</script></action>
-    		<action method="addJs"><script>lib/FABridge.js</script></action>
-    		<action method="addJs"><script>mage/adminhtml/flexuploader.js</script></action>
     		<action method="addJs"><script>mage/adminhtml/uploader.js</script></action>
     	</reference>
+		<update handle="editor"/>
     </adminhtml_gomage_feed_items_new>
 </layout>
