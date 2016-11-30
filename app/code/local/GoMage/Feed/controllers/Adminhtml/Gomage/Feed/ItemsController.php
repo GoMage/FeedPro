@@ -482,33 +482,36 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
 
         $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($feed_id);
 
-        if ($stop_command) {
-            $generate_info->stop()->save();
-        }
+        if ($generate_info) {
 
-        $result['stop'] = $generate_info->getData('stopped');
+            if ($stop_command) {
+                $generate_info->stop()->save();
+            }
 
-        $errors = $generate_info->getData('errors');
-        if (count($errors)) {
-            $result['error'] = implode(' ', $errors);
-        }
+            $result['stop'] = $generate_info->getData('stopped');
 
-        $percent = 0;
-        if (($generated_records = $generate_info->getData('generated_records')) &&
-            ($total_records = $generate_info->getData('total_records'))
-        ) {
-            $percent = round($generated_records * 100 / $total_records);
-        }
-        $result['percent'] = $percent;
+            $errors = $generate_info->getData('errors');
+            if (count($errors)) {
+                $result['error'] = implode(' ', $errors);
+            }
 
-        list($hour, $min, $sec) = $generate_info->getGenerationTime();
+            $percent = 0;
+            if (($generated_records = $generate_info->getData('generated_records')) &&
+                ($total_records = $generate_info->getData('total_records'))
+            ) {
+                $percent = round($generated_records * 100 / $total_records);
+            }
+            $result['percent'] = $percent;
 
-        $result['time'] = Mage::helper('gomage_feed/generator')->formatGenerationTime($hour, $min, $sec);
+            list($hour, $min, $sec) = $generate_info->getGenerationTime();
+
+            $result['time'] = Mage::helper('gomage_feed/generator')->formatGenerationTime($hour, $min, $sec);
 
 
-        if ($generate_info->getData('finished')) {
-            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('File was generated.'));
-            $result['redirect'] = $this->getUrl('*/*/edit', array('id' => $feed_id));
+            if ($generate_info->getData('finished')) {
+                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('File was generated.'));
+                $result['redirect'] = $this->getUrl('*/*/edit', array('id' => $feed_id));
+            }
         }
 
         $this->getResponse()->setBody(Zend_Json::encode($result));
