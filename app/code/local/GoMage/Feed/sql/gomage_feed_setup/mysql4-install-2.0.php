@@ -1,5 +1,5 @@
 <?php
- /**
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -49,7 +49,8 @@ CREATE TABLE `{$this->getTable('gomage_feed_entity')}` (
   `restart_cron` smallint(6) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='GoMage Catalog Feed' AUTO_INCREMENT=1;
-");
+"
+);
 $installer->run("
 CREATE TABLE `{$this->getTable('gomage_feed_custom_attribute')}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -59,5 +60,6 @@ CREATE TABLE `{$this->getTable('gomage_feed_custom_attribute')}` (
   `data` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='GoMage Catalog Feed' AUTO_INCREMENT=1;
-");
+"
+);
 $installer->endSetup(); 

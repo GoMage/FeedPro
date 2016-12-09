@@ -1,5 +1,6 @@
 <?php
- /**
+
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -12,120 +13,101 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
-
 class GoMage_Feed_Block_Adminhtml_Attributes_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-	
-    public function __construct(){
-    	
+
+    public function __construct()
+    {
         parent::__construct();
         $this->setId('gomagefeedsGrid');
         $this->setDefaultSort('date');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
-        
     }
-    
-    protected function _prepareCollection(){
-    	
-    	
-    	
-        $collection = Mage::getModel('gomage_feed/custom_attribute')->getCollection();
-        
+
+    protected function _prepareCollection()
+    {
+        $collection = Mage::getModel('gomage_feed/attribute')->getCollection();
         $this->setCollection($collection);
         return parent::_prepareCollection();
-        
     }
-    
-    protected function _prepareColumns(){
-    	
-    	$this->addColumn('id', array(
-            'header'    =>  $this->__('ID'),
-            'align'     =>  'left',
-            'index'     =>  'id',
-            'type'  => 'number',
-            'width' => '50px',
-        ));
-    	
+
+    protected function _prepareColumns()
+    {
+        $this->addColumn('id', array(
+                'header' => $this->__('ID'),
+                'align'  => 'left',
+                'index'  => 'id',
+                'type'   => 'number',
+                'width'  => '50px',
+            )
+        );
+
         $this->addColumn('name', array(
-            'header'    =>  $this->__('Name'),
-            'align'     =>  'left',
-            'index'     =>  'name',
-        ));
-        /*
-        $this->addColumn('attribute_code', array(
-	          'header'    => $this->__('Catalog Code'),
-	          'align'     =>'left',
-	          'index'     => 'attribute_code',
-	    ));
-        /**/
+                'header' => $this->__('Name'),
+                'align'  => 'left',
+                'index'  => 'name',
+            )
+        );
         $this->addColumn('code', array(
-	          'header'    => $this->__('Dynamic Attribute Code'),
-	          'align'     =>'left',
-	          'index'     => 'code',
-	    ));
-        
-        
+                'header' => $this->__('Dynamic Attribute Code'),
+                'align'  => 'left',
+                'index'  => 'code',
+            )
+        );
         $this->addColumn('action', array(
-            'header'    =>  $this->__('Action'),
-            'width'     =>  '100',
-            'type'      =>  'action',
-            'getter'    =>  'getId',
-            'actions'   =>  array(
-                array(
-                    'caption'   =>  $this->__('Edit'),
-                    'url'       =>  array('base'=> '*/*/edit'),
-                    'field'     =>  'id'
-                )
-            ),
-            'filter'    =>  false,
-            'sortable'  =>  false,
-            'index'     =>  'stores',
-            'is_system' =>  true,
-        ));
-        
+                'header'    => $this->__('Action'),
+                'width'     => '100',
+                'type'      => 'action',
+                'getter'    => 'getId',
+                'actions'   => array(
+                    array(
+                        'caption' => $this->__('Edit'),
+                        'url'     => array('base' => '*/*/edit'),
+                        'field'   => 'id'
+                    )
+                ),
+                'filter'    => false,
+                'sortable'  => false,
+                'index'     => 'stores',
+                'is_system' => true,
+            )
+        );
         return parent::_prepareColumns();
-        
     }
-    
-    protected function _prepareMassaction(){
-        
+
+    protected function _prepareMassaction()
+    {
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('id');
-        
+
         $this->getMassactionBlock()->addItem('delete', array(
-            'label'     =>  $this->__('Delete'),
-            'url'       =>  $this->getUrl('*/*/massDelete'),
-            'confirm'   =>  $this->__('Are you sure?')
-        ));
-        
-        
+                'label'   => $this->__('Delete'),
+                'url'     => $this->getUrl('*/*/massDelete'),
+                'confirm' => $this->__('Are you sure?')
+            )
+        );
         return $this;
-        
     }
-    
-    
-    protected function _afterLoadCollection(){
-        
+
+
+    protected function _afterLoadCollection()
+    {
         $this->getCollection()->walk('afterLoad');
         parent::_afterLoadCollection();
-        
     }
-    
-    protected function _filterStoreCondition($collection, $column){
-        
+
+    protected function _filterStoreCondition($collection, $column)
+    {
         if (!$value = $column->getFilter()->getValue()) {
             return;
         }
-        
         $this->getCollection()->addStoreFilter($value);
-        
     }
-    
-    public function getRowUrl($row){
-        
+
+    public function getRowUrl($row)
+    {
         return $this->getUrl('*/*/edit', array('id' => $row->getId()));
-        
     }
-    
+
 }

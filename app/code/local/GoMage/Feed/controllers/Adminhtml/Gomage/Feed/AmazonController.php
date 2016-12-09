@@ -59,8 +59,6 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AmazonController extends Mage_Adminhtml_
                 }
             }
         }
-
-
         return $this->getResponse()->setBody(Zend_Json::encode($error));
     }
 

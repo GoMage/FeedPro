@@ -32,11 +32,13 @@
     <adminhtml_gomage_feed_attributes_edit>
     	<reference name="head">
     		<action method="addItem"><type>skin_css</type><name>gomage/feed.css</name><params>media="screen, projection"</params></action>
+            <action method="addJs"><script>gomage/feedpro/attribute.js</script></action>
     	</reference>
     </adminhtml_gomage_feed_attributes_edit>
     <adminhtml_gomage_feed_attributes_new>
     	<reference name="head">
     		<action method="addItem"><type>skin_css</type><name>gomage/feed.css</name><params>media="screen, projection"</params></action>
+            <action method="addJs"><script>gomage/feedpro/attribute.js</script></action>
     	</reference>
     </adminhtml_gomage_feed_attributes_new>
     <adminhtml_gomage_feed_items_edit>
@@ -46,6 +48,8 @@
     		<action method="addJs"><script>mage/adminhtml/uploader.js</script></action>
             <action method="addJs"><script>gomage/feedpro/codemirror-compressed.js</script></action>
             <action method="addItem"><type>skin_css</type><name>gomage/codemirror.css</name></action>
+            <action method="setCanLoadExtJs"><flag>1</flag></action>
+            <action method="setCanLoadRulesJs"><flag>1</flag></action>
     	</reference>
     	<reference name="before_body_end">
     		<block name="gomage.feed.loader" type="core/template" template="gomage/feed/loader.phtml"/> 
@@ -57,6 +61,8 @@
         	<action method="addItem"><type>skin_css</type><name>gomage/feed.css</name><params>media="screen, projection"</params></action>
     		<action method="addJs"><script>gomage/feed-admin.js</script></action>
     		<action method="addJs"><script>mage/adminhtml/uploader.js</script></action>
+            <action method="setCanLoadExtJs"><flag>1</flag></action>
+            <action method="setCanLoadRulesJs"><flag>1</flag></action>
     	</reference>
 		<update handle="editor"/>
     </adminhtml_gomage_feed_items_new>

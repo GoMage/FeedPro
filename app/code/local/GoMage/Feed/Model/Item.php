@@ -13,7 +13,7 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
-class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
+class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
 {
 
     protected $_productCollection = null;
@@ -22,12 +22,6 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
     protected $_store = null;
     protected $product_image_width = null;
     protected $product_image_height = null;
-
-    public function _construct()
-    {
-        parent::_construct();
-        $this->_init('gomage_feed/item');
-    }
 
     public function getCategoriesCollection()
     {
@@ -387,7 +381,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
                     }
                 }
 
-                $custom_attributes = Mage::getResourceModel('gomage_feed/custom_attribute_collection');
+                $custom_attributes = Mage::getResourceModel('gomage_feed/attribute_collection');
                 $custom_attributes->load();
 
                 foreach ($custom_attributes as $_attribute) {
@@ -1354,7 +1348,7 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
                         $generate_info->setError(Mage::helper('gomage_feed')->__('There was an error while generating file. Change "Number of Products" in the Advanced Settings.
                                                 Try to change "Number of Products" in the Advanced Settings.
                                                 For example: set "Number of Products" equal 50 or 100.'
-                            )
+                        )
                         )->save();
                         return false;
 
@@ -1452,7 +1446,8 @@ class GoMage_Feed_Model_Item extends Mage_Core_Model_Abstract
                 } else {
                     throw new Mage_Core_Exception('You can’t upload the file via SSH because PHP5-SSH2 extension is not installed.
 Please contact your hosting provider to install the extension. More information at:
- <a href="http://www.php.net/manual/en/book.ssh2.php">http://www.php.net/manual/en/book.ssh2.php</a>');
+ <a href="http://www.php.net/manual/en/book.ssh2.php">http://www.php.net/manual/en/book.ssh2.php</a>'
+                    );
                 }
 
             } else {
@@ -1574,4 +1569,32 @@ Please contact your hosting provider to install the extension. More information 
         }
     }
 
+    //TODO: rule start
+
+    public function _construct()
+    {
+        parent::_construct();
+        $this->_init('gomage_feed/item');
+        $this->setIdFieldName('id');
+    }
+
+    /**
+     * Getter for rule combine conditions instance
+     *
+     * @return Mage_Rule_Model_Condition_Combine
+     */
+    public function getConditionsInstance()
+    {
+        return Mage::getModel('gomage_feed/rule_condition_combine');
+    }
+
+    /**
+     * Getter for rule actions collection instance
+     *
+     * @return Mage_Rule_Model_Action_Collection
+     */
+    public function getActionsInstance()
+    {
+        return Mage::getModel('catalogrule/rule_action_collection');
+    }
 }

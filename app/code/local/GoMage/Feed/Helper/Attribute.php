@@ -20,22 +20,24 @@ class GoMage_Feed_Helper_Attribute extends Mage_Core_Helper_Abstract
     protected $attribute_options = null;
     protected $output_types = null;
 
-    public function getAttributeCollection()
-    {
-        if (is_null($this->attribute_collection)) {
-            $this->attribute_collection = Mage::getResourceModel('eav/entity_attribute_collection')
-                ->setItemObjectClass('catalog/resource_eav_attribute')
-                ->setEntityTypeFilter(Mage::getResourceModel('catalog/product')->getTypeId())
-                ->addFieldToFilter('attribute_code', array('nin' => array('gallery', 'media_gallery')));
-        }
-
-        return $this->attribute_collection;
-    }
 
     public function getAttributeOptionsArray()
     {
         if (is_null($this->attribute_options)) {
             $this->attribute_options = array();
+
+            /*
+             $options['Product ID']        = array('code' => "entity_id", 'label' => "Product ID");
+            $options['Is In Stock']       = array('code' => "is_in_stock", 'label' => "Is In Stock");
+            $options['Qty']               = array('code' => "qty", 'label' => "Qty");
+            $options['Category ID']       = array('code' => "category_id", 'label' => "Category ID");
+            $options['Final Price']       = array('code' => "final_price", 'label' => "Final Price");
+            $options['Product Type']      = array('code' => "product_type", 'label' => "Product Type");
+            $options['Parent SKU Amazon'] = array('code' => "parent_sku_amazon", 'label' => "Parent SKU Amazon");
+            $options['Parent URL']        = array('code' => "parent_url", 'label' => "Parent URL");
+
+
+             */
 
             $this->attribute_options['Product Id']             = array('code' => "entity_id", 'label' => "Product Id");
             $this->attribute_options['Is In Stock']            = array('code' => "is_in_stock", 'label' => "Is In Stock");
@@ -52,9 +54,9 @@ class GoMage_Feed_Helper_Attribute extends Mage_Core_Helper_Abstract
             $this->attribute_options['SKU Amazon']             = array('code' => "sku_amazon", 'label' => "SKU Amazon");
             $this->attribute_options['Category > SubCategory'] = array('code' => "category_subcategory", 'label' => "Category > SubCategory");
 
-            $custom_attributes = Mage::getResourceModel('gomage_feed/custom_attribute_collection');
+            $attributes = Mage::getResourceModel('gomage_feed/attribute_collection');
 
-            foreach ($custom_attributes as $attribute) {
+            foreach ($attributes as $attribute) {
                 $label                           = '* ' . $attribute->getName();
                 $this->attribute_options[$label] = array('code' => sprintf('custom:%s', $attribute->getCode()), 'label' => $label);
             }
@@ -124,6 +126,58 @@ class GoMage_Feed_Helper_Attribute extends Mage_Core_Helper_Abstract
         $select_id = 'field_' . $i . '_output_type';
 
         return '<select ' . $multiple . ' id="' . $select_id . '" name="field[' . $i . '][output_type][]">' . implode('', $options) . '</select><a class="gfp-toggle-multi" href="javascript:void(0)" onclick="gfp_toggle_multi(this, \'' . $select_id . '\')">' . (count($values) > 1 ? '-' : '+') . '</a>';
+    }
+
+
+    //TODO: remove all above
+
+    public function getAttributeCollection()
+    {
+        if (is_null($this->attribute_collection)) {
+            $this->attribute_collection = Mage::getResourceModel('eav/entity_attribute_collection')
+                ->setItemObjectClass('catalog/resource_eav_attribute')
+                ->setEntityTypeFilter(Mage::getResourceModel('catalog/product')->getTypeId())
+                ->addFieldToFilter('attribute_code', array('nin' => array('gallery', 'media_gallery')));
+        }
+        return $this->attribute_collection;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProductAttributes()
+    {
+        $attributes = $this->getAttributeCollection()->getItems();
+
+        $attributes = array_filter($attributes, function ($attribute) {
+            return (bool)$attribute->getFrontendLabel();
+        }
+        );
+
+        $attributes = array_map(function ($attribute) {
+            return array(
+                'value' => $attribute->getAttributeCode(),
+                'label' => $attribute->getFrontendLabel(),
+            );
+        }, $attributes
+        );
+
+        /** @var GoMage_Feed_Model_Mapper_Factory $mapperFactory */
+        $mapperFactory = Mage::getSingleton('gomage_feed/mapper_factory');
+
+        foreach ($mapperFactory->getCustomMappers() as $value => $class) {
+            $attributes[] = [
+                'value' => $value,
+                'label' => $class::getLabel()
+            ];
+        }
+
+        usort($attributes, function ($a, $b) {
+            return strcmp($a['label'], $b['label']);
+        }
+        );
+
+        return $attributes;
     }
 
 }

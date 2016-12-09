@@ -51,7 +51,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv extends Mage_Adminh
                         ->addSessionParam()
                         ->getUrl('*/*/ajaxupload', array('_secure' => true))
                 );
-            $miscConfig     = Mage::getModel('uploader/config_misc');
+            $miscConfig = Mage::getModel('uploader/config_misc');
             $miscConfig->setReplaceBrowseWithRemove(true);
             $browseButtonConfig = Mage::getModel('uploader/config_browsebutton');
 
@@ -138,7 +138,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv extends Mage_Adminh
             $theme = $design->getDefaultTheme();
         }
         return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) .
-        $design->getArea() . '/' . $design->getPackageName() . '/' . $theme . '/' . $url;
+            $design->getArea() . '/' . $design->getPackageName() . '/' . $theme . '/' . $url;
     }
 
     public function getDeleteButtonHtml()

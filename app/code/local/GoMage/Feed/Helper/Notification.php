@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage.com
  *
@@ -12,19 +13,19 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 3.0
  */
+class GoMage_Feed_Helper_Notification extends Mage_Core_Helper_Abstract
+{
 
-class GoMage_Feed_Helper_Notification extends Mage_Core_Helper_Abstract {
-		
-	public function sendMessage($feed, $message, $notify_type) 
+    public function sendMessage($feed, $message, $notify_type)
     {
-    	if (!Mage::getStoreConfig('gomage_feedpro/notifications/enabled', $feed->getStoreId())){
-    		return $this;
-    	}    	
-    	$notify_types = explode(',', Mage::getStoreConfig('gomage_feedpro/notifications/notify', $feed->getStoreId()));    	
-    	if (!in_array($notify_type, $notify_types)){
-    		return $this;
-    	}
-    	
+        if (!Mage::getStoreConfig('gomage_feedpro/notifications/enabled', $feed->getStoreId())) {
+            return $this;
+        }
+        $notify_types = explode(',', Mage::getStoreConfig('gomage_feedpro/notifications/notify', $feed->getStoreId()));
+        if (!in_array($notify_type, $notify_types)) {
+            return $this;
+        }
+
         $translate = Mage::getSingleton('core/translate');
         $translate->setTranslateInline(false);
 
@@ -32,17 +33,17 @@ class GoMage_Feed_Helper_Notification extends Mage_Core_Helper_Abstract {
 
         $template = Mage::getStoreConfig('gomage_feedpro/notifications/email_template', $feed->getStoreId());
 
-        $copyTo = $this->_getEmails('gomage_feedpro/notifications/copy_to', $feed->getStoreId());
+        $copyTo     = $this->_getEmails('gomage_feedpro/notifications/copy_to', $feed->getStoreId());
         $copyMethod = Mage::getStoreConfig('gomage_feedpro/notifications/copy_method', $feed->getStoreId());
         if ($copyTo && $copyMethod == 'bcc') {
             $mailTemplate->addBcc($copyTo);
         }
 
         $_reciever = Mage::getStoreConfig('gomage_feedpro/notifications/reciever', $feed->getStoreId());
-        $sendTo = array(
+        $sendTo    = array(
             array(
-                'email' => Mage::getStoreConfig('trans_email/ident_'.$_reciever.'/email', $feed->getStoreId()),
-                'name'  => Mage::getStoreConfig('trans_email/ident_'.$_reciever.'/name', $feed->getStoreId())
+                'email' => Mage::getStoreConfig('trans_email/ident_' . $_reciever . '/email', $feed->getStoreId()),
+                'name'  => Mage::getStoreConfig('trans_email/ident_' . $_reciever . '/name', $feed->getStoreId())
             )
         );
 
@@ -54,24 +55,24 @@ class GoMage_Feed_Helper_Notification extends Mage_Core_Helper_Abstract {
                 );
             }
         }
-        
+
         $data = array(
-    		'id' => $feed->getId(),
-			'name' => $feed->getName(),
-			'message' => $message
+            'id'      => $feed->getId(),
+            'name'    => $feed->getName(),
+            'message' => $message
         );
-        
+
         $data_object = new Varien_Object();
-        $data_object->setData($data); 
-        
+        $data_object->setData($data);
+
         foreach ($sendTo as $recipient) {
-            $mailTemplate->setDesignConfig(array('area'=>'frontend', 'store'=>$feed->getStoreId()))
+            $mailTemplate->setDesignConfig(array('area' => 'frontend', 'store' => $feed->getStoreId()))
                 ->sendTransactional(
                     $template,
                     Mage::getStoreConfig('gomage_feedpro/notifications/sender', $feed->getStoreId()),
                     $recipient['email'],
                     $recipient['name'],
-                    array('data' => $data_object) 
+                    array('data' => $data_object)
                 );
         }
 
@@ -87,7 +88,7 @@ class GoMage_Feed_Helper_Notification extends Mage_Core_Helper_Abstract {
             return explode(',', $data);
         }
         return false;
-    } 
-	
+    }
+
 
 }

@@ -1,5 +1,5 @@
 <?php
- /**
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -20,6 +20,7 @@ $installer->startSetup();
 $installer->run("
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `ftp_passive_mode` tinyint(1) DEFAULT 0;
-");
+"
+);
 
 $installer->endSetup();

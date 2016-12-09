@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage.com
  *
@@ -12,10 +13,7 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 3.2
  */
-
-
-
 class GoMage_Feed_Model_Adminhtml_System_Config_Source_Config extends Mage_Adminhtml_Model_System_Config_Backend_Serialized_Array
-{     
-    
+{
+
 }

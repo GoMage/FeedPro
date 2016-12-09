@@ -16,7 +16,7 @@
 <config>
     <modules>
         <GoMage_Feed>
-            <version>3.7.0</version>
+            <version>4.0.0</version>
         </GoMage_Feed>
     </modules>
 	<frontend>
@@ -162,12 +162,9 @@
 		            <item>
                         <table>gomage_feed_entity</table>
 		            </item>
-		            <custom_attribute>
+		            <attribute>
                         <table>gomage_feed_custom_attribute</table>
-		            </custom_attribute>
-		            <custom_attribute_value>
-                        <table>gomage_feed_custom_attribute_value</table>
-		            </custom_attribute_value>
+		            </attribute>
 		        </entities>
 		    </gomage_feed_mysql4>
 		</models>

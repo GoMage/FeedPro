@@ -1,5 +1,5 @@
 <?php
- /**
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -22,28 +22,31 @@ ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `delimiter_sufi
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `ftp_port` varchar(128) DEFAULT '';
 ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `ftp_protocol` varchar(128) DEFAULT '';
 
-");
+"
+);
 
 
 $gomage_feed_entity = $installer->getConnection()->fetchAll("
     SELECT * FROM {$this->getTable('gomage_feed_entity')}
-");
+"
+);
 
 
-foreach ($gomage_feed_entity as $data){
+foreach ($gomage_feed_entity as $data) {
     $host_info = explode(':', $data['ftp_host']);
 
-    if(isset($host_info[1])){
+    if (isset($host_info[1])) {
         $port = $host_info[1];
-    }else{
+    } else {
         $port = 21;
     }
 
     $protocol = $port == 22 ? GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp::SFTP : GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp::FTP;
 
     $installer->run("UPDATE {$this->getTable('gomage_feed_entity')}
-                 SET ftp_protocol={$protocol}, ftp_host='".$host_info[0]."', ftp_port={$port}
-                WHERE id = {$data['id']}");
+                 SET ftp_protocol={$protocol}, ftp_host='" . $host_info[0] . "', ftp_port={$port}
+                WHERE id = {$data['id']}"
+    );
 
 }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage.com
  *
@@ -12,25 +13,25 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 3.3
  */
-	
-class GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp{
-    
+class GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp
+{
+
     const FTP = 0;
     const SFTP = 1;
-    
+
     public function toOptionArray()
-    {    	
-    	$helper = Mage::helper('gomage_feed');
-    	
+    {
+        $helper = Mage::helper('gomage_feed');
+
         return array(
             array('value' => self::FTP, 'label' => $helper->__('FTP / FTPS')),
             array('value' => self::SFTP, 'label' => $helper->__('SFTP (SSH)')),
         );
     }
-    
-	public static function toOptionHash()
-    {    	
-    	$helper = Mage::helper('gomage_feed');
+
+    public static function toOptionHash()
+    {
+        $helper = Mage::helper('gomage_feed');
 
         return array(
             array('value' => self::FTP, 'label' => $helper->__('FTP / FTPS')),

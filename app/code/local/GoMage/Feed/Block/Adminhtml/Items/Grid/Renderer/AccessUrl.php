@@ -1,5 +1,6 @@
 <?php
- /**
+
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -12,14 +13,15 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
+class GoMage_Feed_Block_Adminhtml_Items_Grid_Renderer_AccessUrl extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
+{
 
-class GoMage_Feed_Block_Adminhtml_Items_Grid_Renderer_AccessUrl extends  Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract{
-	
-	public function render(Varien_Object $feed){
-		
-		if($url = $feed->getUrl()){
-			return sprintf('<a href="%s" target="_blank">%s</a>', $url, $url);
-		}
-		
-	}
+    public function render(Varien_Object $feed)
+    {
+
+        if ($url = $feed->getUrl()) {
+            return sprintf('<a href="%s" target="_blank">%s</a>', $url, $url);
+        }
+
+    }
 }

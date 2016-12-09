@@ -35,32 +35,23 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
 
     public function mappingimportAction()
     {
-
         if (($post = $this->getRequest()->getPost()) && ($id = $this->getRequest()->getParam('id')) && isset($_FILES['mappingfile']) && $_FILES['mappingfile']) {
 
             try {
 
-                $data = file_get_contents($_FILES['mappingfile']['tmp_name']);
-
+                $data       = file_get_contents($_FILES['mappingfile']['tmp_name']);
                 $array_data = json_decode($data);
 
                 if (empty($array_data)) {
-
                     Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Empty or Invalid data file'));
-
                 } else {
-
                     Mage::getModel('gomage_feed/item')->load($id)->setContent($data)->save();
                     Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('Data successfully imported'));
-
                 }
 
             } catch (Exception $e) {
-
                 Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Unknown error'));
-
             }
-
             return $this->_redirect('*/*/edit', array('id' => $id, 'tab' => 'content_section'));
         }
 
@@ -68,7 +59,6 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
         if ($id = $this->getRequest()->getParam('id')) {
             Mage::register('gomage_feed', Mage::getModel('gomage_feed/item')->load($id));
             $this->_addContent($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingimport'))->_addLeft($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingimport_tabs'));
-
         }
         $this->renderLayout();
     }
@@ -80,7 +70,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
             $uploader = new Varien_File_Uploader('file');
             $uploader->setAllowRenameFiles(false);
             $uploader->setFilesDispersion(false);
-            $path = Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'tmp';
+            $path = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'tmp';
             if (!file_exists($path)) {
                 mkdir($path);
                 chmod($path, 0777);
@@ -94,37 +84,29 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
 
     public function mappingimportsectionAction()
     {
-
         $result          = array();
         $result['error'] = false;
 
         if (($file = $this->getRequest()->getParam('file')) && ($id = $this->getRequest()->getParam('id'))) {
-
             try {
-
                 if ($this->getRequest()->getParam('section') == 1) {
-                    $data = file_get_contents(Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'examples' . DS . $file);
+                    $data = file_get_contents(Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples' . DS . $file);
                 } else {
-                    $data = file_get_contents(Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'tmp' . DS . $file);
+                    $data = file_get_contents(Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'tmp' . DS . $file);
                 }
 
                 $array_data = json_decode($data);
 
                 if (empty($array_data)) {
-
                     $result['error']      = true;
                     $result['error_text'] = Mage::helper('core')->__('Empty or Invalid data file');
-
                 } else {
-
                     $feed = Mage::getModel('gomage_feed/item')->load($id)->setContent($data);
                 }
 
             } catch (Exception $e) {
-
                 $result['error']      = true;
                 $result['error_text'] = Mage::helper('core')->__('Unknown error');
-
             }
 
             if (!$result['error']) {
@@ -132,12 +114,10 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
             }
             echo Zend_Json::encode($result);
         }
-
     }
 
     public function mappingexportAction()
     {
-
         if ($feed_id = $this->getRequest()->getParam('id')) {
 
             $feed = Mage::getModel('gomage_feed/item')->load($feed_id);
@@ -145,22 +125,17 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
             $this->getResponse()->setBody($feed->getContent());
             $this->getResponse()->setHeader('Content-Type', 'text');
             $this->getResponse()->setHeader('Content-Disposition', 'attachment; filename="mapping-export-' . basename($feed->getFilename()) . '.txt";');
-
         }
-
     }
 
     public function mappingexportftpAction()
     {
-
         if (($post = $this->getRequest()->getPost()) && ($id = $this->getRequest()->getParam('id'))) {
-
             try {
-
                 $system  = basename($this->getRequest()->getParam('feed_system'));
                 $section = basename($this->getRequest()->getParam('feed_section'));
 
-                $fileDir = Mage::getBaseDir('media') . DS . 'productsfeed' . DS . 'examples' . DS . $system;
+                $fileDir = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples' . DS . $system;
                 if (!file_exists($fileDir)) {
                     mkdir($fileDir);
                     chmod($fileDir, 0777);
@@ -175,9 +150,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('Data successfully exported'));
 
             } catch (Exception $e) {
-
                 Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Unknown error'));
-
             }
 
             return $this->_redirect('*/*/edit', array('id' => $id, 'tab' => 'content_section'));
@@ -187,7 +160,6 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
         if ($id = $this->getRequest()->getParam('id')) {
             Mage::register('gomage_feed', Mage::getModel('gomage_feed/item')->load($id));
             $this->_addContent($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingexportftp'))->_addLeft($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingexportftp_tabs'));
-
         }
         $this->renderLayout();
     }
@@ -210,9 +182,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
 
     public function saveAction()
     {
-
         if ($data = $this->getRequest()->getPost()) {
-
             try {
                 $id = $this->getRequest()->getParam('id');
 
@@ -256,21 +226,22 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                     $data['generate_hour_to'] = null;
                 }
 
-                $model->setData($data)->setId($id)->save();
+                $data['conditions'] = $data['rule']['conditions'];
+                unset($data['rule']);
+
+                $model->loadPost($data);
+                $model->setId($id)->save();
 
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('Data successfully saved'));
 
                 if ($this->getRequest()->getParam('back')) {
                     $this->_redirect('*/*/edit', array('id' => $model->getId()));
-                    return;
+                    return false;
                 }
 
             } catch (Mage_Core_Exception $e) {
-
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-
                 Mage::getSingleton('core/session')->setFeedData($data);
-
                 if ($model->getId() > 0) {
                     $this->_redirect('*/*/edit', array('id' => $model->getId()));
                 } else {
@@ -279,18 +250,14 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                 return false;
 
             } catch (Exception $e) {
-
                 Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Can’t save data'));
-
                 Mage::getSingleton('core/session')->setFeedData($data);
-
                 if ($model->getId() > 0) {
                     $this->_redirect('*/*/edit', array('id' => $model->getId()));
                 } else {
                     $this->_redirect('*/*/new', array('type' => $model->getType()));
                 }
                 return false;
-
             }
             $this->_redirect('*/*/');
         }
@@ -356,39 +323,24 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
             if (is_array($ids) && !empty($ids)) {
                 foreach ($ids as $id) {
                     $item = Mage::getModel('gomage_feed/item')->load($id);
-
                     try {
-
                         if ($item->getFtpActive() > 0) {
-
                             if ($item->ftpUpload()) {
-
                                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('%s - File "%s" was uploaded!', $item->getName(), $item->getFileNameWithExt()));
-
                             }
-
                         } else {
-
                             Mage::getSingleton('adminhtml/session')->addNotice(Mage::helper('core')->__('%s - FTP disabled', $item->getName()));
-
                         }
 
                     } catch (Mage_Core_Exception $e) {
-
                         Mage::getSingleton('adminhtml/session')->addError($item->getName() . ' - ' . $e->getMessage());
-
                     } catch (Exception $e) {
-
                         Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('%s - Can\'t upload. Please, check your FTP Settings or Hosting Settings', $item->getFileNameWithExt()));
-
                     }
                 }
             }
-
         }
-
         $this->_redirect('*/*/');
-
     }
 
     protected function _deleteItems($ids)
@@ -426,7 +378,10 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
         $this->_initAction();
 
         if ($id = $this->getRequest()->getParam('id')) {
-            Mage::register('gomage_feed', Mage::getModel('gomage_feed/item')->load($id));
+            $model = Mage::getModel('gomage_feed/item');
+            $model->load($id);
+            $model->getConditions()->setJsFormObject('rule_conditions_fieldset');
+            Mage::register('gomage_feed', $model);
         }
 
         $this->_addContent($this->getLayout()->createBlock('gomage_feed/adminhtml_items_edit'))->_addLeft($this->getLayout()->createBlock('gomage_feed/adminhtml_items_edit_tabs'));
@@ -437,6 +392,14 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
     public function uploadAction()
     {
         if ($id = $this->getRequest()->getParam('id')) {
+
+            //TODO: test
+            /** @var GoMage_Feed_Model_Generator $generator */
+            $generator = Mage::getModel('gomage_feed/generator');
+            $generator->generate($id);
+            echo "-A-";
+            exit();
+
             $item = Mage::getModel('gomage_feed/item')->load($id);
             try {
                 if ($item->ftpUpload()) {

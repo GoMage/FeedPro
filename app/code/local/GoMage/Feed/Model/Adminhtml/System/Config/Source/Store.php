@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage.com
  *
@@ -12,20 +13,20 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
-
 class GoMage_Feed_Model_Adminhtml_System_Config_Source_Store extends Mage_Adminhtml_Model_System_Store
 {
     protected function _loadWebsiteCollection()
     {
-        $h = Mage::helper('gomage_feed');  
-        $_websiteCollection = array();      
-        foreach ($h->getAvailavelWebsites() as $_w)
-        {
+        $h                  = Mage::helper('gomage_feed');
+        $_websiteCollection = array();
+        foreach ($h->getAvailavelWebsites() as $_w) {
             $website = Mage::getModel('core/website')->load($_w);
-            if ($website->getId() == 0) continue;                            
-            $_websiteCollection[$website->getId()] = $website; 
-        }    
-        $this->_websiteCollection = $_websiteCollection; 
+            if ($website->getId() == 0) {
+                continue;
+            }
+            $_websiteCollection[$website->getId()] = $website;
+        }
+        $this->_websiteCollection = $_websiteCollection;
         return $this;
     }
 }

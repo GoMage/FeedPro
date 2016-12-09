@@ -59,7 +59,7 @@ if($data = $this->getFeed()->getContent()){
 
                 <label style="float:left; margin-right:20px;"><span style="float:left;margin-right:10px; "><?php echo $this->__('Enclosure')?></span>
                     <select style="width:190px;" name="enclosure">
-                        <option value="2" <?php if(($feed->getEnclosure()) == 2 || !$feed->getDelimiter()):?> selected="selected" <?php endif;?>>"</option>
+                        <option value="2" <?php if(($feed->getEnclosure()) == 2 || !$feed->getEnclosure()):?> selected="selected" <?php endif;?>>"</option>
                         <option value="1" <?php if(($feed->getEnclosure()) == 1):?> selected="selected" <?php endif;?>>'</option>
                         <option value="3" <?php if(($feed->getEnclosure()) == 3):?> selected="selected" <?php endif;?>><?php echo $this->__('space - CSV format') ?></option>
                         <option value="4" <?php if(($feed->getEnclosure()) == 4):?> selected="selected" <?php endif;?>><?php echo $this->__('space - without double space') ?></option>

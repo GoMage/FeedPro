@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage.com
  *
@@ -12,30 +13,34 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
+class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tabs extends Mage_Adminhtml_Block_Widget_Tabs
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setId('gomage_attribute_tabs');
+        $this->setDestElementId('edit_form');
+        $this->setTitle($this->__('Attribute Information'));
+    }
 
-class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tabs extends Mage_Adminhtml_Block_Widget_Tabs {
-	public function __construct() {
-		
-		parent::__construct();
-		$this->setId('gomage_attribute_tabs');
-		$this->setDestElementId('edit_form');
-		$this->setTitle($this->__('Attribute Information'));
-	
-	}
-	
-	protected function _prepareLayout() {
-		
-		$this->addTab('main_section', array('label' => $this->__('Attribute Information'), 'title' => $this->__('Attribute Information'), 'content' => $this->getLayout()->createBlock('gomage_feed/adminhtml_attributes_edit_tab_main')->toHtml()));
-		
-		$this->addTab('data_section', array('label' => $this->__('Conditions and Values'), 'title' => $this->__('Conditions and Values'), 'content' => $this->getLayout()->createBlock('gomage_feed/adminhtml_attributes_edit_tab_data')->setTemplate('gomage/feed/attribute/edit/data.phtml')->toHtml()));
-		
-		if ($tabId = addslashes(htmlspecialchars($this->getRequest()->getParam('tab')))) {
-			
-			$this->setActiveTab($tabId);
-		}
-		
-		return parent::_beforeToHtml();
-	
-	}
+    protected function _prepareLayout()
+    {
+        $this->addTab('main_section', array(
+                'label'   => $this->__('Attribute Information'),
+                'title'   => $this->__('Attribute Information'),
+                'content' => $this->getLayout()->createBlock('gomage_feed/adminhtml_attributes_edit_tab_main')->toHtml()
+            )
+        );
+        $this->addTab('data_section', array(
+                'label'   => $this->__('Conditions and Values'),
+                'title'   => $this->__('Conditions and Values'),
+                'content' => $this->getLayout()->createBlock('gomage_feed/adminhtml_attributes_edit_tab_data')->setTemplate('gomage/feed/attribute/edit/data.phtml')->toHtml()
+            )
+        );
+        if ($tabId = addslashes(htmlspecialchars($this->getRequest()->getParam('tab')))) {
+            $this->setActiveTab($tabId);
+        }
+        return parent::_beforeToHtml();
+    }
 
 }

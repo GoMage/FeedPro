@@ -1,5 +1,6 @@
 <?php
- /**
+
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -12,33 +13,37 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 1.0
  */
-
 class GoMage_Feed_Block_Adminhtml_Items_Mappingimport extends Mage_Adminhtml_Block_Widget_Form_Container
 {
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct();
-                 
-        $this->_objectId = 'id';
+
+        $this->_objectId   = 'id';
         $this->_blockGroup = 'gomage_feed';
         $this->_controller = 'adminhtml_items';
-        $this->_mode = 'mappingimport';
-        
+        $this->_mode       = 'mappingimport';
+
         $this->_removeButton('reset');
         $this->_removeButton('delete');
         $this->_removeButton('save');
-        
+
     }
-    public function getBackUrl(){
-    	
-    	if($feed = Mage::registry('gomage_feed')){
-    		return $this->getUrl('*/*/edit', array('id'=>$feed->getId(), 'tab'=>'content_section'));
-    	}
-    	return $this->getUrl('*/*');
-    	
+
+    public function getBackUrl()
+    {
+
+        if ($feed = Mage::registry('gomage_feed')) {
+            return $this->getUrl('*/*/edit', array('id' => $feed->getId(), 'tab' => 'content_section'));
+        }
+        return $this->getUrl('*/*');
+
     }
-    public function getHeaderText(){
-    	
+
+    public function getHeaderText()
+    {
+
         return $this->__('Import Data');
-        
+
     }
 }

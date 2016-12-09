@@ -1,5 +1,5 @@
 <?php
- /**
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -40,6 +40,7 @@ CREATE TABLE `{$this->getTable('gomage_feed_entity')}` (
   `ftp_passive_mode` tinyint(1) default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='GoMage Catalog Feed' AUTO_INCREMENT=1;
-");
+"
+);
 
 $installer->endSetup(); 

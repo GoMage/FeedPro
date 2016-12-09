@@ -1,5 +1,5 @@
 <?php
- /**
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -24,6 +24,7 @@ ALTER TABLE `{$this->getTable('gomage_feed_entity')}`
   ADD COLUMN `ftp_user_name` varchar(256) DEFAULT '',
   ADD COLUMN `ftp_user_pass` varchar(256) DEFAULT '',
   ADD COLUMN `ftp_dir` varchar(256) DEFAULT '/';
-");
+"
+);
 
 $installer->endSetup();

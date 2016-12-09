@@ -1,5 +1,5 @@
 <?php
- /**
+/**
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `{$this->getTable('gomage_feed_entity')}` (
   `generated_at` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='GoMage Catalog Feed' AUTO_INCREMENT=1;
-");
+"
+);
 
 $installer->endSetup(); 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage.com
  *
@@ -12,18 +13,17 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 3.2
  */
-
-
 class GoMage_Feed_Block_Adminhtml_Config_Form_Renderer_Action extends GoMage_Feed_Block_Adminhtml_Config_Form_Renderer_Control
 {
-   
-	public function getExtraParams(){
-		$column = $this->getColumn(); 
-		if ($column && isset($column['style'])){
-			return 'onchange="action" style="'.$column['style'].'" ';
-		}else{
-			return '';
-		}	
-                
-	}   
+
+    public function getExtraParams()
+    {
+        $column = $this->getColumn();
+        if ($column && isset($column['style'])) {
+            return 'onchange="action" style="' . $column['style'] . '" ';
+        } else {
+            return '';
+        }
+
+    }
 }

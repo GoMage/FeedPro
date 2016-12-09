@@ -16,11 +16,6 @@
 class GoMage_Feed_Adminhtml_Gomage_Feed_AttributesController extends Mage_Adminhtml_Controller_Action
 {
 
-    protected function _isAllowed()
-    {
-        return Mage::getSingleton('admin/session')->isAllowed('catalog/gomage_feed/gomage_feed_attributes');
-    }
-
     protected function _initAction()
     {
         $this->loadLayout()
@@ -28,6 +23,11 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AttributesController extends Mage_Adminh
             ->_addBreadcrumb(Mage::helper('adminhtml')->__('Feed Manager'), Mage::helper('adminhtml')->__('Feed Manager'));
 
         return $this;
+    }
+
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('catalog/gomage_feed/gomage_feed_attributes');
     }
 
     public function indexAction()
@@ -41,7 +41,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AttributesController extends Mage_Adminh
         $this->_initAction();
 
         if ($data = Mage::getSingleton('core/session')->getCustomAttributeData()) {
-            Mage::register('gomage_custom_attribute', Mage::getModel('gomage_feed/custom_attribute')->addData($data));
+            Mage::register('gomage_attribute', Mage::getModel('gomage_feed/attribute')->addData($data));
             Mage::getSingleton('core/session')->setCustomAttributeData(null);
         }
 
@@ -55,48 +55,39 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AttributesController extends Mage_Adminh
     public function editAction()
     {
         $this->_initAction();
-
         if ($id = $this->getRequest()->getParam('id')) {
-            Mage::register('gomage_custom_attribute', Mage::getModel('gomage_feed/custom_attribute')->load($id));
+            Mage::register('gomage_attribute', Mage::getModel('gomage_feed/attribute')->load($id));
         }
-
         $this->_addContent($this->getLayout()->createBlock('gomage_feed/adminhtml_attributes_edit'))
             ->_addLeft($this->getLayout()->createBlock('gomage_feed/adminhtml_attributes_edit_tabs'));
 
         $this->renderLayout();
-
     }
 
     public function saveAction()
     {
         if ($data = $this->getRequest()->getPost()) {
-
             try {
-                $id = $this->getRequest()->getParam('id');
-
-                $model = Mage::getModel('gomage_feed/custom_attribute');
+                $id    = $this->getRequest()->getParam('id');
+                $model = Mage::getModel('gomage_feed/attribute');
 
                 if (isset($data['option'])) {
-
-                    $data['data'] = Zend_Json::encode((array)$data['option']);
-
+                    $data['option'] = $this->_prepareData($data['option']);
+                    $data['data']   = Zend_Json::encode($data['option']);
                 }
 
                 unset($data['option']);
 
                 $model->setData($data)->setId($id)->save();
-
                 Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('Dynamic attribute was successfully saved'));
 
                 if ($this->getRequest()->getParam('back')) {
                     $this->_redirect('*/*/edit', array('id' => $model->getId()));
-                    return;
+                    return false;
                 }
 
             } catch (Mage_Core_Exception $e) {
-
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-
                 Mage::getSingleton('core/session')->setCustomAttributeData($data);
 
                 if ($model->getId() > 0) {
@@ -105,11 +96,8 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AttributesController extends Mage_Adminh
                     $this->_redirect('*/*/new', array('type' => $model->getType()));
                 }
                 return false;
-
             } catch (Exception $e) {
-
                 Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Can’t save data'));
-
                 Mage::getSingleton('core/session')->setCustomAttributeData($data);
 
                 if ($model->getId() > 0) {
@@ -118,168 +106,103 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AttributesController extends Mage_Adminh
                     $this->_redirect('*/*/new', array('type' => $model->getType()));
                 }
                 return false;
-
             }
             $this->_redirect('*/*/');
         }
     }
 
+    /**
+     * @param  array $data
+     * @return array
+     */
+    protected function _prepareData(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = $this->_prepareData($value);
+            }
+        }
+        return array_merge($data, []);
+    }
+
     public function deleteAction()
     {
-
         if ($id = intval($this->getRequest()->getParam('id'))) {
-
             $this->_deleteItems(array($id));
-
         }
         $this->_redirect('*/*/');
     }
 
     public function massDeleteAction()
     {
-
         if ($ids = $this->getRequest()->getParam('id')) {
             if (is_array($ids) && !empty($ids)) {
                 $this->_deleteItems($ids);
             }
-
         }
-
         $this->_redirect('*/*/');
-
     }
 
     protected function _deleteItems($ids)
     {
         if (is_array($ids) && !empty($ids)) {
-
-            $model = Mage::getModel('gomage_feed/custom_attribute');
-
+            $model = Mage::getModel('gomage_feed/attribute');
             foreach ($ids as $id) {
-
-                $item = $model->setId($id)->delete();
-
+                $model->setId($id)->delete();
             }
         }
     }
 
-    public function getattributevaluefieldAction()
+    public function attributeValueAction()
     {
-
-        $result = array();
-
-        $name           = $this->getRequest()->getParam('element_name');
-        $condition_name = $this->getRequest()->getParam('condition_name');
-
-        if ($code = $this->getRequest()->getParam('attribute_code')) {
-
+        $result           = array();
+        $result['values'] = array();
+        if ($code = $this->getRequest()->getParam('code')) {
             $attribute = Mage::getModel('catalog/product')->getResource()->getAttribute($code);
-
-            if (($attribute && ($attribute->getFrontendInput() == 'select' || $attribute->getFrontendInput() == 'multiselect')) ||
+            if (($attribute && in_array($attribute->getFrontendInput(), array('select', 'multiselect'))) ||
                 ($code == 'product_type')
             ) {
-
-                $options = array();
-
                 if ($code == 'product_type') {
-                    $attribute_options = Mage_Catalog_Model_Product_Type::getOptions();
+                    $result['values'] = Mage_Catalog_Model_Product_Type::getOptions();
                 } else {
-                    $attribute_options = $attribute->getSource()->getAllOptions();
+                    $result['values'] = $attribute->getSource()->getAllOptions();
                 }
-
-                foreach ($attribute_options as $option) {
-
-                    extract($option);
-
-                    $options[] = "<option value=\"{$value}\">{$label}</option>";
-
-                }
-
-                $current = '';
-
-                $conditions          = array(
-                    '<option ' . ($current == 'eq' ? 'selected="selected"' : '') . ' value="eq">' . $this->__('equal') . '</option>',
-                    '<option ' . ($current == 'neq' ? 'selected="selected"' : '') . ' value="neq">' . $this->__('not equal') . '</option>',
-                );
-                $result['condition'] = '<select style="width:120px" name="' . $condition_name . '">' . implode('', $conditions) . '</select>';
-                $result['select']    = '<select style="width: 100%; border: 0pt none; padding: 0pt;" name="' . $name . '">' . implode('', $options) . '</select>';
             }
-
         }
-
-        if (empty($result)) {
-            $current    = '';
-            $conditions = array(
-                '<option ' . ($current == 'eq' ? 'selected="selected"' : '') . ' value="eq">' . $this->__('equal') . '</option>',
-                '<option ' . ($current == 'neq' ? 'selected="selected"' : '') . ' value="neq">' . $this->__('not equal') . '</option>',
-                '<option ' . ($current == 'gt' ? 'selected="selected"' : '') . ' value="gt">' . $this->__('greater than') . '</option>',
-                '<option ' . ($current == 'lt' ? 'selected="selected"' : '') . ' value="lt">' . $this->__('less than') . '</option>',
-                '<option ' . ($current == 'gteq' ? 'selected="selected"' : '') . ' value="gteq">' . $this->__('greater than or equal to') . '</option>',
-                '<option ' . ($current == 'lteq' ? 'selected="selected"' : '') . ' value="lteq">' . $this->__('less than or equal to') . '</option>',
-                '<option ' . ($current == 'like' ? 'selected="selected"' : '') . ' value="like">' . $this->__('like') . '</option>',
-                '<option ' . ($current == 'nlike' ? 'selected="selected"' : '') . ' value="nlike">' . $this->__('not like') . '</option>',
-            );
-
-            $result['condition'] = '<select style="width:120px" name="' . $condition_name . '">' . implode('', $conditions) . '</select>';
-            $result['select']    = ('<input style="width:100%;border:0;padding:0;" type="text" class="input-text" name="' . $name . '" value=""/>');
-
-        }
-
         $this->getResponse()->setBody(Zend_Json::encode($result));
-
     }
 
     public function mappingexportAction()
     {
-
-
         if ($id = $this->getRequest()->getParam('id')) {
-
-
-            $model = Mage::getModel('gomage_feed/custom_attribute')->load($id);
-
+            $model = Mage::getModel('gomage_feed/attribute')->load($id);
             $this->getResponse()->setBody($model->getData('data'));
             $this->getResponse()->setHeader('Content-Type', 'text');
             $this->getResponse()->setHeader('Content-Disposition', 'attachment; filename="mapping-export-' . basename($model->getCode()) . '.txt";');
-
         }
-
     }
 
     public function mappingimportAction()
     {
-
         if (($post = $this->getRequest()->getPost()) && ($id = $this->getRequest()->getParam('id')) && isset($_FILES['mappingfile']) && $_FILES['mappingfile']) {
-
             try {
-
-                $data = file_get_contents($_FILES['mappingfile']['tmp_name']);
-
+                $data       = file_get_contents($_FILES['mappingfile']['tmp_name']);
                 $array_data = json_decode($data);
-
                 if (empty($array_data)) {
-
                     Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Empty or Invalid data file'));
-
                 } else {
-
-                    Mage::getModel('gomage_feed/custom_attribute')->load($id)->setData('data', $data)->save();
+                    Mage::getModel('gomage_feed/attribute')->load($id)->setData('data', $data)->save();
                     Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('Data successfully imported'));
-
                 }
-
             } catch (Exception $e) {
-
                 Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Unknown error'));
-
             }
-
             return $this->_redirect('*/*/edit', array('id' => $id, 'tab' => 'data_section'));
         }
 
         $this->_initAction();
         if ($id = $this->getRequest()->getParam('id')) {
-            Mage::register('gomage_custom_attribute', Mage::getModel('gomage_feed/custom_attribute')->load($id));
+            Mage::register('gomage_attribute', Mage::getModel('gomage_feed/attribute')->load($id));
             $this->_addContent($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingimport'))
                 ->_addLeft($this->getLayout()->createBlock('gomage_feed/adminhtml_items_mappingimport_tabs'));
 

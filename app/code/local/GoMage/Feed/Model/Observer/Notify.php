@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GoMage.com
  *
@@ -12,13 +13,14 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 3.2
  */
+class GoMage_Feed_Model_Observer_Notify
+{
 
-class GoMage_Feed_Model_Observer_Notify {
-	
-	public function notify($event) {		
-		if (Mage::getSingleton('admin/session')->isLoggedIn() && Mage::getStoreConfig('gomage_notification/notification/enable')) {			
-			Mage::helper('gomage_feed')->notify();		
-		}
-	}
+    public function notify($event)
+    {
+        if (Mage::getSingleton('admin/session')->isLoggedIn() && Mage::getStoreConfig('gomage_notification/notification/enable')) {
+            Mage::helper('gomage_feed')->notify();
+        }
+    }
 
 }
