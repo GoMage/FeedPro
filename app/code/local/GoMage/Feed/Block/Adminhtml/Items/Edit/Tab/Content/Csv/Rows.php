@@ -75,7 +75,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv_Rows extends Mage_A
      */
     public function getProductAttributes()
     {
-        return $this->helper('gomage_feed/attribute')->getProductAttributes();
+        return $this->helper('gomage_feed/attribute')->getProductAttributes(true);
     }
 
     /**

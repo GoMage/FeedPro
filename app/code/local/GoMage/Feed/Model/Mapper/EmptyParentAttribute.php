@@ -13,74 +13,47 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 4.0.0
  */
-
-namespace GoMage\Feed\Model\Mapper;
-
-class EmptyParentAttribute extends Attribute implements GoMage_Feed_Model_Mapper_MapperInterface
+class GoMage_Feed_Model_Mapper_EmptyParentAttribute extends GoMage_Feed_Model_Mapper_ParentAttribute
 {
 
     /**
-     * @var \Magento\Framework\App\ResourceConnection
-     */
-    protected $_resource;
-
-    /**
-     * @var \Magento\Framework\DB\Adapter\AdapterInterface
-     */
-    protected $_connection;
-
-    /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
-     */
-    protected $_productCollectionFactory;
-
-
-    public function __construct(
-        $value,
-        \Magento\Catalog\Api\ProductAttributeRepositoryInterface $attributeRepository,
-        \Magento\Framework\App\ResourceConnection $resource,
-        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
-    ) {
-        parent::__construct($value, $attributeRepository);
-        $this->_resource                 = $resource;
-        $this->_connection               = $resource->getConnection();
-        $this->_productCollectionFactory = $productCollectionFactory;
-    }
-
-    /**
-     * @param  \Magento\Framework\DataObject $object
+     * @param  Varien_Object $object
      * @return mixed
      */
-    public function map(\Magento\Framework\DataObject $object)
+    public function map(Varien_Object $object)
     {
-        $result = parent::map($object);
+        $result = $this->_mapper->map($object);
         if (!empty($result)) {
             return $result;
         }
         $childProduct = $this->_getChildProduct($object);
         if ($childProduct) {
-            return parent::map($childProduct);
+            return $this->_mapper->map($childProduct);
         }
         return '';
     }
 
     /**
-     * @param \Magento\Framework\DataObject $object
-     * @return bool|\Magento\Framework\DataObject
+     * @param Varien_Object $object
+     * @return bool|Varien_Object
      */
-    protected function _getChildProduct(\Magento\Framework\DataObject $object)
+    protected function _getChildProduct(Varien_Object $object)
     {
         $childId = $this->_connection
             ->select()
-            ->from($this->_resource->getTableName('catalog_product_relation'), 'child_id')
+            ->from($this->_resource->getTableName('catalog_product_relation'), 'parent_id')
             ->where('parent_id = ?', $object->getId())
             ->where('child_id != ?', $object->getId())
             ->query()
             ->fetchColumn();
 
         if ($childId) {
-            $collection = $this->_productCollectionFactory->create();
-            return $collection->addAttributeToSelect($this->_code)
+            /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
+            $collection = Mage::getModel('catalog/product')->getCollection();
+            if ($object->getStoreId()) {
+                $collection->setStoreId($object->getStoreId());
+            }
+            return $collection->addAttributeToSelect($this->getUsedAttributes())
                 ->addIdFilter($childId)
                 ->fetchItem();
         }

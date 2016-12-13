@@ -18,12 +18,22 @@ class GoMage_Feed_Model_Mapper_Factory
     /**
      * @var array
      */
-    protected $_customMappers;
-
-    public function __construct($customMappers = array())
-    {
-        $this->_customMappers = $customMappers;
-    }
+    protected $_customMappers = array(
+        'entity_id'            => 'gomage_feed/mapper_custom_productId',
+        'is_in_stock'          => 'gomage_feed/mapper_custom_stock',
+        'qty'                  => 'gomage_feed/mapper_custom_qty',
+        'category'             => 'gomage_feed/mapper_custom_category',
+        'category_id'          => 'gomage_feed/mapper_custom_categoryId',
+        'final_price'          => 'gomage_feed/mapper_custom_finalPrice',
+        'product_type'         => 'gomage_feed/mapper_custom_productType',
+        'url'                  => 'gomage_feed/mapper_custom_productUrl',
+        'category_subcategory' => 'gomage_feed/mapper_custom_categorySubcategory',
+        'image'                => 'gomage_feed/mapper_custom_image',
+        'image_2'              => 'gomage_feed/mapper_custom_image2',
+        'image_3'              => 'gomage_feed/mapper_custom_image3',
+        'image_4'              => 'gomage_feed/mapper_custom_image4',
+        'image_5'              => 'gomage_feed/mapper_custom_image5',
+    );
 
     /**
      * @param  string $type

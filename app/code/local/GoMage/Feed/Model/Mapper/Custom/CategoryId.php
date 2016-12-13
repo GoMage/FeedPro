@@ -13,19 +13,32 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 4.0.0
  */
-class GoMage_Feed_Model_Mapper_EmptyChildAttribute extends GoMage_Feed_Model_Mapper_ParentAttribute
+class GoMage_Feed_Model_Mapper_Custom_CategoryId implements GoMage_Feed_Model_Mapper_Custom_CustomMapperInterface
 {
+
     /**
      * @param  Varien_Object $object
      * @return mixed
      */
     public function map(Varien_Object $object)
     {
-        $result = $this->_mapper->map($object);
-        if (!empty($result)) {
-            return $result;
-        }
-        return parent::map($object);
+        return $object->getCategoryIds();
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsedAttributes()
+    {
+        return [];
+    }
+
+    /**
+     * @return string
+     */
+    public static function getLabel()
+    {
+        return Mage::helper('gomage_feed')->__('Category ID');
     }
 
 }

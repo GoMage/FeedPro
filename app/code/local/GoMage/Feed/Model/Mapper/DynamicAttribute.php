@@ -13,54 +13,60 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 4.0.0
  */
-class DynamicAttribute implements GoMage_Feed_Model_Mapper_MapperInterface
+class GoMage_Feed_Model_Mapper_DynamicAttribute implements GoMage_Feed_Model_Mapper_MapperInterface
 {
-
     /**
-     * @var \GoMage\Feed\Model\Feed\Field
+     * @var GoMage_Feed_Model_Feed_Field
      */
     protected $_default;
 
     /**
-     * @var \GoMage\Feed\Model\Collection
+     * @var GoMage_Feed_Model_Collection
      */
     protected $_rows;
 
-    public function __construct(
-        $value,
-        \Magento\Framework\Json\Helper\Data $jsonHelper,
-        \Magento\Framework\ObjectManagerInterface $objectManager
-    ) {
-        /** @var \GoMage\Feed\Model\Attribute $attribute */
-        $attribute = $objectManager->get('GoMage\Feed\Model\Attribute')->load($value, 'code');
+    public function __construct($value)
+    {
+        /** @var GoMage_Feed_Model_Attribute $attribute */
+        $attribute = Mage::getModel('gomage_feed/attribute')->load($value, 'code');
 
-        $this->_default = $objectManager->create('GoMage\Feed\Model\Feed\Field', [
-                'type'  => \GoMage\Feed\Model\Config\Source\Field\TypeInterface::ATTRIBUTE,
-                'value' => $attribute->getDefaultValue()
-            ]
-        );
+        if ($attribute->getDefaultValue()) {
+            $this->_default = Mage::getModel('gomage_feed/feed_field',
+                array(
+                    'type'  => GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE,
+                    'value' => $attribute->getDefaultValue()
+                )
+            );
+        } else {
+            $this->_default = Mage::getModel('gomage_feed/feed_field',
+                array(
+                    'type'  => GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::STATIC_VALUE,
+                    'value' => ''
+                )
+            );
+        }
 
-        $this->_rows = $objectManager->create('GoMage\Feed\Model\Collection');
+        $this->_rows = Mage::getModel('gomage_feed/collection');
 
-        $content = $jsonHelper->jsonDecode($attribute->getContent());
+        $content = Zend_Json::decode($attribute->getContent());
         foreach ($content as $data) {
-            /** @var \GoMage\Feed\Model\Attribute\Row\Data $rowData */
-            $rowData = $objectManager->create('GoMage\Feed\Model\Attribute\Row\Data', ['data' => $data]);
+            /** @var GoMage_Feed_Model_Attribute_Row_Data $rowData */
+            $rowData = Mage::getModel('gomage_feed/attribute_row_data', $data);
 
-            /** @var \GoMage\Feed\Model\Attribute\Row $row */
-            $row = $objectManager->create('GoMage\Feed\Model\Attribute\Row', ['rowData' => $rowData]);
+            /** @var GoMage_Feed_Model_Attribute_Row $row */
+            $row = Mage::getModel('gomage_feed/attribute_row', $rowData);
 
             $this->_rows->add($row);
         }
     }
 
     /**
-     * @param  \Magento\Framework\DataObject $object
+     * @param  Varien_Object $object
      * @return mixed
      */
-    public function map(\Magento\Framework\DataObject $object)
+    public function map(Varien_Object $object)
     {
-        /** @var \GoMage\Feed\Model\Attribute\Row $row */
+        /** @var GoMage_Feed_Model_Attribute_Row $row */
         foreach ($this->_rows as $row) {
             if ($row->verify($object)) {
                 return $row->map($object);
@@ -75,7 +81,7 @@ class DynamicAttribute implements GoMage_Feed_Model_Mapper_MapperInterface
     public function getUsedAttributes()
     {
         $attributes = [];
-        /** @var \GoMage\Feed\Model\Attribute\Row $row */
+        /** @var GoMage_Feed_Model_Attribute_Row $row */
         foreach ($this->_rows as $row) {
             $attributes = array_merge($attributes, $row->getUsedAttributes());
         }

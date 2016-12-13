@@ -13,19 +13,14 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 4.0.0
  */
-class GoMage_Feed_Model_Mapper_EmptyChildAttribute extends GoMage_Feed_Model_Mapper_ParentAttribute
+class GoMage_Feed_Model_Mapper_Custom_Image3 extends GoMage_Feed_Model_Mapper_Custom_AbstractImage
 {
     /**
-     * @param  Varien_Object $object
-     * @return mixed
+     * @return int
      */
-    public function map(Varien_Object $object)
+    public static function getImageIndex()
     {
-        $result = $this->_mapper->map($object);
-        if (!empty($result)) {
-            return $result;
-        }
-        return parent::map($object);
+        return 3;
     }
 
 }
