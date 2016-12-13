@@ -88,9 +88,23 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv_Rows extends Mage_A
 
         if ($content) {
             $rows = Zend_Json::decode($content);
-            //TODO: prepare rows
+            $rows = $this->_prepareRows($rows);
         }
         return Zend_Json::encode($rows);
+    }
+
+    /**
+     * @param  array $rows
+     * @return array
+     */
+    protected function _prepareRows(array $rows)
+    {
+        foreach ($rows as $key => $value) {
+            if (is_array($value)) {
+                $rows[$key] = $this->_prepareRows($value);
+            }
+        }
+        return array_merge($rows, []);
     }
 
 }

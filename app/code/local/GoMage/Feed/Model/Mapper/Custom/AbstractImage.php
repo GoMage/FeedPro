@@ -49,14 +49,4 @@ abstract class GoMage_Feed_Model_Mapper_Custom_AbstractImage implements GoMage_F
     {
         return [];
     }
-
-    /**
-     * @return string
-     */
-    public static function getLabel()
-    {
-        $index = (self::getImageIndex() > 1) ? self::getImageIndex() : '';
-        return Mage::helper('gomage_feed')->__('Image %s', $index);
-    }
-
 }

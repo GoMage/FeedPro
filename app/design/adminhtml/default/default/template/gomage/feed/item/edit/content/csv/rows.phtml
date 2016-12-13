@@ -91,6 +91,7 @@ $_attributes        = $this->getProductAttributes();
                         <td class="label"><label><?php echo $this->__('Value') ?> <span class="required">*</span></label></td>
                         <td class="value">
                             <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_value]"
+                                class="select attribute-value-select"
                                 data-title="<?php echo $_htmlName ?>_{{row_id}}_value"
                                 id="<?php echo $_htmlName ?>_{{row_id}}_value_select">
                                 <option value=""><?php echo $this->__('Not Set') ?></option>
@@ -115,7 +116,8 @@ $_attributes        = $this->getProductAttributes();
                       <tr>
                         <td class="label"><label><?php echo $this->__('Output Types') ?></label></td>
                         <td class="value">
-                            <select class="select multiselect" name="<?php echo $_htmlName ?>[{{row_id}}][output_type][]" multiple="multiple" size="8">
+                            <select class="select output-type-select multiselect"
+                                    name="<?php echo $_htmlName ?>[{{row_id}}][output_type][]" multiple="multiple" size="8">
                                 <?php foreach ($_outputs as $_output): ?>
                                     <option value="<?php echo $_output['value'] ?>"><?php echo $_output['label'] ?></option>
                                 <?php endforeach ?>
@@ -140,7 +142,7 @@ $_attributes        = $this->getProductAttributes();
                       <tr>
                         <td class="label"><label><?php echo $this->__('Prefix Type') ?></label></td>
                         <td class="value">
-                            <select class="select type-select"
+                            <select class="select prefix-type-select"
                                     data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_type"
                                     name="<?php echo $_htmlName ?>[{{row_id}}][prefix_type]"
                                     data-value="<?php echo $_htmlName ?>_{{row_id}}_prefix_value">
@@ -153,9 +155,10 @@ $_attributes        = $this->getProductAttributes();
                       <tr>
                         <td class="label"><label><?php echo $this->__('Prefix Value') ?></label></td>
                         <td class="value">
-                            <select class="select" name="<?php echo $_htmlName ?>[{{row_id}}][attribute_prefix_value]"
-                                data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_value"
-                                id="<?php echo $_htmlName ?>_{{row_id}}_prefix_value_select">
+                            <select class="select prefix-value-select"
+                                    name="<?php echo $_htmlName ?>[{{row_id}}][attribute_prefix_value]"
+                                    data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_value"
+                                    id="<?php echo $_htmlName ?>_{{row_id}}_prefix_value_select">
                                 <option value=""><?php echo $this->__('Not Set') ?></option>
                                 <?php foreach ($_attributes as $_attribute): ?>
                                     <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
@@ -178,7 +181,7 @@ $_attributes        = $this->getProductAttributes();
                       <tr>
                         <td class="label"><label><?php echo $this->__('Suffix Type') ?></label></td>
                         <td class="value">
-                            <select class="select type-select"
+                            <select class="select suffix-type-select"
                                     name="<?php echo $_htmlName ?>[{{row_id}}][suffix_type]"
                                     data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_type"
                                     data-value="<?php echo $_htmlName ?>_{{row_id}}_suffix_value">
@@ -191,9 +194,10 @@ $_attributes        = $this->getProductAttributes();
                       <tr>
                         <td class="label"><label><?php echo $this->__('Suffix Value') ?></label></td>
                         <td class="value">
-                          <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_suffix_value]"
-                              data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_value"
-                              id="<?php echo $_htmlName ?>_{{row_id}}_suffix_value_select">
+                          <select class="select suffix-value-select"
+                                  name="<?php echo $_htmlName ?>[{{row_id}}][attribute_suffix_value]"
+                                  data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_value"
+                                  id="<?php echo $_htmlName ?>_{{row_id}}_suffix_value_select">
                               <option value=""><?php echo $this->__('Not Set') ?></option>
                               <?php foreach ($_attributes as $_attribute): ?>
                                   <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>

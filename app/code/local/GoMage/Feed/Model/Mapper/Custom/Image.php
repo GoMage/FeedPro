@@ -22,4 +22,13 @@ class GoMage_Feed_Model_Mapper_Custom_Image extends GoMage_Feed_Model_Mapper_Cus
     {
         return 1;
     }
+
+    /**
+     * @return string
+     */
+    public static function getLabel()
+    {
+        return Mage::helper('gomage_feed')->__('Image');
+    }
+
 }

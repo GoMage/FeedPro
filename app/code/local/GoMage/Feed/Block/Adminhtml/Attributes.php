@@ -20,7 +20,7 @@ class GoMage_Feed_Block_Adminhtml_Attributes extends Mage_Adminhtml_Block_Widget
         $this->_controller     = 'adminhtml_attributes';
         $this->_blockGroup     = 'gomage_feed';
         $this->_headerText     = $this->__('Manage Dynamic Attributes');
-        $this->_addButtonLabel = $this->__('Add Item');
+        $this->_addButtonLabel = $this->__('Add Attribute');
         parent::__construct();
     }
 }

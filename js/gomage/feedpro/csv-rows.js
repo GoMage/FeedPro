@@ -37,9 +37,43 @@ GoMage.CsvRows.prototype = {
     add: function (data) {
         var element;
         data.row_id = this.index;
-        data.output_type = (typeof data.output_type == 'undefined') ? [] : data.output_type;
         element = this.template.evaluate(data);
-        //TODO: set select values
+
+        var template = document.createElement('div');
+        template.innerHTML = element;
+
+        if (typeof data.type != 'undefined') {
+            $(template).down('select.type-select').down('option[value=' + data.type + ']')
+                .writeAttribute('selected', 'selected');
+        }
+        if (typeof data.attribute_value != 'undefined') {
+            $(template).down('select.attribute-value-select').down('option[value=' + data.attribute_value + ']')
+                .writeAttribute('selected', 'selected');
+        }
+        if (typeof data.output_type != 'undefined') {
+            data.output_type.split(',').forEach(function (v) {
+                $(template).down('select.output-type-select').down('option[value=' + v + ']')
+                    .writeAttribute('selected', 'selected');
+            }, this);
+        }
+        if (typeof data.prefix_type != 'undefined') {
+            $(template).down('select.prefix-type-select').down('option[value=' + data.prefix_type + ']')
+                .writeAttribute('selected', 'selected');
+        }
+        if (typeof data.attribute_prefix_value != 'undefined') {
+            $(template).down('select.prefix-value-select').down('option[value=' + data.attribute_prefix_value + ']')
+                .writeAttribute('selected', 'selected');
+        }
+        if (typeof data.suffix_type != 'undefined') {
+            $(template).down('select.suffix-type-select').down('option[value=' + data.suffix_type + ']')
+                .writeAttribute('selected', 'selected');
+        }
+        if (typeof data.attribute_suffix_value != 'undefined') {
+            $(template).down('select.suffix-value-select').down('option[value=' + data.attribute_suffix_value + ']')
+                .writeAttribute('selected', 'selected');
+        }
+
+        element = $(template).innerHTML;
         Element.insert(this.container, element);
         this.setValues();
         this.setTitle(data.row_id);
@@ -66,7 +100,7 @@ GoMage.CsvRows.prototype = {
         }
     },
     setValues: function () {
-        this.container.select('.type-select').forEach(function (typeField) {
+        this.container.select('.type-select, .prefix-type-select, .suffix-type-select').forEach(function (typeField) {
             if (!typeField.readAttribute('data-loaded')) {
                 typeField.writeAttribute('data-loaded', true);
                 this.setValue(typeField);
@@ -84,10 +118,6 @@ GoMage.CsvRows.prototype = {
         } else {
             input.disable().hide();
             select.enable().show();
-            if (input.value) {
-                select.value = input.value;
-                input.value = '';
-            }
         }
     },
     setTitle: function (row_id) {
@@ -134,7 +164,7 @@ GoMage.CsvRows.prototype = {
         Event.observe('add_new_row_button', 'click', this.add.bind(this, {}));
         this.container.on('click', '.delete-row', this.remove.bind(this));
         this.container.on('click', '.edit-row, .close-row', this.toggleEdit.bind(this));
-        this.container.on('change', '.type-select', this.changeType.bind(this));
+        this.container.on('change', '.type-select, .prefix-type-select, .suffix-type-select', this.changeType.bind(this));
     }
 };
 

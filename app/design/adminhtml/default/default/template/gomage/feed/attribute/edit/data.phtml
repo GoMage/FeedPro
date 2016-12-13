@@ -262,7 +262,7 @@ $_attributes = $this->getProductAttributes();
     <?php //TODO: rowsData - method in block class with prepare ?>
     document.observe("dom:loaded", function(){
         new GoMage.Rows({
-            "rowsData": <?php if ($attribute->getData('data')): ?><?php echo $attribute->getData('data'); ?><?php else: ?>[]<?php endif; ?>,
+            "rowsData": <?php echo $this->getRows(); ?>,
             "url": "<?php echo $this->getUrl('*/*/attributeValue') ?>"
         });
     });

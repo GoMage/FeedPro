@@ -189,6 +189,9 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                 $model = Mage::getModel('gomage_feed/item');
 
                 if (isset($data['field'])) {
+
+                    unset($data['field']['{{row_id}}']);
+
                     $content_data        = array();
                     $content_data_sorted = array();
 
@@ -203,7 +206,9 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                     }
 
                     ksort($content_data_sorted);
-                    $data['content'] = json_encode(array_merge($content_data, $content_data_sorted));
+                    $content_data    = array_merge($content_data, $content_data_sorted);
+                    $content_data    = $this->_prepareData($content_data);
+                    $data['content'] = Zend_Json::encode($content_data);
                 }
 
                 if (isset($data['filter']) && is_array($data['filter'])) {
@@ -261,6 +266,20 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
             }
             $this->_redirect('*/*/');
         }
+    }
+
+    /**
+     * @param  array $data
+     * @return array
+     */
+    protected function _prepareData(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = $this->_prepareData($value);
+            }
+        }
+        return array_merge($data, []);
     }
 
     public function deleteAction()
