@@ -75,177 +75,191 @@ $_attributes = $this->getProductAttributes();
         </div>
     </div>
 </div>
-<table class="template no-display">
-    <tbody id="row-template">
-        <tr class="option-row">
-            <td class="col-condition">
-                <table>
-                    <tbody id="conditions-container-{{row_id}}"></tbody>
-                </table>
-            </td>
-            <td class="col-type">
-                <select class="type-select" data-row-id="{{row_id}}"
-                        name="<?php echo $_htmlName ?>[{{row_id}}][value_type]">
-                    <?php foreach ($_types as $_type): ?>
-                        <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
-                    <?php endforeach ?>
-                </select>
-            </td>
-            <td class="col-value">
-                <table>
-                    <tbody id="values-container-{{row_id}}"></tbody>
-                </table>
-            </td>
-            <td class="col-action">
-                <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete delete-row">
-                    <span><?php echo $this->__("Delete") ?></span>
-                </button>
-                <button title="<?php echo $this->__("Add Condition") ?>" type="button"
-                        class="button add add-condition" data-row-id="{{row_id}}">
-                    <span><?php echo $this->__("Add Condition") ?></span>
-                </button>
-                <button title="<?php echo $this->__("Add Value") ?>" type="button" class="button add add-value"
-                        data-row-id="{{row_id}}">
-                    <span><?php echo $this->__("Add Value") ?></span>
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
 
-<table class="template no-display">
-    <tbody id="condition-template">
-        <tr>
-            <td class="col-attribute">
-                <select class="required-entry attribute-select"
-                        name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][attribute_code]"
-                        data-value="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value">
-                    <option value=""><?php echo $this->__('Not Set') ?></option>
-                    <?php foreach ($_attributes as $_attribute): ?>
-                        <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
-                    <?php endforeach ?>
-                </select>
-            </td>
-            <td class="col-operator">
-                <select name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][condition]">
-                    <?php foreach ($_operators as $_operator): ?>
-                        <option value="<?php echo $_operator['value'] ?>"><?php echo $_operator['label'] ?></option>
-                    <?php endforeach ?>
-                </select>
-            </td>
-            <td class="col-value">
-                <input name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][value]"
-                       value="{{value}}" class="input-text" type="text"
-                       id="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value_input"/>
-                <select disabled="disabled" style="display: none"
-                        id="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value_select"
-                        name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][value]">
-                </select>
-            </td>
-            <td class="col-action">
-                <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete delete-condition">
-                    <span><?php echo $this->__("Delete") ?></span>
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="template no-display" id="row-template">
+    <table>
+        <tbody>
+            <tr class="option-row">
+                <td class="col-condition">
+                    <table>
+                        <tbody id="conditions-container-{{row_id}}"></tbody>
+                    </table>
+                </td>
+                <td class="col-type">
+                    <select class="type-select" data-row-id="{{row_id}}"
+                            name="<?php echo $_htmlName ?>[{{row_id}}][value_type]">
+                        <?php foreach ($_types as $_type): ?>
+                            <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </td>
+                <td class="col-value">
+                    <table>
+                        <tbody id="values-container-{{row_id}}"></tbody>
+                    </table>
+                </td>
+                <td class="col-action">
+                    <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete delete-row">
+                        <span><?php echo $this->__("Delete") ?></span>
+                    </button>
+                    <button title="<?php echo $this->__("Add Condition") ?>" type="button"
+                            class="button add add-condition" data-row-id="{{row_id}}">
+                        <span><?php echo $this->__("Add Condition") ?></span>
+                    </button>
+                    <button title="<?php echo $this->__("Add Value") ?>" type="button" class="button add add-value"
+                            data-row-id="{{row_id}}">
+                        <span><?php echo $this->__("Add Value") ?></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-<table class="template no-display">
-    <tbody id="static-value-template">
-        <tr>
-            <td class="col-value">
-                <input name="<?php echo $_htmlName ?>[{{row_id}}][value]"
-                       value="{{value}}" class="input-text" type="text"/>
-            </td>
-            <td>
-                <select class="select feed-ph">
-                    <option><?php echo $this->__("Placeholder") ?></option>
-                </select>
-            </td>
-            <td class="col-action">
-                <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete feed-ph">
-                    <span><?php echo $this->__("Delete") ?></span>
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="template no-display" id="condition-template">
+    <table>
+        <tbody>
+            <tr>
+                <td class="col-attribute">
+                    <select class="required-entry attribute-select"
+                            name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][attribute_code]"
+                            data-value="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value">
+                        <option value=""><?php echo $this->__('Not Set') ?></option>
+                        <?php foreach ($_attributes as $_attribute): ?>
+                            <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </td>
+                <td class="col-operator">
+                    <select class="operator-select" name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][condition]">
+                        <?php foreach ($_operators as $_operator): ?>
+                            <option value="<?php echo $_operator['value'] ?>"><?php echo $_operator['label'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </td>
+                <td class="col-value">
+                    <input name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][value]"
+                           value="{{value}}" class="input-text" type="text"
+                           id="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value_input"/>
+                    <select disabled="disabled" style="display: none"
+                            id="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value_select"
+                            name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][value]">
+                    </select>
+                </td>
+                <td class="col-action">
+                    <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete delete-condition">
+                        <span><?php echo $this->__("Delete") ?></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-<table class="template no-display">
-    <tbody id="percent-value-template">
-        <tr>
-            <td class="col-value">
-                <input name="<?php echo $_htmlName ?>[{{row_id}}][value][percent]"
-                       value="{{percent}}" class="input-text" type="text"/>
-            </td>
-            <td class="col-attribute">
-                <select name="<?php echo $_htmlName ?>[{{row_id}}][value][code]">
-                    <option value=""><?php echo $this->__('Not Set') ?></option>
-                    <?php foreach ($_attributes as $_attribute): ?>
-                        <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
-                    <?php endforeach ?>
-                </select>
-            </td>
-            <td class="col-action">
-                <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete feed-ph">
-                    <span><?php echo $this->__("Delete") ?></span>
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="template no-display" id="static-value-template">
+    <table>
+        <tbody>
+            <tr>
+                <td class="col-value">
+                    <input name="<?php echo $_htmlName ?>[{{row_id}}][value]"
+                           value="{{value}}" class="input-text" type="text"/>
+                </td>
+                <td>
+                    <select class="select feed-ph">
+                        <option><?php echo $this->__("Placeholder") ?></option>
+                    </select>
+                </td>
+                <td class="col-action">
+                    <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete feed-ph">
+                        <span><?php echo $this->__("Delete") ?></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-<table class="template no-display">
-    <tbody id="configurable-value-template">
-        <tr>
-            <td class="col-value">
-                <input name="<?php echo $_htmlName ?>[{{row_id}}][value][prefix]"
-                       value="{{prefix}}" class="input-text" type="text"/>
-            </td>
-            <td class="col-attribute">
-                <select name="<?php echo $_htmlName ?>[{{row_id}}][value][code]">
-                    <option value=""><?php echo $this->__('Not Set') ?></option>
-                    <?php foreach ($_attributes as $_attribute): ?>
-                        <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
-                    <?php endforeach ?>
-                </select>
-            </td>
-            <td class="col-action">
-                <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete feed-ph">
-                    <span><?php echo $this->__("Delete") ?></span>
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="template no-display" id="percent-value-template">
+    <table>
+        <tbody>
+            <tr>
+                <td class="col-value">
+                    <input name="<?php echo $_htmlName ?>[{{row_id}}][value][percent]"
+                           value="{{percent}}" class="input-text" type="text"/>
+                </td>
+                <td class="col-attribute">
+                    <select class="attribute-select" name="<?php echo $_htmlName ?>[{{row_id}}][value][code]">
+                        <option value=""><?php echo $this->__('Not Set') ?></option>
+                        <?php foreach ($_attributes as $_attribute): ?>
+                            <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </td>
+                <td class="col-action">
+                    <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete feed-ph">
+                        <span><?php echo $this->__("Delete") ?></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-<table class="template no-display">
-    <tbody id="attribute-value-template">
-        <tr>
-            <td class="col-value">
-                <input name="<?php echo $_htmlName ?>[{{row_id}}][value][{{value_id}}][prefix]"
-                       value="{{prefix}}" class="input-text" type="text"/>
-            </td>
-            <td class="col-attribute">
-                <select class="attribute-select"
-                        name="<?php echo $_htmlName ?>[{{row_id}}][value][{{value_id}}][code]">
-                    <option value=""><?php echo $this->__('Not Set') ?></option>
-                    <?php foreach ($_attributes as $_attribute): ?>
-                        <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
-                    <?php endforeach ?>
-                </select>
-            </td>
-            <td class="col-action">
-                <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete delete-value">
-                    <span><?php echo $this->__("Delete") ?></span>
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="template no-display" id="configurable-value-template">
+    <table>
+        <tbody>
+            <tr>
+                <td class="col-value">
+                    <input name="<?php echo $_htmlName ?>[{{row_id}}][value][prefix]"
+                           value="{{prefix}}" class="input-text" type="text"/>
+                </td>
+                <td class="col-attribute">
+                    <select class="attribute-select" name="<?php echo $_htmlName ?>[{{row_id}}][value][code]">
+                        <option value=""><?php echo $this->__('Not Set') ?></option>
+                        <?php foreach ($_attributes as $_attribute): ?>
+                            <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </td>
+                <td class="col-action">
+                    <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete feed-ph">
+                        <span><?php echo $this->__("Delete") ?></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="template no-display" id="attribute-value-template">
+    <table>
+        <tbody>
+            <tr>
+                <td class="col-value">
+                    <input name="<?php echo $_htmlName ?>[{{row_id}}][value][{{value_id}}][prefix]"
+                           value="{{prefix}}" class="input-text" type="text"/>
+                </td>
+                <td class="col-attribute">
+                    <select class="attribute-select"
+                            name="<?php echo $_htmlName ?>[{{row_id}}][value][{{value_id}}][code]">
+                        <option value=""><?php echo $this->__('Not Set') ?></option>
+                        <?php foreach ($_attributes as $_attribute): ?>
+                            <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </td>
+                <td class="col-action">
+                    <button title="<?php echo $this->__("Delete") ?>" type="button" class="button delete delete-value">
+                        <span><?php echo $this->__("Delete") ?></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <script type="text/javascript">
+    <?php //TODO: rowsData - method in block class with prepare ?>
     document.observe("dom:loaded", function(){
         new GoMage.Rows({
             "rowsData": <?php if ($attribute->getData('data')): ?><?php echo $attribute->getData('data'); ?><?php else: ?>[]<?php endif; ?>,

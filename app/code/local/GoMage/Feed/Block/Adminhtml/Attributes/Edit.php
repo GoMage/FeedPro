@@ -17,7 +17,6 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit extends Mage_Adminhtml_Block_W
 {
     public function __construct()
     {
-
         parent::__construct();
 
         $this->_objectId   = 'id';
@@ -26,8 +25,6 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit extends Mage_Adminhtml_Block_W
 
         $this->_updateButton('save', 'label', $this->__('Save'));
         $this->_updateButton('delete', 'label', $this->__('Delete'));
-
-        $model = Mage::registry('gomage_attribute');
 
         $this->_addButton('saveandcontinue', array(
             'label'   => $this->__('Save And Continue Edit'),
@@ -45,7 +42,6 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit extends Mage_Adminhtml_Block_W
 
     public function getHeaderText()
     {
-
         if (Mage::registry('gomage_attribute') && Mage::registry('gomage_attribute')->getId()) {
             return $this->__("Edit \"%s\"", $this->htmlEscape(Mage::registry('gomage_attribute')->getName()));
         } else {

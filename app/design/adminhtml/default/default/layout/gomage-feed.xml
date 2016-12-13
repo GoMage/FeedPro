@@ -50,6 +50,7 @@
             <action method="addItem"><type>skin_css</type><name>gomage/codemirror.css</name></action>
             <action method="setCanLoadExtJs"><flag>1</flag></action>
             <action method="setCanLoadRulesJs"><flag>1</flag></action>
+            <action method="addJs"><script>gomage/feedpro/csv-rows.js</script></action>
     	</reference>
     	<reference name="before_body_end">
     		<block name="gomage.feed.loader" type="core/template" template="gomage/feed/loader.phtml"/> 
@@ -63,6 +64,7 @@
     		<action method="addJs"><script>mage/adminhtml/uploader.js</script></action>
             <action method="setCanLoadExtJs"><flag>1</flag></action>
             <action method="setCanLoadRulesJs"><flag>1</flag></action>
+            <action method="addJs"><script>gomage/feedpro/csv-rows.js</script></action>
     	</reference>
 		<update handle="editor"/>
     </adminhtml_gomage_feed_items_new>

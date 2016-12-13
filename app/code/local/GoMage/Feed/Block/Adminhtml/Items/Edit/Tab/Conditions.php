@@ -59,7 +59,11 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Conditions
 
     protected function _prepareForm()
     {
-        $model = Mage::registry('gomage_feed');
+        if (Mage::registry('gomage_feed')) {
+            $model = Mage::registry('gomage_feed');
+        } else {
+            $model = new Varien_Object();
+        }
 
         $form = new Varien_Data_Form();
 
@@ -74,11 +78,11 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Conditions
         )->setRenderer($renderer);
 
         $fieldset->addField('conditions', 'text', array(
-            'name'     => 'conditions',
-            'label'    => Mage::helper('catalogrule')->__('Conditions'),
-            'title'    => Mage::helper('catalogrule')->__('Conditions'),
-            'required' => true,
-        )
+                'name'     => 'conditions',
+                'label'    => Mage::helper('catalogrule')->__('Conditions'),
+                'title'    => Mage::helper('catalogrule')->__('Conditions'),
+                'required' => true,
+            )
         )->setRule($model)->setRenderer(Mage::getBlockSingleton('rule/conditions'));
 
         $form->setValues($model->getData());

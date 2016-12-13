@@ -72,6 +72,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AttributesController extends Mage_Adminh
                 $model = Mage::getModel('gomage_feed/attribute');
 
                 if (isset($data['option'])) {
+                    unset($data['option']['{{row_id}}']);
                     $data['option'] = $this->_prepareData($data['option']);
                     $data['data']   = Zend_Json::encode($data['option']);
                 }

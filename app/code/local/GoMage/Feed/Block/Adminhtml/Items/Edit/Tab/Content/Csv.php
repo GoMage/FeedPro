@@ -103,9 +103,8 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv extends Mage_Adminh
 
     public function getDataMaxSizeInBytes()
     {
-        $iniSize    = $this->getDataMaxSize();
-        $size       = substr($iniSize, 0, strlen($iniSize) - 1);
-        $parsedSize = 0;
+        $iniSize = $this->getDataMaxSize();
+        $size    = substr($iniSize, 0, strlen($iniSize) - 1);
         switch (strtolower(substr($iniSize, strlen($iniSize) - 1))) {
             case 't':
                 $parsedSize = $size * (1024 * 1024 * 1024 * 1024);
@@ -160,19 +159,16 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Content_Csv extends Mage_Adminh
                     )
                 )
         );
-
         return parent::_prepareLayout();
     }
 
     public function getFeed()
     {
-
         if (Mage::registry('gomage_feed')) {
             return Mage::registry('gomage_feed');
         } else {
             return new Varien_Object();
         }
-
     }
 
 }

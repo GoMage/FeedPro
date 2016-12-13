@@ -40,17 +40,28 @@ GoMage.Rows.prototype = {
         var element;
         data.row_id = this.index;
         element = this.template.evaluate(data);
+
+        var template = document.createElement('div');
+        template.innerHTML = element;
+
+        if (typeof data.value_type != 'undefined') {
+            $(template).down('select.type-select')
+                .down('option[value=' + data.value_type + ']')
+                .writeAttribute('selected', 'selected');
+        }
+
+        element = $(template).down('tbody').innerHTML;
         Element.insert(this.container, element);
 
         this.conditions[this.index] = new GoMage.Conditions({
             url: this.config.url,
             row_id: this.index,
-            conditionsData: (typeof data.conditions == 'undefined') ? [] : data.conditions
+            conditionsData: (typeof data.condition == 'undefined') ? [] : data.condition
         });
 
         var _data = {
             row_id: this.index,
-            type: (typeof data.type == 'undefined') ? 'static' : data.type
+            value_type: (typeof data.value_type == 'undefined') ? 'static' : data.value_type
         };
         if (typeof data.value != 'undefined') {
             _data.value = data.value;
@@ -76,7 +87,7 @@ GoMage.Rows.prototype = {
             var row_id = element.readAttribute('data-row-id');
             this.values[row_id] = new GoMage.Value({
                 row_id: row_id,
-                type: element.getValue()
+                value_type: element.getValue()
             });
         }
     },
@@ -141,6 +152,21 @@ GoMage.Conditions.prototype = {
         var element;
         data.condition_id = this.index;
         element = this.template.evaluate(data);
+        var template = document.createElement('div');
+        template.innerHTML = element;
+
+        if (typeof data.attribute_code != 'undefined') {
+            $(template).down('select.attribute-select')
+                .down('option[value=' + data.attribute_code + ']')
+                .writeAttribute('selected', 'selected');
+        }
+        if (typeof data.condition != 'undefined') {
+            $(template).down('select.operator-select')
+                .down('option[value=' + data.condition + ']')
+                .writeAttribute('selected', 'selected');
+        }
+
+        element = $(template).down('tbody').innerHTML;
         Element.insert(this.container, element);
         this.reloadAttributes();
         this.count++;
@@ -224,7 +250,7 @@ GoMage.Value.prototype = {
     init: function () {
         this.container.innerHTML = '';
         var addButton = $$('button.add-value[data-row-id="' + this.config.row_id + '"]')[0];
-        switch (this.config.type) {
+        switch (this.config.value_type) {
             case 'attribute_set':
                 var value = (typeof this.config.value == 'undefined') ? [] : this.config.value;
                 this.object = new GoMage.Value_Attribute(this.container, this.config.row_id, value);
@@ -278,6 +304,16 @@ GoMage.Value_Attribute.prototype = {
         var element;
         data.value_id = this.index;
         element = this.template.evaluate(data);
+        var template = document.createElement('div');
+        template.innerHTML = element;
+
+        if (typeof data.code != 'undefined') {
+            $(template).down('select.attribute-select')
+                .down('option[value=' + data.code + ']')
+                .writeAttribute('selected', 'selected');
+        }
+
+        element = $(template).down('tbody').innerHTML;
         Element.insert(this.container, element);
         this.count++;
         this.index++;
@@ -310,10 +346,20 @@ GoMage.Value_Configurable.prototype = {
         var element, data;
         data = {
             row_id: this.row_id,
-            prefix: (typeof this.value.prefix == 'undefined') ? '' : value.prefix,
-            code: (typeof this.value.code == 'undefined') ? '' : value.code
+            prefix: (typeof this.value.prefix == 'undefined') ? '' : this.value.prefix,
+            code: (typeof this.value.code == 'undefined') ? '' : this.value.code
         };
         element = this.template.evaluate(data);
+        var template = document.createElement('div');
+        template.innerHTML = element;
+
+        if (data.code) {
+            $(template).down('select.attribute-select')
+                .down('option[value=' + data.code + ']')
+                .writeAttribute('selected', 'selected');
+        }
+
+        element = $(template).down('tbody').innerHTML;
         Element.insert(this.container, element);
     }
 };
@@ -335,6 +381,16 @@ GoMage.Value_Percent.prototype = {
             code: (typeof this.value.code == 'undefined') ? '' : this.value.code
         };
         element = this.template.evaluate(data);
+        var template = document.createElement('div');
+        template.innerHTML = element;
+
+        if (data.code) {
+            $(template).down('select.attribute-select')
+                .down('option[value=' + data.code + ']')
+                .writeAttribute('selected', 'selected');
+        }
+
+        element = $(template).down('tbody').innerHTML;
         Element.insert(this.container, element);
     }
 };
@@ -355,6 +411,9 @@ GoMage.Value_Static.prototype = {
             value: this.value
         };
         element = this.template.evaluate(data);
+        var template = document.createElement('div');
+        template.innerHTML = element;
+        element = $(template).down('tbody').innerHTML;
         Element.insert(this.container, element);
     }
 };

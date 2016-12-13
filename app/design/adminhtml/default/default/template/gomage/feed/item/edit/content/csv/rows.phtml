@@ -1,0 +1,199 @@
+<?php
+/**
+ * GoMage.com
+ *
+ * GoMage Feed Pro
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2016 GoMage.com (https://www.gomage.com)
+ * @author       GoMage.com
+ * @license      https://www.gomage.com/licensing  Single domain license
+ * @terms of use https://www.gomage.com/terms-of-use
+ * @version      Release: 3.7.0
+ * @since        Class available since Release 4.0.0
+ */
+?>
+<?php
+$_htmlName          = 'field';
+$_types             = $this->getBaseTypes();
+$_extendedTypes     = $this->getExtendedTypes();
+$_outputs           = $this->getOutputs();
+$_attributes        = $this->getProductAttributes();
+?>
+
+<div id="rows-container" data-role="rows-container"></div>
+<div class="fm-actions">
+    <?php echo $this->getAddButtonHtml() ?>
+</div>
+
+<div class="template no-display" id="title-template">
+    <div class="fm-block-title-text">{{name}}</div>
+    <div class="fm-block-title-sub">
+        <div class="fm-block-title-sub-item"><strong><?php echo $this->__('Type') ?>:</strong> {{type}}</div>
+        <div class="fm-block-title-sub-item"><strong><?php echo $this->__('Value') ?>:</strong> {{value}}</div>
+        <div class="prefix-title" style="display: {{prefix_display}};">
+            <div class="fm-block-title-sub-sep"></div>
+            <div class="fm-block-title-sub-item"><strong><?php echo $this->__('Prefix Type') ?>:</strong> {{prefix_type}}</div>
+            <div class="fm-block-title-sub-item"><strong><?php echo $this->__('Prefix Value') ?>:</strong> {{prefix_value}}</div>
+        </div>
+        <div class="suffix-title" style="display: {{suffix_display}};">
+            <div class="fm-block-title-sub-sep"></div>
+            <div class="fm-block-title-sub-item"><strong><?php echo $this->__('Suffix Type') ?>:</strong> {{suffix_type}}</div>
+            <div class="fm-block-title-sub-item"><strong><?php echo $this->__('Suffix Value') ?>:</strong> {{suffix_value}}</div>
+        </div>
+    </div>
+</div>
+
+<div class="template no-display" id="row-template">
+    <div class="fm-block" data-row-id="{{row_id}}">
+        <div class="fm-block-title">
+            <div class="fm-block-title-right">
+                <button type="button" class="action-default delete-row"><span><?php echo $this->__('Delete') ?></span></button>
+                <button type="button" class="action-default edit-row"><span><?php echo $this->__('Edit') ?></span></button>
+                <button type="button" class="action-default close-row primary"><span><?php echo $this->__('Close') ?></span></button>
+            </div>
+            <div class="fm-block-title-left" id="title-container-{{row_id}}"></div>
+        </div>
+        <div class="fm-block-content">
+            <fieldset class="fm-block-content-line">
+                <div class="required">
+                    <label><span><?php echo $this->__('Sort Order') ?></span></label>
+                    <div>
+                        <input class="input-text required-entry" type="text"
+                               name="<?php echo $_htmlName ?>[{{row_id}}][order]" value="{{order}}"/>
+                    </div>
+                </div>
+                <div class="required">
+                    <label><span><?php echo $this->__('Field Name') ?></span></label>
+                    <div>
+                        <input class="input-text required-entry" type="text"
+                               data-title="<?php echo $_htmlName ?>_{{row_id}}_name"
+                               name="<?php echo $_htmlName ?>[{{row_id}}][name]" value="{{name}}"/>
+                    </div>
+                </div>
+                <div class="required">
+                    <label><span><?php echo $this->__('Type') ?></span></label>
+                    <div>
+                        <select class="type-select required-entry"
+                                name="<?php echo $_htmlName ?>[{{row_id}}][type]"
+                                data-title="<?php echo $_htmlName ?>_{{row_id}}_type"
+                                data-value="<?php echo $_htmlName ?>_{{row_id}}_value">
+                            <?php foreach ($_extendedTypes as $_type): ?>
+                                <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="required">
+                    <label><span><?php echo $this->__('Value') ?></span></label>
+                    <div>
+                        <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_value]"
+                            data-title="<?php echo $_htmlName ?>_{{row_id}}_value"
+                            id="<?php echo $_htmlName ?>_{{row_id}}_value_select">
+                            <option value=""><?php echo $this->__('Not Set') ?></option>
+                            <?php foreach ($_attributes as $_attribute): ?>
+                                <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                        <input type="text" class="input-text"
+                               data-title="<?php echo $_htmlName ?>_{{row_id}}_value"
+                               id="<?php echo $_htmlName ?>_{{row_id}}_value_input"
+                               name="<?php echo $_htmlName ?>[{{row_id}}][static_value]" value="{{static_value}}"/>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="fm-block-content-line">
+                <div>
+                    <label><span><?php echo $this->__('Output Types') ?></span></label>
+                    <div>
+                        <select name="<?php echo $_htmlName ?>[{{row_id}}][output_type][]" multiple="multiple">
+                            <?php foreach ($_outputs as $_output): ?>
+                                <option value="<?php echo $_output['value'] ?>"><?php echo $_output['label'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label><span><?php echo $this->__('Symbols Limit') ?></span></label>
+                    <div>
+                        <input class="input-text validate-number" type="text"
+                               name="<?php echo $_htmlName ?>[{{row_id}}][limit]" value="{{limit}}"/>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="fm-block-content-line">
+                <div>
+                    <label><span><?php echo $this->__('Prefix Type') ?></span></label>
+                    <div>
+                        <select class="type-select"
+                                data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_type"
+                                name="<?php echo $_htmlName ?>[{{row_id}}][prefix_type]"
+                                data-value="<?php echo $_htmlName ?>_{{row_id}}_prefix_value">
+                            <?php foreach ($_types as $_type): ?>
+                                <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label><span><?php echo $this->__('Prefix Value') ?></span></label>
+                    <div>
+                        <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_prefix_value]"
+                            data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_value"
+                            id="<?php echo $_htmlName ?>_{{row_id}}_prefix_value_select">
+                            <option value=""><?php echo $this->__('Not Set') ?></option>
+                            <?php foreach ($_attributes as $_attribute): ?>
+                                <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                        <input type="text" class="input-text" id="<?php echo $_htmlName ?>_{{row_id}}_prefix_value_input"
+                               data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_value"
+                               name="<?php echo $_htmlName ?>[{{row_id}}][prefix_value]"
+                               value="{{prefix_value}}"/>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="fm-block-content-line">
+                <div>
+                    <label><span><?php echo $this->__('Suffix Type') ?></span></label>
+                    <div>
+                        <select class="type-select"
+                                name="<?php echo $_htmlName ?>[{{row_id}}][suffix_type]"
+                                data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_type"
+                                data-value="<?php echo $_htmlName ?>_{{row_id}}_suffix_value">
+                            <?php foreach ($_types as $_type): ?>
+                                <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label><span><?php echo $this->__('Suffix Value') ?></span></label>
+                    <div>
+                        <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_suffix_value]"
+                            data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_value"
+                            id="<?php echo $_htmlName ?>_{{row_id}}_suffix_value_select">
+                            <option value=""><?php echo $this->__('Not Set') ?></option>
+                            <?php foreach ($_attributes as $_attribute): ?>
+                                <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                        <input type="text" class="input-text" id="<?php echo $_htmlName ?>_{{row_id}}_suffix_value_input"
+                               data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_value"
+                               name="<?php echo $_htmlName ?>[{{row_id}}][suffix_value]"
+                               value="{{suffix_value}}"/>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    document.observe("dom:loaded", function(){
+        new GoMage.CsvRows({
+            "rowsData": <?php echo $this->getRows(); ?>,
+            "htmlName": "<?php echo $_htmlName ?>"
+        });
+    });
+</script>
