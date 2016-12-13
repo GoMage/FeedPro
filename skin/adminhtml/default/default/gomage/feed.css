@@ -154,3 +154,173 @@ td.action-column{
           border-radius: 3px;
   zoom:1;
 }
+
+/* Fields Mapping tab
+-------------------------------------------------- */
+.fm-block{
+  border: 1px solid #d6d6d6;
+  margin: 0 0 10px;
+}
+.fm-block-title{
+  padding: 12px 10px;
+  position: relative;
+}
+.fm-block-title:after{
+  content: '';
+  clear: both;
+  display: block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  font-size: 0;
+}
+.fm-block-title-left{
+  margin-right: 175px;
+}
+.fm-block-title-right{
+  float: right;
+  padding: 8px 0 0;
+}
+.fm-block-title-right .action-default.close-row{
+  display: none;
+}
+.fm-block-title-right button + button{
+  margin-left: 5px;
+}
+.fm-block-title-right button:last-child{
+  min-width: 30px;
+}
+.fm-block-title-text{
+  font-size: 14px;
+  font-weight: 600;
+  color: #303030;
+  margin-bottom: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;  
+}
+.fm-block-title-sub{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fm-block-title-sub-item{
+  display: inline-block;
+  vertical-align: middle;
+  color: #777;
+  font-size: 12px;
+}
+.fm-block-title-sub-item strong{
+  font-weight: 600;
+}
+.fm-block-title-sub-sep{
+  display: inline-block;
+  width: 1px;
+  height: 15px;
+  overflow: hidden;
+  margin: 0 5px;
+  vertical-align: middle;
+  background: #bdb9b4;
+}
+.fm-block-content{
+  display: none;
+  margin: 0 12px;
+  padding: 5px 0;
+}
+.fm-block.__opened .fm-block-title{
+  border-bottom: 1px solid #d6d6d6;
+}
+.fm-block.__opened .fm-block-title-sub{
+  display: none;
+}
+.fm-block.__opened .fm-block-title-text{
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+.fm-block.__opened .fm-block-content{
+  display: block;
+}
+.fm-block.__opened .fm-block-title-right .action-default.edit-row{
+  display: none;
+}
+.fm-block.__opened .fm-block-title-right .action-default.close-row{
+  display: inline-block;
+}
+.fm-block fieldset.fm-block-content-line{
+  padding: 0 0 5px;
+  margin: 0 0 5px;
+  border: 0;
+  border-bottom: 1px solid #d6d6d6;
+}
+.fm-block fieldset.fm-block-content-line:last-child{
+  padding-bottom: 0;
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+.fm-block-content-line .select.multiselect option:last-child{
+  border-bottom: 0;
+}
+
+/* Conditions and Values
+-------------------------------------------------- */
+.feed-dattr-table,
+.feed-dattr-table table{
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+.feed-dattr-table td{
+  vertical-align: top;
+  padding: 5px;
+}
+.feed-dattr-table td .select,
+.feed-dattr-table td input.input-text{
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing   : border-box;
+  box-sizing        : border-box;
+  height: 22px;
+}
+.feed-dattr-table .col-condition .col-action,
+.feed-dattr-table .col-value .col-action{
+  width: 1%;
+}
+.feed-dattr-table > tbody > .option-row > td.col-condition,
+.feed-dattr-table > tbody > .option-row > td.col-value{
+  padding: 0;
+}
+.feed-dattr-table > tbody > .option-row > td.col-action{
+  width: 1%;
+  white-space: nowrap;
+}
+.feed-dattr-table .col-condition table td{
+  width: 33.33%;
+}
+.feed-dattr-table table{
+  border: 0;
+}
+.feed-dattr-table table td{
+  border: 0;
+}
+.feed-dattr-table > tbody > .option-row > td{
+  border: 1px solid #dadfe0;
+}
+.feed-dattr-table > tbody > .option-row > td.col-value td:not(.col-action){
+  width: 48%;
+}
+.feed-dattr-table .col-condition .col-action .button.delete,
+.feed-dattr-table .col-value .col-action .button.delete{
+  padding-top: 2px;
+}
+.feed-dattr-table .col-condition .col-action .button.delete span,
+.feed-dattr-table .col-value .col-action .button.delete span{
+  display: block;
+  width: 16px;
+  height: 16px;
+  text-align: left;
+  overflow: hidden;
+  text-indent: -999em;
+  padding: 0;  
+}
+.feed-ph {
+  visibility: hidden;
+}

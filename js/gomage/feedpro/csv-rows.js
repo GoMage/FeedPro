@@ -105,11 +105,11 @@ GoMage.CsvRows.prototype = {
 
         data.prefix_type = this.getTitleValue(row_id, 'prefix_type');
         data.prefix_value = this.getTitleValue(row_id, 'prefix_value');
-        data.prefix_display = data.prefix_type && data.prefix_value ? 'block' : 'none';
+        data.prefix_display = data.prefix_type && data.prefix_value ? 'inline-block' : 'none';
 
         data.suffix_type = this.getTitleValue(row_id, 'suffix_type');
         data.suffix_value = this.getTitleValue(row_id, 'suffix_value');
-        data.suffix_display = data.suffix_type && data.suffix_value ? 'block' : 'none';
+        data.suffix_display = data.suffix_type && data.suffix_value ? 'inline-block' : 'none';
 
         element = this.titleTemplate.evaluate(data);
 

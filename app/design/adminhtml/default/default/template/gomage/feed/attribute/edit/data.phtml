@@ -40,7 +40,7 @@ $_attributes = $this->getProductAttributes();
             </div>
         <?php endif; ?>
         <div class="grid">
-            <table class="data">
+            <table class="data feed-dattr-table">
                 <thead>
                     <tr class="headings">
                         <th class="col-condition"><?php echo $this->__('Condition') ?></th>
@@ -61,7 +61,7 @@ $_attributes = $this->getProductAttributes();
                     </tr>
                     <tr>
                         <td colspan="4">
-                            <select name="default_value">
+                            <select class="select" name="default_value">
                                 <option value=""><?php echo $this->__('Not Set') ?></option>
                                 <?php foreach ($_attributes as $_attribute): ?>
                                     <option <?php if ($attribute->getData('default_value') == $_attribute['value']): ?>selected="selected"<?php endif; ?> value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
@@ -86,7 +86,7 @@ $_attributes = $this->getProductAttributes();
                     </table>
                 </td>
                 <td class="col-type">
-                    <select class="type-select" data-row-id="{{row_id}}"
+                    <select class="select type-select" data-row-id="{{row_id}}"
                             name="<?php echo $_htmlName ?>[{{row_id}}][value_type]">
                         <?php foreach ($_types as $_type): ?>
                             <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
@@ -121,7 +121,7 @@ $_attributes = $this->getProductAttributes();
         <tbody>
             <tr>
                 <td class="col-attribute">
-                    <select class="required-entry attribute-select"
+                    <select class="select required-entry attribute-select"
                             name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][attribute_code]"
                             data-value="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value">
                         <option value=""><?php echo $this->__('Not Set') ?></option>
@@ -131,7 +131,7 @@ $_attributes = $this->getProductAttributes();
                     </select>
                 </td>
                 <td class="col-operator">
-                    <select class="operator-select" name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][condition]">
+                    <select class="select operator-select" name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][condition]">
                         <?php foreach ($_operators as $_operator): ?>
                             <option value="<?php echo $_operator['value'] ?>"><?php echo $_operator['label'] ?></option>
                         <?php endforeach ?>
@@ -141,7 +141,7 @@ $_attributes = $this->getProductAttributes();
                     <input name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][value]"
                            value="{{value}}" class="input-text" type="text"
                            id="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value_input"/>
-                    <select disabled="disabled" style="display: none"
+                    <select class="select" disabled="disabled" style="display: none"
                             id="<?php echo $_htmlName ?>_{{row_id}}_condition_{{condition_id}}_value_select"
                             name="<?php echo $_htmlName ?>[{{row_id}}][condition][{{condition_id}}][value]">
                     </select>
@@ -188,7 +188,7 @@ $_attributes = $this->getProductAttributes();
                            value="{{percent}}" class="input-text" type="text"/>
                 </td>
                 <td class="col-attribute">
-                    <select class="attribute-select" name="<?php echo $_htmlName ?>[{{row_id}}][value][code]">
+                    <select class="select attribute-select" name="<?php echo $_htmlName ?>[{{row_id}}][value][code]">
                         <option value=""><?php echo $this->__('Not Set') ?></option>
                         <?php foreach ($_attributes as $_attribute): ?>
                             <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
@@ -214,7 +214,7 @@ $_attributes = $this->getProductAttributes();
                            value="{{prefix}}" class="input-text" type="text"/>
                 </td>
                 <td class="col-attribute">
-                    <select class="attribute-select" name="<?php echo $_htmlName ?>[{{row_id}}][value][code]">
+                    <select class="select attribute-select" name="<?php echo $_htmlName ?>[{{row_id}}][value][code]">
                         <option value=""><?php echo $this->__('Not Set') ?></option>
                         <?php foreach ($_attributes as $_attribute): ?>
                             <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
@@ -240,7 +240,7 @@ $_attributes = $this->getProductAttributes();
                            value="{{prefix}}" class="input-text" type="text"/>
                 </td>
                 <td class="col-attribute">
-                    <select class="attribute-select"
+                    <select class="select attribute-select"
                             name="<?php echo $_htmlName ?>[{{row_id}}][value][{{value_id}}][code]">
                         <option value=""><?php echo $this->__('Not Set') ?></option>
                         <?php foreach ($_attributes as $_attribute): ?>

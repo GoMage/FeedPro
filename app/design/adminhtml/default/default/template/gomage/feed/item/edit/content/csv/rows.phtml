@@ -56,133 +56,157 @@ $_attributes        = $this->getProductAttributes();
         </div>
         <div class="fm-block-content">
             <fieldset class="fm-block-content-line">
-                <div class="required">
-                    <label><span><?php echo $this->__('Sort Order') ?></span></label>
-                    <div>
-                        <input class="input-text required-entry" type="text"
+                <div class="hor-scroll">
+                  <table class="form-list">
+                    <tbody>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Sort Order') ?> <span class="required">*</span></label></td>
+                        <td class="value">
+                            <input class="input-text required-entry" type="text"
                                name="<?php echo $_htmlName ?>[{{row_id}}][order]" value="{{order}}"/>
-                    </div>
-                </div>
-                <div class="required">
-                    <label><span><?php echo $this->__('Field Name') ?></span></label>
-                    <div>
-                        <input class="input-text required-entry" type="text"
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Field Name') ?> <span class="required">*</span></label></td>
+                        <td class="value">
+                            <input class="input-text required-entry" type="text"
                                data-title="<?php echo $_htmlName ?>_{{row_id}}_name"
-                               name="<?php echo $_htmlName ?>[{{row_id}}][name]" value="{{name}}"/>
-                    </div>
-                </div>
-                <div class="required">
-                    <label><span><?php echo $this->__('Type') ?></span></label>
-                    <div>
-                        <select class="type-select required-entry"
-                                name="<?php echo $_htmlName ?>[{{row_id}}][type]"
-                                data-title="<?php echo $_htmlName ?>_{{row_id}}_type"
-                                data-value="<?php echo $_htmlName ?>_{{row_id}}_value">
-                            <?php foreach ($_extendedTypes as $_type): ?>
-                                <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
-                </div>
-                <div class="required">
-                    <label><span><?php echo $this->__('Value') ?></span></label>
-                    <div>
-                        <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_value]"
-                            data-title="<?php echo $_htmlName ?>_{{row_id}}_value"
-                            id="<?php echo $_htmlName ?>_{{row_id}}_value_select">
-                            <option value=""><?php echo $this->__('Not Set') ?></option>
-                            <?php foreach ($_attributes as $_attribute): ?>
-                                <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-                        <input type="text" class="input-text"
-                               data-title="<?php echo $_htmlName ?>_{{row_id}}_value"
-                               id="<?php echo $_htmlName ?>_{{row_id}}_value_input"
-                               name="<?php echo $_htmlName ?>[{{row_id}}][static_value]" value="{{static_value}}"/>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset class="fm-block-content-line">
-                <div>
-                    <label><span><?php echo $this->__('Output Types') ?></span></label>
-                    <div>
-                        <select name="<?php echo $_htmlName ?>[{{row_id}}][output_type][]" multiple="multiple">
-                            <?php foreach ($_outputs as $_output): ?>
-                                <option value="<?php echo $_output['value'] ?>"><?php echo $_output['label'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label><span><?php echo $this->__('Symbols Limit') ?></span></label>
-                    <div>
-                        <input class="input-text validate-number" type="text"
-                               name="<?php echo $_htmlName ?>[{{row_id}}][limit]" value="{{limit}}"/>
-                    </div>
+                               name="<?php echo $_htmlName ?>[{{row_id}}][name]" value="{{name}}"/>                        
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Type') ?> <span class="required">*</span></label></td>
+                        <td class="value">
+                            <select class="select type-select required-entry"
+                                    name="<?php echo $_htmlName ?>[{{row_id}}][type]"
+                                    data-title="<?php echo $_htmlName ?>_{{row_id}}_type"
+                                    data-value="<?php echo $_htmlName ?>_{{row_id}}_value">
+                                <?php foreach ($_extendedTypes as $_type): ?>
+                                    <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Value') ?> <span class="required">*</span></label></td>
+                        <td class="value">
+                            <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_value]"
+                                data-title="<?php echo $_htmlName ?>_{{row_id}}_value"
+                                id="<?php echo $_htmlName ?>_{{row_id}}_value_select">
+                                <option value=""><?php echo $this->__('Not Set') ?></option>
+                                <?php foreach ($_attributes as $_attribute): ?>
+                                    <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                            <input type="text" class="input-text"
+                                   data-title="<?php echo $_htmlName ?>_{{row_id}}_value"
+                                   id="<?php echo $_htmlName ?>_{{row_id}}_value_input"
+                                   name="<?php echo $_htmlName ?>[{{row_id}}][static_value]" value="{{static_value}}"/>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
             </fieldset>
             <fieldset class="fm-block-content-line">
-                <div>
-                    <label><span><?php echo $this->__('Prefix Type') ?></span></label>
-                    <div>
-                        <select class="type-select"
-                                data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_type"
-                                name="<?php echo $_htmlName ?>[{{row_id}}][prefix_type]"
-                                data-value="<?php echo $_htmlName ?>_{{row_id}}_prefix_value">
-                            <?php foreach ($_types as $_type): ?>
-                                <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label><span><?php echo $this->__('Prefix Value') ?></span></label>
-                    <div>
-                        <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_prefix_value]"
-                            data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_value"
-                            id="<?php echo $_htmlName ?>_{{row_id}}_prefix_value_select">
-                            <option value=""><?php echo $this->__('Not Set') ?></option>
-                            <?php foreach ($_attributes as $_attribute): ?>
-                                <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-                        <input type="text" class="input-text" id="<?php echo $_htmlName ?>_{{row_id}}_prefix_value_input"
-                               data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_value"
-                               name="<?php echo $_htmlName ?>[{{row_id}}][prefix_value]"
-                               value="{{prefix_value}}"/>
-                    </div>
+                <div class="hor-scroll">
+                  <table class="form-list">
+                    <tbody>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Output Types') ?></label></td>
+                        <td class="value">
+                            <select class="select multiselect" name="<?php echo $_htmlName ?>[{{row_id}}][output_type][]" multiple="multiple" size="8">
+                                <?php foreach ($_outputs as $_output): ?>
+                                    <option value="<?php echo $_output['value'] ?>"><?php echo $_output['label'] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Symbols Limit') ?></label></td>
+                        <td class="value">
+                            <input class="input-text validate-number" type="text"
+                                   name="<?php echo $_htmlName ?>[{{row_id}}][limit]" value="{{limit}}"/>                        
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
             </fieldset>
             <fieldset class="fm-block-content-line">
-                <div>
-                    <label><span><?php echo $this->__('Suffix Type') ?></span></label>
-                    <div>
-                        <select class="type-select"
-                                name="<?php echo $_htmlName ?>[{{row_id}}][suffix_type]"
-                                data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_type"
-                                data-value="<?php echo $_htmlName ?>_{{row_id}}_suffix_value">
-                            <?php foreach ($_types as $_type): ?>
-                                <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
+                <div class="hor-scroll">
+                  <table class="form-list">
+                    <tbody>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Prefix Type') ?></label></td>
+                        <td class="value">
+                            <select class="select type-select"
+                                    data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_type"
+                                    name="<?php echo $_htmlName ?>[{{row_id}}][prefix_type]"
+                                    data-value="<?php echo $_htmlName ?>_{{row_id}}_prefix_value">
+                                <?php foreach ($_types as $_type): ?>
+                                    <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Prefix Value') ?></label></td>
+                        <td class="value">
+                            <select class="select" name="<?php echo $_htmlName ?>[{{row_id}}][attribute_prefix_value]"
+                                data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_value"
+                                id="<?php echo $_htmlName ?>_{{row_id}}_prefix_value_select">
+                                <option value=""><?php echo $this->__('Not Set') ?></option>
+                                <?php foreach ($_attributes as $_attribute): ?>
+                                    <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                            <input type="text" class="input-text" id="<?php echo $_htmlName ?>_{{row_id}}_prefix_value_input"
+                                   data-title="<?php echo $_htmlName ?>_{{row_id}}_prefix_value"
+                                   name="<?php echo $_htmlName ?>[{{row_id}}][prefix_value]"
+                                   value="{{prefix_value}}"/>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div>
-                    <label><span><?php echo $this->__('Suffix Value') ?></span></label>
-                    <div>
-                        <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_suffix_value]"
-                            data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_value"
-                            id="<?php echo $_htmlName ?>_{{row_id}}_suffix_value_select">
-                            <option value=""><?php echo $this->__('Not Set') ?></option>
-                            <?php foreach ($_attributes as $_attribute): ?>
-                                <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
-                            <?php endforeach ?>
-                        </select>
-                        <input type="text" class="input-text" id="<?php echo $_htmlName ?>_{{row_id}}_suffix_value_input"
-                               data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_value"
-                               name="<?php echo $_htmlName ?>[{{row_id}}][suffix_value]"
-                               value="{{suffix_value}}"/>
-                    </div>
+            </fieldset>
+            <fieldset class="fm-block-content-line">
+                <div class="hor-scroll">
+                  <table class="form-list">
+                    <tbody>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Suffix Type') ?></label></td>
+                        <td class="value">
+                            <select class="select type-select"
+                                    name="<?php echo $_htmlName ?>[{{row_id}}][suffix_type]"
+                                    data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_type"
+                                    data-value="<?php echo $_htmlName ?>_{{row_id}}_suffix_value">
+                                <?php foreach ($_types as $_type): ?>
+                                    <option value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="label"><label><?php echo $this->__('Suffix Value') ?></label></td>
+                        <td class="value">
+                          <select name="<?php echo $_htmlName ?>[{{row_id}}][attribute_suffix_value]"
+                              data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_value"
+                              id="<?php echo $_htmlName ?>_{{row_id}}_suffix_value_select">
+                              <option value=""><?php echo $this->__('Not Set') ?></option>
+                              <?php foreach ($_attributes as $_attribute): ?>
+                                  <option value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
+                              <?php endforeach ?>
+                          </select>
+                          <input type="text" class="input-text" id="<?php echo $_htmlName ?>_{{row_id}}_suffix_value_input"
+                                 data-title="<?php echo $_htmlName ?>_{{row_id}}_suffix_value"
+                                 name="<?php echo $_htmlName ?>[{{row_id}}][suffix_value]"
+                                 value="{{suffix_value}}"/>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
             </fieldset>
         </div>
