@@ -29,8 +29,11 @@ abstract class GoMage_Feed_Model_Mapper_Custom_AbstractImage implements GoMage_F
         $width  = intval(Mage::getStoreConfig('gomage_feedpro/imagesettings/width'));
         $height = intval(Mage::getStoreConfig('gomage_feedpro/imagesettings/height'));
         $i      = 1;
+        if (!$object->hasData('media_gallery_images')) {
+            $object->getResource()->getAttribute('media_gallery')->getBackend()->afterLoad($object);
+        }
         foreach ($object->getMediaGalleryImages() as $image) {
-            if ($i == self::getImageIndex()) {
+            if ($i == $this->getImageIndex()) {
                 if ($width || $height) {
                     return (string)Mage::helper('catalog/image')->init($object, 'image', $image->getPath())->resize($width, $height);
                 } else {
@@ -47,6 +50,6 @@ abstract class GoMage_Feed_Model_Mapper_Custom_AbstractImage implements GoMage_F
      */
     public function getUsedAttributes()
     {
-        return [];
+        return array('media_gallery');
     }
 }

@@ -76,7 +76,7 @@ class GoMage_Feed_Helper_Attribute extends Mage_Core_Helper_Abstract
             $dynamic_attributes = Mage::getResourceModel('gomage_feed/attribute_collection');
             foreach ($dynamic_attributes as $attribute) {
                 array_unshift($attributes, array(
-                        'code'  => sprintf('custom:%s', $attribute->getCode()),
+                        'value' => 'custom:' . $attribute->getCode(),
                         'label' => '* ' . $attribute->getName())
                 );
             }

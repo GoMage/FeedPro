@@ -20,15 +20,7 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
 
     public function checkServerParams()
     {
-        $errors = array();
-        if (!ini_get('allow_url_fopen') && Mage::getStoreConfig('gomage_feedpro/configuration/system') == GoMage_Feed_Model_Adminhtml_System_Config_Source_System::FOPEN) {
-            $errors[] = Mage::helper('gomage_feed')->__('Check that the "allow_url_fopen" option is enabled.
-                            Check that the "allow_url_fopen" option it enabled.
-                            This option enables the URL-aware fopen wrappers that enable accessing URL object like files.
-                            Learn more at <a target="_blank" href="http://php.net/manual/en/filesystem.configuration.php">http://php.net/manual/en/filesystem.configuration.php</a>'
-            );
-        }
-
+        $errors   = array();
         $base_dir = $this->getBaseDir();
         $log_dir  = $this->getLogDir();
 
@@ -52,12 +44,28 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
 
     public function getBaseDir()
     {
-        return Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY;
+        $base_dir = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY;
+        try {
+            if (!file_exists($base_dir)) {
+                mkdir($base_dir);
+            }
+            chmod($base_dir, 0777);
+        } catch (Exception $e) {
+        }
+        return $base_dir;
     }
 
     public function getLogDir()
     {
-        return Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'logs';
+        $log_dir = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'logs';
+        try {
+            if (!file_exists($log_dir)) {
+                mkdir($log_dir);
+            }
+            chmod($log_dir, 0777);
+        } catch (Exception $e) {
+        }
+        return $log_dir;
     }
 
     public function setServerConfig($feed)
@@ -88,7 +96,7 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
             $info = @file_get_contents($file_path);
             return unserialize($info);
         }
-        $info = Mage::getModel('gomage_feed/generator');
+        $info = Mage::getModel('gomage_feed/generator_info');
         $info->setData('file_path', $file_path)->save();
         return $info;
     }
@@ -117,7 +125,6 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
 
     public function needRunCron($interval, $hour_from, $hour_to, $last_run)
     {
-
         $current_time = date('G');
         $interval     = intval($interval);
         $hour_from    = intval($hour_from);

@@ -27,6 +27,7 @@ class GoMage_Feed_Model_Mapper_Custom_CategorySubcategory implements GoMage_Feed
             $categoryId = max($categoryIds);
             $category   = Mage::getModel('catalog/category')->load($categoryId);
             $categories = $category->getParentCategories();
+            unset($categories[Mage::app()->getStore($object->getStoreId())->getRootCategoryId()]);
             return implode(' > ', array_map(function ($category) {
                     return $category->getName();
                 }, $categories
@@ -41,7 +42,7 @@ class GoMage_Feed_Model_Mapper_Custom_CategorySubcategory implements GoMage_Feed
      */
     public function getUsedAttributes()
     {
-        return [];
+        return array();
     }
 
     /**

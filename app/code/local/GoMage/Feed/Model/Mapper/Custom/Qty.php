@@ -31,7 +31,7 @@ class GoMage_Feed_Model_Mapper_Custom_Qty implements GoMage_Feed_Model_Mapper_Cu
      */
     public function getUsedAttributes()
     {
-        return [];
+        return array();
     }
 
     /**

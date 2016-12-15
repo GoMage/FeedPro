@@ -13,7 +13,7 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 4.0.0
  */
-class GoMage_Feed_Model_Reader_Collection implements GoMage_Feed_Model_Reader_ReaderInterface
+class GoMage_Feed_Model_Reader_Collection
 {
 
     const SORT_ATTRIBUTE = 'entity_id';
@@ -36,7 +36,7 @@ class GoMage_Feed_Model_Reader_Collection implements GoMage_Feed_Model_Reader_Re
     /**
      * @param  int $page
      * @param  int $limit
-     * @return GoMage_Feed_Model_Product_Collection
+     * @return Mage_Catalog_Model_Resource_Product_Collection
      */
     public function read($page, $limit)
     {
@@ -53,7 +53,7 @@ class GoMage_Feed_Model_Reader_Collection implements GoMage_Feed_Model_Reader_Re
     }
 
     /**
-     * @return GoMage_Feed_Model_Product_Collection
+     * @return Mage_Catalog_Model_Resource_Product_Collection
      */
     protected function _getCollection()
     {

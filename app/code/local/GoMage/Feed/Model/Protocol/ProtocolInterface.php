@@ -11,16 +11,18 @@
  * @license      https://www.gomage.com/license-agreement/  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
  * @version      Release: 3.7.0
- * @since        Class available since Release 1.0
+ * @since        Class available since Release 4.0.0
  */
-interface GoMage_Feed_Model_Reader_ReaderInterface
+interface GoMage_Feed_Model_Protocol_ProtocolInterface
 {
+    const FTP = 0;
+    const SSH = 1;
 
     /**
-     * @param  int $page
-     * @param  int $limit
-     * @return mixed
+     * @param  string $source
+     * @param  string $dest
+     * @return bool
      */
-    public function read($page, $limit);
+    public function execute($source, $dest);
 
 }

@@ -22,7 +22,7 @@ class GoMage_Feed_Model_Mapper_Custom_CategoryId implements GoMage_Feed_Model_Ma
      */
     public function map(Varien_Object $object)
     {
-        return $object->getCategoryIds();
+        return max($object->getCategoryIds());
     }
 
     /**
@@ -30,7 +30,7 @@ class GoMage_Feed_Model_Mapper_Custom_CategoryId implements GoMage_Feed_Model_Ma
      */
     public function getUsedAttributes()
     {
-        return [];
+        return array();
     }
 
     /**

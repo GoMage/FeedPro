@@ -41,7 +41,7 @@ foreach ($gomage_feed_entity as $data) {
         $port = 21;
     }
 
-    $protocol = $port == 22 ? GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp::SFTP : GoMage_Feed_Model_Adminhtml_System_Config_Source_Ftp::FTP;
+    $protocol = $port == 22 ? GoMage_Feed_Model_Protocol_ProtocolInterface::SSH : GoMage_Feed_Model_Protocol_ProtocolInterface::FTP;
 
     $installer->run("UPDATE {$this->getTable('gomage_feed_entity')}
                  SET ftp_protocol={$protocol}, ftp_host='" . $host_info[0] . "', ftp_port={$port}

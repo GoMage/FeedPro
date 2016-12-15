@@ -62,6 +62,8 @@
         	<action method="addItem"><type>skin_css</type><name>gomage/feed.css</name><params>media="screen, projection"</params></action>
     		<action method="addJs"><script>gomage/feed-admin.js</script></action>
     		<action method="addJs"><script>mage/adminhtml/uploader.js</script></action>
+            <action method="addJs"><script>gomage/feedpro/codemirror-compressed.js</script></action>
+            <action method="addItem"><type>skin_css</type><name>gomage/codemirror.css</name></action>
             <action method="setCanLoadExtJs"><flag>1</flag></action>
             <action method="setCanLoadRulesJs"><flag>1</flag></action>
             <action method="addJs"><script>gomage/feedpro/csv-rows.js</script></action>

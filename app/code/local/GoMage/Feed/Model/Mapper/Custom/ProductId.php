@@ -30,7 +30,7 @@ class GoMage_Feed_Model_Mapper_Custom_ProductId implements GoMage_Feed_Model_Map
      */
     public function getUsedAttributes()
     {
-        return [];
+        return array();
     }
 
     /**

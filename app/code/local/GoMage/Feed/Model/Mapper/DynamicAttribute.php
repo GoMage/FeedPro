@@ -48,7 +48,8 @@ class GoMage_Feed_Model_Mapper_DynamicAttribute implements GoMage_Feed_Model_Map
 
         $this->_rows = Mage::getModel('gomage_feed/collection');
 
-        $content = Zend_Json::decode($attribute->getContent());
+        $content = Zend_Json::decode($attribute->getData('data'));
+
         foreach ($content as $data) {
             /** @var GoMage_Feed_Model_Attribute_Row_Data $rowData */
             $rowData = Mage::getModel('gomage_feed/attribute_row_data', $data);

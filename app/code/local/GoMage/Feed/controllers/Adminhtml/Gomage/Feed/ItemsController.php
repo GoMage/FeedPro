@@ -300,57 +300,17 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
         $this->_redirect('*/*/');
     }
 
-    public function massGenerateAction()
-    {
-
-        $server_errors = Mage::helper('gomage_feed/generator')->checkServerParams();
-        if (count($server_errors)) {
-            foreach ($server_errors as $error) {
-                Mage::getSingleton('adminhtml/session')->addError($error);
-            }
-            return $this->_redirect('*/*/');
-        }
-
-        if ($ids = $this->getRequest()->getParam('id')) {
-            if (is_array($ids) && !empty($ids)) {
-                foreach ($ids as $id) {
-                    try {
-                        $feed = Mage::getModel('gomage_feed/item')->load($id);
-                        $feed->generate();
-                        Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('File "%s" is created', $feed->getFileNameWithExt()));
-                    } catch (Exception $e) {
-                        Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Can\'t generate feed file'));
-                        Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('Change "Number of Products" in the Advanced Settings.
-                                    Try to change "Number of Products" in the Advanced Settings.
-                                    For example: set "Number of Products" equal 50 or 100.'
-                        )
-                        );
-                        Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('If "Time out" error.
-        							Please ask your server administrator to increase script run times. Learn more at <a target="_blank" href="http://php.net/manual/en/function.set-time-limit.php">http://php.net/manual/en/function.set-time-limit.php</a>'
-                        )
-                        );
-                    }
-                }
-            }
-        }
-        $this->_redirect('*/*/');
-    }
-
     public function massUploadAction()
     {
         if ($ids = $this->getRequest()->getParam('id')) {
             if (is_array($ids) && !empty($ids)) {
+                /** @var GoMage_Feed_Model_Uploader $uploader */
+                $uploader = Mage::getModel('gomage_feed/uploader');
                 foreach ($ids as $id) {
                     $item = Mage::getModel('gomage_feed/item')->load($id);
                     try {
-                        if ($item->getFtpActive() > 0) {
-                            if ($item->ftpUpload()) {
-                                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('%s - File "%s" was uploaded!', $item->getName(), $item->getFileNameWithExt()));
-                            }
-                        } else {
-                            Mage::getSingleton('adminhtml/session')->addNotice(Mage::helper('core')->__('%s - FTP disabled', $item->getName()));
-                        }
-
+                        $uploader->upload($item->getId());
+                        Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('%s - File "%s" was uploaded!', $item->getName(), $item->getFileNameWithExt()));
                     } catch (Mage_Core_Exception $e) {
                         Mage::getSingleton('adminhtml/session')->addError($item->getName() . ' - ' . $e->getMessage());
                     } catch (Exception $e) {
@@ -411,20 +371,13 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
     public function uploadAction()
     {
         if ($id = $this->getRequest()->getParam('id')) {
-
-            //TODO: test
-            /** @var GoMage_Feed_Model_Generator $generator */
-            $generator = Mage::getModel('gomage_feed/generator');
-            $generator->generate($id);
-            echo "-A-";
-            exit();
-
             $item = Mage::getModel('gomage_feed/item')->load($id);
             try {
-                if ($item->ftpUpload()) {
-                    Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('File "%s" was uploaded!', $item->getFileNameWithExt()));
-                }
+                /** @var GoMage_Feed_Model_Uploader $uploader */
+                $uploader = Mage::getModel('gomage_feed/uploader');
 
+                $uploader->upload($item->getId());
+                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('File "%s" was uploaded!', $item->getFileNameWithExt()));
             } catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($item->getFileNameWithExt() . ' - ' . $e->getMessage());
             } catch (Exception $e) {
@@ -434,25 +387,6 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
         }
 
         $this->_redirect('*/*/index');
-    }
-
-    public function getattributevaluefieldAction()
-    {
-        if ($code = $this->getRequest()->getParam('attribute_code')) {
-
-            $name     = $this->getRequest()->getParam('element_name');
-            $store_id = $this->getRequest()->getParam('store_id');
-            $iterator = $this->getRequest()->getParam('iterator');
-
-            if ($code == 'product_type') {
-                $condition = GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter::getConditionSelectLight($iterator);
-            } else {
-                $condition = GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter::getConditionSelect($iterator);
-            }
-
-            $this->getResponse()->setBody(Zend_Json::encode(array('attributevalue' => GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Filter::getAttributeValueField($code, $name, null, $store_id), 'condition' => $condition, 'iterator' => $iterator)));
-        }
-
     }
 
     public function processInfoAction()
@@ -482,6 +416,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                 ($total_records = $generate_info->getData('total_records'))
             ) {
                 $percent = round($generated_records * 100 / $total_records);
+                $percent = min(array($percent, 100));
             }
             $result['percent'] = $percent;
 

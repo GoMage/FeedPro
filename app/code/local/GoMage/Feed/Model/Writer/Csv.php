@@ -35,15 +35,29 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
      */
     protected $_headerCols = null;
 
+    /**
+     * @var bool
+     */
+    protected $_removeLb;
+
+    /**
+     * @var GoMage_Feed_Model_Output_OutputInterface
+     */
+    protected $_removeLbOutput;
+
     public function __construct($arguments)
     {
         parent::__construct($arguments['fileName']);
         $this->_delimiter = $arguments['delimiter'];
         $this->_enclosure = $arguments['enclosure'];
         $this->_isHeader  = $arguments['isHeader'];
+        $this->_removeLb  = $arguments['removeLb'];
         if ($arguments['additionHeader']) {
             fwrite($this->_fileHandler, $arguments['additionHeader']);
         }
+        /** @var GoMage_Feed_Model_Output_Factory $outputFactory */
+        $outputFactory         = Mage::getSingleton('gomage_feed/output_factory');
+        $this->_removeLbOutput = $outputFactory->get(GoMage_Feed_Model_Output_OutputInterface::REMOVE_LINE_BREAK);
     }
 
     /**
@@ -62,9 +76,25 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
                 $this->_headerCols[$columnName] = false;
             }
             if ($this->_isHeader) {
-                $this->write(array_keys($this->_headerCols));
+                $this->write(array_combine(array_keys($this->_headerCols), array_keys($this->_headerCols)));
             }
         }
+    }
+
+    /**
+     * @param  array $data
+     * @return array
+     */
+    protected function _prepareData(array $data)
+    {
+        if ($this->_removeLb) {
+            $output = $this->_removeLbOutput;
+            $data   = array_map(function ($value) use ($output) {
+                return $output->format($value);
+            }, $data
+            );
+        }
+        return $data;
     }
 
     /**

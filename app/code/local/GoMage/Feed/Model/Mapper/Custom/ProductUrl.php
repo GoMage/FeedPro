@@ -22,7 +22,7 @@ class GoMage_Feed_Model_Mapper_Custom_ProductUrl implements GoMage_Feed_Model_Ma
      */
     public function map(Varien_Object $object)
     {
-        return $object->getProductUrl(false);
+        return $object->getUrlInStore(array('_query' => array('___store' => null)));
     }
 
     /**
@@ -30,7 +30,7 @@ class GoMage_Feed_Model_Mapper_Custom_ProductUrl implements GoMage_Feed_Model_Ma
      */
     public function getUsedAttributes()
     {
-        return [];
+        return array();
     }
 
     /**

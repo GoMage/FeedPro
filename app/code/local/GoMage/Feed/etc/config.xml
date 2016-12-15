@@ -220,9 +220,6 @@
     </crontab>
     <default> 
     	<gomage_feedpro>
-    		<configuration>
-    			<system>1</system>
-    		</configuration>
     		<notifications>
     			<email_template>gomage_feedpro_notifications_email_template</email_template>
     		</notifications>

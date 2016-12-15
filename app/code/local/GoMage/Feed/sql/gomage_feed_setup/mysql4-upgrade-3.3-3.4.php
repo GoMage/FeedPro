@@ -10,12 +10,10 @@
  * @license      https://www.gomage.com/licensing  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
  * @version      Release: 3.7.0
- * @since        Class available since Release 4.0.0
+ * @since        Class available since Release 3.4
  */
 
 $installer = $this;
 $installer->startSetup();
-
-$installer->run("ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `conditions_serialized` text;");
 
 $installer->endSetup();

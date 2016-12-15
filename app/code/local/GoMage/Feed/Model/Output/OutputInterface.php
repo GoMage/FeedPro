@@ -23,7 +23,6 @@ interface GoMage_Feed_Model_Output_OutputInterface
     const SPECIAL_DECODE = 'htmlspecialchars_decode';
     const DELETE_SPACE = 'delete_space';
     const BIG_TO_SMALL = 'big_to_small';
-    //TODO: add to all fields if enable (REMOVE_LINE_BREAK)
     const REMOVE_LINE_BREAK = 'remove_lb';
 
     /**

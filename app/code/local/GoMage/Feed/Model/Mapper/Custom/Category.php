@@ -22,7 +22,11 @@ class GoMage_Feed_Model_Mapper_Custom_Category implements GoMage_Feed_Model_Mapp
      */
     public function map(Varien_Object $object)
     {
-        return $object->getCategory();
+        $categoryId = max($object->getCategoryIds());
+        if ($categoryId) {
+            return Mage::getModel('catalog/category')->load($categoryId)->getName();
+        }
+        return '';
     }
 
     /**
@@ -30,7 +34,7 @@ class GoMage_Feed_Model_Mapper_Custom_Category implements GoMage_Feed_Model_Mapp
      */
     public function getUsedAttributes()
     {
-        return [];
+        return array();
     }
 
     /**

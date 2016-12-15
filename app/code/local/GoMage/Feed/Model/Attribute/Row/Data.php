@@ -37,12 +37,17 @@ class GoMage_Feed_Model_Attribute_Row_Data extends Varien_Object
      */
     protected function validate(array $data)
     {
-        if (!isset($data['conditions']) || !$data['conditions']) {
+        if (!isset($data['condition']) || !$data['condition']) {
             throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Conditions are not specified.'));
         }
-        if (!isset($data['type']) || !$data['type']) {
+        $data['conditions'] = $data['condition'];
+        unset($data['condition']);
+        if (!isset($data['value_type']) || !$data['value_type']) {
             throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Type is required field.'));
         }
+        $data['type'] = $data['value_type'];
+        unset($data['value_type']);
+
         return $data;
     }
 }

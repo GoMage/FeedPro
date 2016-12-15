@@ -11,7 +11,7 @@
  * @license      https://www.gomage.com/license-agreement/  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
  * @version      Release: 3.7.0
- * @since        Class available since Release 1.0
+ * @since        Class available since Release 4.0.0
  */
 class GoMage_Feed_Model_Generator
 {
@@ -27,7 +27,7 @@ class GoMage_Feed_Model_Generator
     protected $_rows;
 
     /**
-     * @var GoMage_Feed_Model_Reader_ReaderInterface
+     * @var GoMage_Feed_Model_Reader_Collection
      */
     protected $_reader;
 
@@ -71,7 +71,7 @@ class GoMage_Feed_Model_Generator
 
     /**
      * @param  int $feedId
-     * @throws \Exception
+     * @throws Mage_Core_Exception
      */
     public function generate($feedId)
     {
@@ -79,14 +79,29 @@ class GoMage_Feed_Model_Generator
             $this->_feed = Mage::getModel('gomage_feed/item')->load($feedId);
             $this->_start();
 
+            $total_records = $this->_getReader()->read()->count();
+            $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId());
+            $generate_info->setData('total_records', $total_records)->save();
+
             $page  = 1;
-            $limit = $this->_feed->getLimit();
+            $limit = $this->_feed->getIterationLimit();
+            if (!$limit) {
+                $limit = round($total_records / 100);
+            }
 
             while ($items = $this->_getReader()->read($page, $limit)) {
-                $this->log(Mage::helper('gomage_feed')->__('Page - %1', $page));
+                $this->log(Mage::helper('gomage_feed')->__('Page - %s', $page));
                 foreach ($items as $item) {
+                    $item->setStoreId($this->_feed->getStoreId());
                     $data = $this->_getRows()->calc($item);
                     $this->_getWriter()->write($data);
+                }
+                $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId());
+                if ($generate_info->getData('stopped')) {
+                    throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Stopped generation.'));
+                }
+                if ($limit) {
+                    $generate_info->addGeneratedRecords($limit)->save();
                 }
                 $page++;
             }
@@ -94,7 +109,7 @@ class GoMage_Feed_Model_Generator
             $this->_finish();
         } catch (Exception $e) {
             $this->log($e->getMessage());
-            throw new Exception($e->getMessage());
+            throw new Mage_Core_Exception($e->getMessage());
         }
     }
 
@@ -103,20 +118,24 @@ class GoMage_Feed_Model_Generator
         $this->_time = microtime(true);
         $this->log(Mage::helper('gomage_feed')->__('Start generation'));
         Mage::helper('gomage_feed/generator')->setServerConfig($this->_feed);
+        $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId(), true);
+        $generate_info->start()->save();
     }
 
     protected function _finish()
     {
         $this->_time = microtime(true) - $this->_time;
         $this->_time = max(array($this->_time, 1));
-        $this->_feed->setData('generation_time', $this->_dateTime->gmtDate('H:i:s', $this->_time))
+        $this->_feed->setData('generation_time', date('H:i:s', $this->_time))
             ->setData('generated_at', $this->_dateTime->gmtDate('Y-m-j H:i:s'))
             ->save();
         $this->log(Mage::helper('gomage_feed')->__('Finish'));
+        $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId());
+        $generate_info->finish()->save();
     }
 
     /**
-     * @return GoMage_Feed_Model_Reader_ReaderInterface
+     * @return GoMage_Feed_Model_Reader_Collection
      */
     protected function _getReader()
     {
@@ -152,7 +171,8 @@ class GoMage_Feed_Model_Generator
                         'delimiter'      => Mage::getSingleton('gomage_feed/adminhtml_system_config_source_csv_delimiter')->getSymbol($this->_feed->getDelimiter()),
                         'enclosure'      => Mage::getSingleton('gomage_feed/adminhtml_system_config_source_csv_enclosure')->getSymbol($this->_feed->getEnclosure()),
                         'isHeader'       => boolval($this->_feed->getShowHeaders()),
-                        'additionHeader' => $this->_feed->getUseAdditionHeader() ? $this->_feed->getAdditionHeader() : ''
+                        'additionHeader' => $this->_feed->getUseAdditionHeader() ? $this->_feed->getAdditionHeader() : '',
+                        'removeLb'      => boolval($this->_feed->getRemoveLb()),
                     )
                 );
             } else {
@@ -191,23 +211,20 @@ class GoMage_Feed_Model_Generator
     }
 
     /**
-     * @param $message
-     * @param array $context
+     * @param string $text
+     * @param bool $rewrite
      */
-    protected function log($message, array $context = array())
+    protected function log($text = '', $rewrite = false)
     {
-        //TODO
-        /*
-        if ($this->_feed && !$this->_logHandler) {
-            $this->_logHandler = $this->_objectManager->create('GoMage\Feed\Model\Logger\Handler', [
-                    'fileName' => '/var/log/feed-' . $this->_feed->getId() . '.log'
-                ]
-            );
-            $this->_logger->setHandlers([$this->_logHandler]);
+        $text .= "\n";
+        $log_file = Mage::helper('gomage_feed/generator')->getLogDir() . DS . 'log-' . $this->_feed->getId() . '.txt';
+        if ($rewrite || !file_exists($log_file)) {
+            @file_put_contents($log_file, $text);
+        } else {
+            $fp = fopen($log_file, 'a');
+            fwrite($fp, $text);
+            fclose($fp);
         }
-
-        $this->_logger->info($message, $context);
-        */
     }
 
 }

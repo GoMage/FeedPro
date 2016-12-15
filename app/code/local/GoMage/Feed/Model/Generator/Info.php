@@ -1,14 +1,12 @@
 <?php
 
-class GoMage_Feed_Model_Generator_Data
+class GoMage_Feed_Model_Generator_Info
 {
-
     protected $file_path = '';
     protected $total_records = 0;
     protected $generated_records = 0;
     protected $errors = array();
     protected $start_time = 0;
-
 
     protected $stopped = false;
     protected $started = false;
@@ -16,7 +14,7 @@ class GoMage_Feed_Model_Generator_Data
 
     public function __construct()
     {
-        $this->start_time = time();
+        $this->start_time = microtime(true);
     }
 
     public function getData($key)
@@ -73,7 +71,7 @@ class GoMage_Feed_Model_Generator_Data
 
     public function getGenerationTime()
     {
-        $time = time() - $this->start_time;
+        $time = microtime(true) - $this->start_time;
         $hour = 0;
         $min  = 0;
         $sec  = 0;

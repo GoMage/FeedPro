@@ -33,7 +33,6 @@ class GoMage_Feed_Model_Attribute_Condition
 
     public function __construct(GoMage_Feed_Model_Attribute_Condition_Data $conditionData)
     {
-
         $this->_operator = Mage::getSingleton('gomage_feed/operator_factory')->get($conditionData->getOperator());
         $this->_field    = Mage::getModel('gomage_feed/feed_field',
             array(

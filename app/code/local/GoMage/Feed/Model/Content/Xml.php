@@ -16,7 +16,7 @@
 class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractContent
 {
 
-    const BLOCK_PATTERN = '/\\{\\{block\\}\\}(.*)\\{\\{\\/block\\}\\}/s';
+    const BLOCK_PATTERN = '/\\{\\{block\b(.*?)\\}\\}(.*)\\{\\{\\/block\\}\\}/s';
     const ROW_PATTERN = '/\\{\\{var:(.+?)(\s.*?)?\\}\\}/s';
     const PARAMS_PATTERN = '/(.*?)\="(.*?)"/s';
 
@@ -43,11 +43,11 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
         $match = array();
         preg_match(self::BLOCK_PATTERN, $this->_content, $match);
 
-        if (!isset($match[1])) {
+        if (!isset($match[2])) {
             throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Invalid XML Content.'));
         }
 
-        $this->_block = $match[1];
+        $this->_block = $match[2];
         list($this->_header, $this->_footer) = preg_split(self::BLOCK_PATTERN, $this->_content);
     }
 
@@ -60,6 +60,7 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
             $this->_rows = Mage::getModel('gomage_feed/feed_row_collection');
             $match       = array();
             preg_match_all(self::ROW_PATTERN, $this->_block, $match);
+
             if (isset($match[1])) {
                 foreach ($match[1] as $key => $value) {
                     $type = GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE;
@@ -67,11 +68,11 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
                         $type  = GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::PARENT_ATTRIBUTE;
                         $value = str_replace('parent:', '', $value);
                     }
-                    $data = [
-                        'name'  => $match[0][$key],
-                        'type'  => $type,
-                        'value' => $value,
-                    ];
+                    $data = array(
+                        'name'            => $match[0][$key],
+                        'type'            => $type,
+                        'attribute_value' => $value,
+                    );
 
                     if (isset($match[2][$key]) && $match[2][$key]) {
                         preg_match_all(self::PARAMS_PATTERN, $match[2][$key], $params);

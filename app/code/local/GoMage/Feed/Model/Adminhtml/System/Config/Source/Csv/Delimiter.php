@@ -45,7 +45,7 @@ class GoMage_Feed_Model_Adminhtml_System_Config_Source_Csv_Delimiter
     public function getSymbol($delimiter)
     {
         $symbol = ",";
-        switch ((int)$delimiter) {
+        switch ($delimiter) {
             case (self::TAB):
                 $symbol = "\t";
                 break;

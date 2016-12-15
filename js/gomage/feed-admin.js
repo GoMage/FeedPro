@@ -173,7 +173,6 @@ GomageFeedAdminSettings = Class.create({
 GomageFeedGeneratorClass = Class.create({
     feed_id: null,
     generate_url: '',
-    stop_url: '',
     info_url: '',
     stop: false,
     timer: null,
@@ -189,7 +188,6 @@ GomageFeedGeneratorClass = Class.create({
         var params = {
             'feed_id': this.feed_id
         };
-        var self = this;
 
         $('gomage_feed_generate').hide();
         $('gomage_feed_stop').show();
@@ -197,14 +195,10 @@ GomageFeedGeneratorClass = Class.create({
         $('gfeed-loader-percent').innerHTML = '0';
         $('gfeed-loader-time').innerHTML = '0min 0sec';
 
-        var request = new Ajax.Request(this.generate_url, {
+        new Ajax.Request(this.generate_url, {
             method: 'GET',
             parameters: params,
-            loaderArea: false,
-            onSuccess: function (transport) {
-                var response = eval('(' + (transport.responseText || false)
-                    + ')');
-            }
+            loaderArea: false
         });
         this.send_stop_command = false;
         this.stop = false;
@@ -230,7 +224,7 @@ GomageFeedGeneratorClass = Class.create({
                 'stop_command': (self.send_stop_command ? 1 : 0)
             };
 
-            var request = new Ajax.Request(self.info_url, {
+            new Ajax.Request(self.info_url, {
                 method: 'GET',
                 parameters: params,
                 loaderArea: false,

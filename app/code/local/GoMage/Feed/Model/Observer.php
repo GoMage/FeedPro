@@ -19,7 +19,6 @@ class GoMage_Feed_Model_Observer
     public static function generateFeeds()
     {
         $collection = Mage::getResourceModel('gomage_feed/item_collection');
-
         $collection->getSelect()->where('`generate_day` like "%' . strtolower(date('D')) . '%"');
 
         foreach ($collection as $feed) {
@@ -46,7 +45,9 @@ class GoMage_Feed_Model_Observer
                 $feed->setData('cron_started_at', $cron_started_at);
                 $feed->save();
 
-                $feed->generate();
+                /** @var GoMage_Feed_Model_Generator $generator */
+                $generator = Mage::getModel('gomage_feed/generator');
+                $generator->generate($feed->getId());
 
                 $feed->setData('restart_cron', 0);
                 $feed->save();
@@ -72,7 +73,6 @@ class GoMage_Feed_Model_Observer
     public static function uploadFeeds()
     {
         $collection = Mage::getResourceModel('gomage_feed/item_collection');
-
         $collection->getSelect()->where('`upload_day` like "%' . strtolower(date('D')) . '%"');
 
         foreach ($collection as $feed) {
@@ -103,7 +103,11 @@ class GoMage_Feed_Model_Observer
                 $cron_uploaded_at = date('Y-m-j H:00:00', time());
                 $feed->setData('cron_uploaded_at', $cron_uploaded_at);
                 $feed->save();
-                $feed->ftpUpload();
+
+                /** @var GoMage_Feed_Model_Uploader $uploader */
+                $uploader = Mage::getModel('gomage_feed/uploader');
+                $uploader->upload($feed->getId());
+
                 $message = Mage::helper('gomage_feed')->__('File was uploaded.');
                 Mage::helper('gomage_feed/notification')->sendMessage($feed, $message, GoMage_Feed_Model_Adminhtml_System_Config_Source_Notify::SUCCESSFULLY_UPLOADED);
             } catch (Exception $e) {

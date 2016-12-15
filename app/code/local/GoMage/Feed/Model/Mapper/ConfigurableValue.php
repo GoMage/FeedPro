@@ -49,7 +49,12 @@ class GoMage_Feed_Model_Mapper_ConfigurableValue implements GoMage_Feed_Model_Ma
             $options = Mage::getResourceSingleton('catalog/product_type_configurable')
                 ->getConfigurableOptions($object, array($this->_attribute));
 
-            //TODO: check $options
+            $options = reset($options);
+            $code    = $this->_code;
+            $options = array_filter($options, function ($option) use ($code) {
+                return $option['attribute_code'] == $code;
+            }
+            );
 
             $options = array_map(function ($option) {
                 return $option['option_title'];
@@ -66,6 +71,6 @@ class GoMage_Feed_Model_Mapper_ConfigurableValue implements GoMage_Feed_Model_Ma
      */
     public function getUsedAttributes()
     {
-        return [];
+        return array();
     }
 }

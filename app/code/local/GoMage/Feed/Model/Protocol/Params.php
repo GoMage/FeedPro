@@ -15,14 +15,18 @@
  */
 
 /**
- * Class Data
+ * Class Params
  *
- * @method string getCode()
- * @method string getOperator()
- * @method string getValue()
+ * @method string getHost)
+ * @method int getPort()
+ * @method string getUser()
+ * @method string getPassword()
+ * @method bool getPassiveMode()
  */
-class GoMage_Feed_Model_Attribute_Condition_Data extends Varien_Object
+class GoMage_Feed_Model_Protocol_Params extends Varien_Object
 {
+
+    const PORT = 21;
 
     public function __construct(array $data = [])
     {
@@ -37,17 +41,16 @@ class GoMage_Feed_Model_Attribute_Condition_Data extends Varien_Object
      */
     protected function validate(array $data)
     {
-        if (!isset($data['attribute_code']) || !$data['attribute_code']) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Condition code is required.'));
+        if (!isset($data['host']) || !$data['host']) {
+            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Host is not specified.'));
         }
-        $data['code'] = $data['attribute_code'];
-        unset($data['attribute_code']);
-        if (!isset($data['condition'])) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Condition operator is required.'));
+        if (!isset($data['user']) || !$data['user']) {
+            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('User is not specified.'));
         }
-        $data['operator'] = $data['condition'];
-        unset($data['condition']);
+        if (!isset($data['port']) || !$data['port']) {
+            $data['port'] = self::PORT;
+        }
+        $data['passive_mode'] = isset($data['passive_mode']) && boolval($data['passive_mode']);
         return $data;
     }
-
 }
