@@ -21,6 +21,9 @@ class GoMage_Feed_Model_Output_Floats implements GoMage_Feed_Model_Output_Output
      */
     public function format($value)
     {
-        return number_format((float)$value, 2, '.', '');
+        if (!empty($value)) {
+            return number_format((float)$value, 2, '.', '');
+        }
+        return $value;
     }
 }
