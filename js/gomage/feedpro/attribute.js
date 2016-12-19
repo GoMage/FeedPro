@@ -35,6 +35,7 @@ GoMage.Rows.prototype = {
             this.add({});
         }
         this.bindActions();
+        this.setDefaults();
     },
     add: function (data) {
         var element;
@@ -115,8 +116,20 @@ GoMage.Rows.prototype = {
             }
         }
     },
+    setDefaults: function () {
+        var input = $$('input[name="default_value"]')[0],
+            select = $$('select[name="default_value"]')[0];
+        if ($('default_type').value == 'static') {
+            input.enable().show();
+            select.disable().hide();
+        } else {
+            input.disable().hide();
+            select.enable().show();
+        }
+    },
     bindActions: function () {
         Event.observe('add_new_row_button', 'click', this.add.bind(this, {}));
+        Event.observe('default_type', 'change', this.setDefaults.bind(this));
         this.container.on('click', '.delete-row', this.remove.bind(this));
         this.container.on('change', '.type-select', this.changeType.bind(this));
         this.container.on('click', '.add-condition', this.addCondition.bind(this));

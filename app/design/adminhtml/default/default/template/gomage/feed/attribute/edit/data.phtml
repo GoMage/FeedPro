@@ -16,6 +16,7 @@
 <?php
 $attribute = $this->getAttribute();
 $_htmlName = 'option';
+$_baseTypes = $this->getBaseTypes();
 $_types = $this->getTypes();
 $_operators = $this->getOperators();
 $_attributes = $this->getProductAttributes();
@@ -57,16 +58,32 @@ $_attributes = $this->getProductAttributes();
                         </td>
                     </tr>
                     <tr class="headings">
-                        <th colspan="4"><?php echo $this->__('Use Default Attribute') ?></th>
+                        <th colspan="4"><?php echo $this->__('Use Default') ?></th>
                     </tr>
                     <tr>
-                        <td colspan="4">
+                        <td>
+                            <?php echo $this->__('Type') ?>
+                        </td>
+                        <td colspan="3">
+                            <select class="select" name="default_type" id="default_type">
+                                <?php foreach ($_baseTypes as $_type): ?>
+                                    <option <?php if ($attribute->getData('default_type') == $_type['value']): ?>selected="selected"<?php endif; ?> value="<?php echo $_type['value'] ?>"><?php echo $_type['label'] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?php echo $this->__('Value') ?>
+                        </td>
+                        <td colspan="3">
                             <select class="select" name="default_value">
                                 <option value=""><?php echo $this->__('Not Set') ?></option>
                                 <?php foreach ($_attributes as $_attribute): ?>
                                     <option <?php if ($attribute->getData('default_value') == $_attribute['value']): ?>selected="selected"<?php endif; ?> value="<?php echo $_attribute['value'] ?>"><?php echo $_attribute['label'] ?></option>
                                 <?php endforeach ?>
                             </select>
+                            <input name="default_value" value="<?php echo $attribute->getData('default_value') ?>" class="input-text" type="text" />
                         </td>
                     </tr>
 
@@ -259,7 +276,6 @@ $_attributes = $this->getProductAttributes();
 </div>
 
 <script type="text/javascript">
-    <?php //TODO: rowsData - method in block class with prepare ?>
     document.observe("dom:loaded", function(){
         new GoMage.Rows({
             "rowsData": <?php echo $this->getRows(); ?>,

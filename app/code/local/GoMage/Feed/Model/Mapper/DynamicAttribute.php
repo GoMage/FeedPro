@@ -30,24 +30,19 @@ class GoMage_Feed_Model_Mapper_DynamicAttribute implements GoMage_Feed_Model_Map
         /** @var GoMage_Feed_Model_Attribute $attribute */
         $attribute = Mage::getModel('gomage_feed/attribute')->load($value, 'code');
 
-        if ($attribute->getDefaultValue()) {
-            $this->_default = Mage::getModel('gomage_feed/feed_field',
-                array(
-                    'type'  => GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE,
-                    'value' => $attribute->getDefaultValue()
-                )
-            );
-        } else {
-            $this->_default = Mage::getModel('gomage_feed/feed_field',
-                array(
-                    'type'  => GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::STATIC_VALUE,
-                    'value' => ''
-                )
-            );
+        $_defaultType  = $attribute->getDefaultType() ?: GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE;
+        $_defaultValue = $attribute->getDefaultValue() ?: '';
+        if (!$_defaultValue) {
+            $_defaultType = GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::STATIC_VALUE;
         }
+        $this->_default = Mage::getModel('gomage_feed/feed_field',
+            array(
+                'type'  => $_defaultType,
+                'value' => $_defaultValue
+            )
+        );
 
         $this->_rows = Mage::getModel('gomage_feed/collection');
-
         $content = Zend_Json::decode($attribute->getData('data'));
 
         foreach ($content as $data) {

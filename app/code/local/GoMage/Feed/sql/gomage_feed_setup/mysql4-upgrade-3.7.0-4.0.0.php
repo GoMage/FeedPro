@@ -17,5 +17,6 @@ $installer = $this;
 $installer->startSetup();
 
 $installer->run("ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `conditions_serialized` text;");
+$installer->run("ALTER TABLE `{$this->getTable('gomage_feed_custom_attribute')}` ADD COLUMN `default_type` varchar(32) DEFAULT NULL;");
 
 $installer->endSetup();

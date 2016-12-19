@@ -54,6 +54,14 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tab_Data extends Mage_Adminhtm
     /**
      * @return array
      */
+    public function getBaseTypes()
+    {
+        return Mage::getSingleton('gomage_feed/adminhtml_system_config_source_field_baseType')->toOptionArray();
+    }
+
+    /**
+     * @return array
+     */
     public function getOperators()
     {
         return Mage::getSingleton('gomage_feed/adminhtml_system_config_source_operator')->toOptionArray();

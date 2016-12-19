@@ -74,6 +74,7 @@ CREATE TABLE `{$this->getTable('gomage_feed_custom_attribute')}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(128) NOT NULL,
   `name` varchar(128) NOT NULL,
+  `default_type` varchar(32) DEFAULT NULL,
   `default_value` varchar(128) NOT NULL,
   `data` text NOT NULL,
   PRIMARY KEY  (`id`)
