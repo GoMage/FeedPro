@@ -49,7 +49,7 @@ class GoMage_Feed_Model_Mapper_EmptyParentAttribute extends GoMage_Feed_Model_Ma
 
         if ($childId) {
             /** @var Mage_Catalog_Model_Resource_Product_Collection $collection */
-            $collection = Mage::getModel('catalog/product')->getCollection();
+            $collection = Mage::getModel('gomage_feed/product_collection');
             if ($object->getStoreId()) {
                 $collection->setStoreId($object->getStoreId());
             }

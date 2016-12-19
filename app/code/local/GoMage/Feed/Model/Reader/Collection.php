@@ -19,7 +19,7 @@ class GoMage_Feed_Model_Reader_Collection
     const SORT_ATTRIBUTE = 'entity_id';
 
     /**
-     * @var Mage_Catalog_Model_Resource_Product_Collection
+     * @var GoMage_Feed_Model_Product_Collection
      */
     protected $_collection;
 
@@ -36,7 +36,7 @@ class GoMage_Feed_Model_Reader_Collection
     /**
      * @param  int $page
      * @param  int $limit
-     * @return Mage_Catalog_Model_Resource_Product_Collection
+     * @return GoMage_Feed_Model_Product_Collection
      */
     public function read($page, $limit)
     {
@@ -53,12 +53,12 @@ class GoMage_Feed_Model_Reader_Collection
     }
 
     /**
-     * @return Mage_Catalog_Model_Resource_Product_Collection
+     * @return GoMage_Feed_Model_Product_Collection
      */
     protected function _getCollection()
     {
         if (is_null($this->_collection)) {
-            $this->_collection = Mage::getModel('catalog/product')->getCollection();
+            $this->_collection = Mage::getModel('gomage_feed/product_collection');
 
             if ($this->_params->getStoreId()) {
                 $this->_collection->setStoreId($this->_params->getStoreId());
@@ -70,7 +70,7 @@ class GoMage_Feed_Model_Reader_Collection
                 $this->_collection->addAttributeToFilter('visibility', ['in' => $visibility]);
             }
 
-            if (!$this->_params->getIsDisabled()) {
+            if ($this->_params->getIsDisabled()) {
                 $this->_collection->addAttributeToFilter('status', ['eq' => Mage_Catalog_Model_Product_Status::STATUS_ENABLED]);
             }
 
@@ -89,6 +89,8 @@ class GoMage_Feed_Model_Reader_Collection
 
             $this->_collection->addAttributeToSelect($this->_params->getAttributes())
                 ->addAttributeToSort(self::SORT_ATTRIBUTE);
+
+
 
         }
         return $this->_collection->clear();

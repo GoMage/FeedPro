@@ -92,9 +92,11 @@ class GoMage_Feed_Model_Generator
             while ($items = $this->_getReader()->read($page, $limit)) {
                 $this->log(Mage::helper('gomage_feed')->__('Page - %s', $page));
                 foreach ($items as $item) {
-                    $item->setStoreId($this->_feed->getStoreId());
-                    $data = $this->_getRows()->calc($item);
-                    $this->_getWriter()->write($data);
+                    if ($this->_isValidItem($item)) {
+                        $item->setStoreId($this->_feed->getStoreId());
+                        $data = $this->_getRows()->calc($item);
+                        $this->_getWriter()->write($data);
+                    }
                 }
                 $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId());
                 if ($generate_info->getData('stopped')) {
@@ -111,6 +113,33 @@ class GoMage_Feed_Model_Generator
             $this->log($e->getMessage());
             throw new Mage_Core_Exception($e->getMessage());
         }
+    }
+
+    /**
+     * @todo add validator class
+     * @param  Varien_Object $item
+     * @return bool
+     */
+    protected function _isValidItem(Varien_Object $item)
+    {
+        if ($this->_feed->getUseLayer() == GoMage_Feed_Model_Adminhtml_System_Config_Source_Uselayer::NO_WITH_CHILD) {
+            if ($item->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+                $resource = Mage::getSingleton('core/resource');
+                /** @var Varien_Db_Adapter_Interface $connection */
+                $connection = $resource->getConnection('core_read');
+                $result     = $connection
+                    ->select()
+                    ->from($resource->getTableName('catalog_product_relation'), 'child_id')
+                    ->join($resource->getTableName('cataloginventory_stock_item'), 'child_id=product_id')
+                    ->where('parent_id = ?', $item->getId())
+                    ->where('child_id != ?', $item->getId())
+                    ->where('is_in_stock = 1')
+                    ->query()
+                    ->fetchColumn();
+                return boolval($result);
+            }
+        }
+        return true;
     }
 
     protected function _start()
@@ -172,7 +201,7 @@ class GoMage_Feed_Model_Generator
                         'enclosure'      => Mage::getSingleton('gomage_feed/adminhtml_system_config_source_csv_enclosure')->getSymbol($this->_feed->getEnclosure()),
                         'isHeader'       => boolval($this->_feed->getShowHeaders()),
                         'additionHeader' => $this->_feed->getUseAdditionHeader() ? $this->_feed->getAdditionHeader() : '',
-                        'removeLb'      => boolval($this->_feed->getRemoveLb()),
+                        'removeLb'       => boolval($this->_feed->getRemoveLb()),
                     )
                 );
             } else {
