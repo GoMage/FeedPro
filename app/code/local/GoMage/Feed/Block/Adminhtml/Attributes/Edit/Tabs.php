@@ -37,7 +37,7 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Edit_Tabs extends Mage_Adminhtml_Bl
                 'content' => $this->getLayout()->createBlock('gomage_feed/adminhtml_attributes_edit_tab_data')->setTemplate('gomage/feed/attribute/edit/data.phtml')->toHtml()
             )
         );
-        if ($tabId = addslashes(htmlspecialchars($this->getRequest()->getParam('tab')))) {
+        if ($tabId = htmlspecialchars($this->getRequest()->getParam('tab'))) {
             $this->setActiveTab($tabId);
         }
         return parent::_beforeToHtml();

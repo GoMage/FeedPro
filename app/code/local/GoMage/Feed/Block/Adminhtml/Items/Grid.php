@@ -146,7 +146,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Grid extends Mage_Adminhtml_Block_Widget
         if (!$value = $column->getFilter()->getValue()) {
             return;
         }
-        $this->getCollection()->addStoreFilter($value);
+        $collection->addStoreFilter($value);
     }
 
     public function getRowUrl($row)

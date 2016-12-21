@@ -28,9 +28,14 @@ class GoMage_Feed_IndexController extends Mage_Core_Controller_Front_Action
         $this->getResponse()->sendResponse();
         $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($feed->getId());
         if (!$generate_info->inProcess()) {
-            /** @var GoMage_Feed_Model_Generator $generator */
-            $generator = Mage::getModel('gomage_feed/generator');
-            $generator->generate($feed->getId());
+            try {
+                /** @var GoMage_Feed_Model_Generator $generator */
+                $generator = Mage::getModel('gomage_feed/generator');
+                $generator->generate($feed->getId());
+            } catch (Exception $e) {
+                $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($feed->getId());
+                $generate_info->setError($e->getMessage())->save();
+            }
         }
     }
 

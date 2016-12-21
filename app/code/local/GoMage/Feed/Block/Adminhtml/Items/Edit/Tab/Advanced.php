@@ -108,7 +108,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
 
         $fieldset->setHeaderBar($headerBar->toHtml());
 
-        $field = $fieldset->addField('generate_status', 'select',
+        $fieldset->addField('generate_status', 'select',
             array(
                 'name'   => 'generate_status',
                 'label'  => $this->__('Status'),
@@ -181,9 +181,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
             $field->setValue('3');
         }
 
-
-        $fieldset = $form->addFieldset('upload_settings', array('legend' => $this->__('Auto-upload Settings')));
-
+        $fieldset  = $form->addFieldset('upload_settings', array('legend' => $this->__('Auto-upload Settings')));
         $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
                     'label'   => $this->__('Feed Pro Help'),
@@ -195,7 +193,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
 
         $fieldset->setHeaderBar($headerBar->toHtml());
 
-        $field = $fieldset->addField('upload_status', 'select',
+        $fieldset->addField('upload_status', 'select',
             array(
                 'name'   => 'upload_status',
                 'label'  => $this->__('Status'),
@@ -244,18 +242,17 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
                 'class'    => 'gomage-feed-validate-upload-interval'
             )
         );
+
         if (!$item->getId()) {
             $field->setValue('24');
         }
         $field->setOnchange('gomagefeed_setinterval(this, \'upload_hour_to\')');
-
 
         if ($item->getId()) {
             $form->setValues($item->getData());
         }
 
         return parent::_prepareForm();
-
     }
 
 

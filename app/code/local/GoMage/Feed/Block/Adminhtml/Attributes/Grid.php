@@ -90,19 +90,10 @@ class GoMage_Feed_Block_Adminhtml_Attributes_Grid extends Mage_Adminhtml_Block_W
         return $this;
     }
 
-
     protected function _afterLoadCollection()
     {
         $this->getCollection()->walk('afterLoad');
         parent::_afterLoadCollection();
-    }
-
-    protected function _filterStoreCondition($collection, $column)
-    {
-        if (!$value = $column->getFilter()->getValue()) {
-            return;
-        }
-        $this->getCollection()->addStoreFilter($value);
     }
 
     public function getRowUrl($row)

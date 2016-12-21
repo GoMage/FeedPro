@@ -21,11 +21,11 @@ class GoMage_Feed_Block_Adminhtml_Items_Mappingexportftp_Tab_File extends Mage_A
         $this->setChild('continue_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(
-                    'label'   => $this->__('Export'),
-                    'type'    => 'submit',
-                    'class'   => 'save',
-                    'onclick' => 'editForm.submit();return false;'
-                )
+                        'label'   => $this->__('Export'),
+                        'type'    => 'submit',
+                        'class'   => 'save',
+                        'onclick' => 'editForm.submit();return false;'
+                    )
                 )
         );
         return parent::_prepareLayout();
@@ -34,7 +34,6 @@ class GoMage_Feed_Block_Adminhtml_Items_Mappingexportftp_Tab_File extends Mage_A
 
     protected function _prepareForm()
     {
-
         $form = new Varien_Data_Form();
 
         $this->setForm($form);
@@ -42,42 +41,40 @@ class GoMage_Feed_Block_Adminhtml_Items_Mappingexportftp_Tab_File extends Mage_A
 
         $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
-                'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
-                'class'   => 'go',
-                'id'      => 'feed_pro_help',
-                'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
-            )
+                    'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
+                    'class'   => 'go',
+                    'id'      => 'feed_pro_help',
+                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
+                )
             );
 
         $fieldset->setHeaderBar(
             $headerBar->toHtml()
         );
 
-        $field = $fieldset->addField('feed_system', 'text', array(
-            'name'     => 'feed_system',
-            'label'    => $this->__('System'),
-            'title'    => $this->__('System'),
-            'required' => true,
-        )
+        $fieldset->addField('feed_system', 'text', array(
+                'name'     => 'feed_system',
+                'label'    => $this->__('System'),
+                'title'    => $this->__('System'),
+                'required' => true,
+            )
         );
 
-        $field = $fieldset->addField('feed_section', 'text', array(
-            'name'     => 'feed_section',
-            'label'    => $this->__('Template'),
-            'title'    => $this->__('Template'),
-            'required' => true,
-            'value'    => "mapping-export-ftp-" . basename(Mage::registry('gomage_feed')->getFilename()) . ".txt",
-        )
+        $fieldset->addField('feed_section', 'text', array(
+                'name'     => 'feed_section',
+                'label'    => $this->__('Template'),
+                'title'    => $this->__('Template'),
+                'required' => true,
+                'value'    => "mapping-export-ftp-" . Mage::registry('gomage_feed')->getFilename() . ".txt",
+            )
         );
 
         $fieldset->addField('continue_button', 'note', array(
-            'text' => $this->getChildHtml('continue_button'),
-        )
+                'text' => $this->getChildHtml('continue_button'),
+            )
         );
 
         return parent::_prepareForm();
-
     }
-
 
 }

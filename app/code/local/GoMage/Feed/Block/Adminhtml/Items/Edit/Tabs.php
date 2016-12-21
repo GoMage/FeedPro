@@ -75,7 +75,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tabs extends Mage_Adminhtml_Block_W
                 )
             );
         }
-        if ($tabId = addslashes(htmlspecialchars($this->getRequest()->getParam('tab')))) {
+        if ($tabId = htmlspecialchars($this->getRequest()->getParam('tab'))) {
             $this->setActiveTab($tabId);
         }
         return parent::_beforeToHtml();

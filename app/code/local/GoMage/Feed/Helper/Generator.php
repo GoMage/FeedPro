@@ -94,7 +94,10 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
         clearstatcache();
         if (file_exists($file_path) && !$init) {
             $info = @file_get_contents($file_path);
-            return unserialize($info);
+            $info = unserialize($info);
+            if ($info instanceof GoMage_Feed_Model_Generator_Info) {
+                return $info;
+            }
         }
         $info = Mage::getModel('gomage_feed/generator_info');
         $info->setData('file_path', $file_path)->save();

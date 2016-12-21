@@ -27,7 +27,7 @@ ALTER TABLE `{$this->getTable('gomage_feed_entity')}` ADD COLUMN `ftp_protocol` 
 
 
 $gomage_feed_entity = $installer->getConnection()->fetchAll("
-    SELECT * FROM {$this->getTable('gomage_feed_entity')}
+    SELECT id, ftp_host FROM {$this->getTable('gomage_feed_entity')}
 "
 );
 

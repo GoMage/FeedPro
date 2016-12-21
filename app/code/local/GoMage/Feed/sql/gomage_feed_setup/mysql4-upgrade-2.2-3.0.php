@@ -54,8 +54,11 @@ foreach ($data as $row) {
                 $row_data[$i]['value_type_attribute'][] = array('attribute' => $_data['value_type_attribute']);
             }
             $row_data = Zend_Json::encode($row_data);
-            $model    = Mage::getModel('gomage_feed/custom_attribute')->load($row['id']);
-            $model->setData('data', $row_data)->save();
+
+            $installer->run("UPDATE {$this->getTable('gomage_feed_custom_attribute')}
+                 SET `data` = '{$row_data}'
+                WHERE id = {$row['id']}"
+            );
         }
     }
 }
