@@ -15,10 +15,10 @@
  */
 class GoMage_Feed_Model_Writer_Factory
 {
-    protected $_writers = [
+    protected $_writers = array(
         'csv' => 'gomage_feed/writer_csv',
         'xml' => 'gomage_feed/writer_xml'
-    ];
+    );
 
     /**
      * @param  string $type

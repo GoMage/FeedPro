@@ -23,5 +23,5 @@ interface GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface
     const ATTRIBUTE_SET = 'attribute_set';
     const PERCENT = 'percent';
     const CONFIGURABLE_VALUES = 'conf_values';
-    const DYNAMIC_ATTRIBUTE = 8;
+    const REVIEW = 'review';
 }

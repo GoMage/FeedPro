@@ -73,6 +73,9 @@ class GoMage_Feed_Model_Mapper_Factory
                 case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::CONFIGURABLE_VALUES:
                     $className = 'gomage_feed/mapper_configurableValue';
                     break;
+                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::REVIEW:
+                    $className = 'gomage_feed/mapper_review';
+                    break;
             }
         }
         return Mage::getModel($className, $value);

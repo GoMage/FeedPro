@@ -11,17 +11,22 @@
  * @license      https://www.gomage.com/license-agreement/  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
  * @version      Release: 3.7.0
- * @since        Class available since Release 1.0
+ * @since        Class available since Release 4.0.0
  */
-interface GoMage_Feed_Model_Content_ContentInterface
+interface GoMage_Feed_Model_Reader_ReaderInterface
 {
-    /**
-     * @return GoMage_Feed_Model_Feed_Row_Collection
-     */
-    public function getRows();
 
     /**
-     * @return string
+     * @param  int $page
+     * @param  int $limit
+     * @return Mage_Eav_Model_Entity_Collection_Abstract
      */
-    public function getEntityType();
+    public function read($page, $limit);
+
+    /**
+     * @param Varien_Object $item
+     * @return bool
+     */
+    public function isValidItem(Varien_Object $item);
+
 }

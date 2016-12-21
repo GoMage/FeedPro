@@ -13,7 +13,7 @@
  * @version      Release: 3.7.0
  * @since        Class available since Release 4.0.0
  */
-class GoMage_Feed_Model_Reader_Collection
+class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_ReaderInterface
 {
 
     const SORT_ATTRIBUTE = 'entity_id';
@@ -89,11 +89,34 @@ class GoMage_Feed_Model_Reader_Collection
 
             $this->_collection->addAttributeToSelect($this->_params->getAttributes())
                 ->addAttributeToSort(self::SORT_ATTRIBUTE);
-
-
-
         }
         return $this->_collection->clear();
+    }
+
+    /**
+     * @param  Varien_Object $item
+     * @return bool
+     */
+    public function isValidItem(Varien_Object $item)
+    {
+        if ($this->_params->getUseLayer() == GoMage_Feed_Model_Adminhtml_System_Config_Source_Uselayer::NO_WITH_CHILD) {
+            if ($item->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+
+                /** @var Varien_Db_Adapter_Interface $connection */
+                $connection = $this->_collection->getConnection();
+                $result     = $connection
+                    ->select()
+                    ->from($connection->getTableName('catalog_product_relation'), 'child_id')
+                    ->join($connection->getTableName('cataloginventory_stock_item'), 'child_id=product_id')
+                    ->where('parent_id = ?', $item->getId())
+                    ->where('child_id != ?', $item->getId())
+                    ->where('is_in_stock = 1')
+                    ->query()
+                    ->fetchColumn();
+                return boolval($result);
+            }
+        }
+        return true;
     }
 
 }

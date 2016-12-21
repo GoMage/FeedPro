@@ -23,6 +23,11 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
     /**
      * @var string
      */
+    protected $_entityType;
+
+    /**
+     * @var string
+     */
     protected $_header;
 
     /**
@@ -43,11 +48,18 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
         $match = array();
         preg_match(self::BLOCK_PATTERN, $this->_content, $match);
 
+        preg_match_all(self::PARAMS_PATTERN, $match[1], $params);
+        foreach ($params[1] as $_key => $param) {
+            if (trim($param) == 'type') {
+                $this->_entityType = trim($params[2][$_key]);
+            }
+        }
+
         if (!isset($match[2])) {
             throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Invalid XML Content.'));
         }
 
-        $this->_block = $match[2];
+        $this->_block = trim($match[2]);
         list($this->_header, $this->_footer) = preg_split(self::BLOCK_PATTERN, $this->_content);
     }
 
@@ -63,7 +75,11 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
 
             if (isset($match[1])) {
                 foreach ($match[1] as $key => $value) {
-                    $type = GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE;
+                    if ($this->getEntityType() == 'review') {
+                        $type = GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::REVIEW;
+                    } else {
+                        $type = GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE;
+                    }
                     if (strpos($value, 'parent:') === 0) {
                         $type  = GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::PARENT_ATTRIBUTE;
                         $value = str_replace('parent:', '', $value);
@@ -118,4 +134,11 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
         return $this->_block;
     }
 
+    /**
+     * @return string
+     */
+    public function getEntityType()
+    {
+        return $this->_entityType;
+    }
 }

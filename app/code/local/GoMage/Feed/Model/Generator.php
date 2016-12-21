@@ -27,9 +27,14 @@ class GoMage_Feed_Model_Generator
     protected $_rows;
 
     /**
-     * @var GoMage_Feed_Model_Reader_Collection
+     * @var GoMage_Feed_Model_Reader_ReaderInterface
      */
     protected $_reader;
+
+    /**
+     * @var GoMage_Feed_Model_Reader_Factory
+     */
+    protected $_readerFactory;
 
     /**
      * @var GoMage_Feed_Model_Writer_WriterInterface
@@ -64,6 +69,7 @@ class GoMage_Feed_Model_Generator
 
     public function __construct()
     {
+        $this->_readerFactory  = Mage::getSingleton('gomage_feed/reader_factory');
         $this->_writerFactory  = Mage::getSingleton('gomage_feed/writer_factory');
         $this->_contentFactory = Mage::getSingleton('gomage_feed/content_factory');
         $this->_dateTime       = Mage::getModel('core/date');
@@ -92,7 +98,7 @@ class GoMage_Feed_Model_Generator
             while ($items = $this->_getReader()->read($page, $limit)) {
                 $this->log(Mage::helper('gomage_feed')->__('Page - %s', $page));
                 foreach ($items as $item) {
-                    if ($this->_isValidItem($item)) {
+                    if ($this->_getReader()->isValidItem($item)) {
                         $item->setStoreId($this->_feed->getStoreId());
                         $data = $this->_getRows()->calc($item);
                         $this->_getWriter()->write($data);
@@ -113,33 +119,6 @@ class GoMage_Feed_Model_Generator
             $this->log($e->getMessage());
             throw new Mage_Core_Exception($e->getMessage());
         }
-    }
-
-    /**
-     * @todo add validator class
-     * @param  Varien_Object $item
-     * @return bool
-     */
-    protected function _isValidItem(Varien_Object $item)
-    {
-        if ($this->_feed->getUseLayer() == GoMage_Feed_Model_Adminhtml_System_Config_Source_Uselayer::NO_WITH_CHILD) {
-            if ($item->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
-                $resource = Mage::getSingleton('core/resource');
-                /** @var Varien_Db_Adapter_Interface $connection */
-                $connection = $resource->getConnection('core_read');
-                $result     = $connection
-                    ->select()
-                    ->from($resource->getTableName('catalog_product_relation'), 'child_id')
-                    ->join($resource->getTableName('cataloginventory_stock_item'), 'child_id=product_id')
-                    ->where('parent_id = ?', $item->getId())
-                    ->where('child_id != ?', $item->getId())
-                    ->where('is_in_stock = 1')
-                    ->query()
-                    ->fetchColumn();
-                return boolval($result);
-            }
-        }
-        return true;
     }
 
     protected function _start()
@@ -164,7 +143,7 @@ class GoMage_Feed_Model_Generator
     }
 
     /**
-     * @return GoMage_Feed_Model_Reader_Collection
+     * @return GoMage_Feed_Model_Reader_ReaderInterface
      */
     protected function _getReader()
     {
@@ -179,7 +158,7 @@ class GoMage_Feed_Model_Generator
                     'is_disabled' => $this->_feed->getUseDisabled(),
                 )
             );
-            $this->_reader = Mage::getModel('gomage_feed/reader_collection', $params);
+            $this->_reader = $this->_readerFactory->create($this->_getContent()->getEntityType(), $params);
         }
         return $this->_reader;
     }
@@ -194,7 +173,7 @@ class GoMage_Feed_Model_Generator
                 'fileName' => $this->_feed->getFileNameWithExt(),
             );
 
-            if ($this->_feed->getType() == 'csv') {
+            if ($this->_feed->getType() == GoMage_Feed_Model_Adminhtml_System_Config_Source_Feed_Type::CSV_TYPE) {
                 $arguments = array_merge($arguments,
                     array(
                         'delimiter'      => Mage::getSingleton('gomage_feed/adminhtml_system_config_source_csv_delimiter')->getSymbol($this->_feed->getDelimiter()),

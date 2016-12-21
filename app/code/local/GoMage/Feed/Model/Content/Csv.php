@@ -41,4 +41,12 @@ class GoMage_Feed_Model_Content_Csv extends GoMage_Feed_Model_Content_AbstractCo
 
         return $this->_rows;
     }
+
+    /**
+     * @return string
+     */
+    public function getEntityType()
+    {
+        return 'product';
+    }
 }

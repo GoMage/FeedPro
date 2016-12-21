@@ -24,8 +24,6 @@
  * @method bool getIsDisabled()
  * @method Mage_Rule_Model_Condition_Combine getConditions()
  */
-
-
 class GoMage_Feed_Model_Reader_Params extends Varien_Object
 {
 
