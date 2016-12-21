@@ -31,6 +31,7 @@ class GoMage_Feed_Model_Adminhtml_System_Config_Source_Output
             array('value' => GoMage_Feed_Model_Output_OutputInterface::SPECIAL_DECODE, 'label' => $helper->__('Decode special chars')),
             array('value' => GoMage_Feed_Model_Output_OutputInterface::DELETE_SPACE, 'label' => $helper->__('Delete Space')),
             array('value' => GoMage_Feed_Model_Output_OutputInterface::BIG_TO_SMALL, 'label' => $helper->__('Big to small')),
+            array('value' => GoMage_Feed_Model_Output_OutputInterface::DATE_TIME, 'label' => $helper->__('DateTime')),
         );
     }
 

@@ -24,6 +24,7 @@ interface GoMage_Feed_Model_Output_OutputInterface
     const DELETE_SPACE = 'delete_space';
     const BIG_TO_SMALL = 'big_to_small';
     const REMOVE_LINE_BREAK = 'remove_lb';
+    const DATE_TIME = 'date_time';
 
     /**
      * @param  $value

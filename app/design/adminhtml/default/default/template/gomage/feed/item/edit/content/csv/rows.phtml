@@ -117,7 +117,7 @@ $_attributes        = $this->getProductAttributes();
                         <td class="label"><label><?php echo $this->__('Output Types') ?></label></td>
                         <td class="value">
                             <select class="select output-type-select multiselect"
-                                    name="<?php echo $_htmlName ?>[{{row_id}}][output_type][]" multiple="multiple" size="8">
+                                    name="<?php echo $_htmlName ?>[{{row_id}}][output_type][]" multiple="multiple" size="9">
                                 <?php foreach ($_outputs as $_output): ?>
                                     <option value="<?php echo $_output['value'] ?>"><?php echo $_output['label'] ?></option>
                                 <?php endforeach ?>

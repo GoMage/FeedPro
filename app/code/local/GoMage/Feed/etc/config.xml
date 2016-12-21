@@ -223,6 +223,9 @@
     		<notifications>
     			<email_template>gomage_feedpro_notifications_email_template</email_template>
     		</notifications>
+            <datesettings>
+                <mask>Y-m-d H:i:s</mask>
+            </datesettings>
     	</gomage_feedpro>
         <gomage_notification>
             <notification>

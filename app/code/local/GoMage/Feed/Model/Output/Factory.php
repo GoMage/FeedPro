@@ -28,6 +28,7 @@ class GoMage_Feed_Model_Output_Factory
         GoMage_Feed_Model_Output_OutputInterface::DELETE_SPACE      => 'gomage_feed/output_deleteSpace',
         GoMage_Feed_Model_Output_OutputInterface::BIG_TO_SMALL      => 'gomage_feed/output_bigToSmall',
         GoMage_Feed_Model_Output_OutputInterface::REMOVE_LINE_BREAK => 'gomage_feed/output_removeLineBreak',
+        GoMage_Feed_Model_Output_OutputInterface::DATE_TIME         => 'gomage_feed/output_dateTime',
     );
 
     /**

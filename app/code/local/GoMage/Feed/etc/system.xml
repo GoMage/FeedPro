@@ -216,6 +216,24 @@
 						</height>
 					</fields>
 				</imagesettings>
+				<datesettings translate="label">
+					<label>DateTime Settings</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>25</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<mask>
+							<label>DateTime mask</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</mask>
+					</fields>
+				</datesettings>
 				<notifications translate="label">
 					<label>Feed Pro Notifications</label>
 					<frontend_type>text</frontend_type>
