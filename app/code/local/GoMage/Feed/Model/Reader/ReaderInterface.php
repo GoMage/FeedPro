@@ -21,7 +21,7 @@ interface GoMage_Feed_Model_Reader_ReaderInterface
      * @param  int $limit
      * @return Mage_Eav_Model_Entity_Collection_Abstract
      */
-    public function read($page, $limit);
+    public function read($page = 1, $limit = 0);
 
     /**
      * @param Varien_Object $item

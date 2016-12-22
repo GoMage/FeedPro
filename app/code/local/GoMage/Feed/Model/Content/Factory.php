@@ -29,7 +29,7 @@ class GoMage_Feed_Model_Content_Factory
     public function create($type, array $arguments = array())
     {
         if (!isset($this->_contents[$type])) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Undefined content type.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('Undefined content type.'));
         }
         return Mage::getModel($this->_contents[$type], $arguments);
     }

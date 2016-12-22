@@ -29,7 +29,7 @@ class GoMage_Feed_Model_Writer_Factory
     public function create($type, array $arguments = array())
     {
         if (!isset($this->_writers[$type])) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Undefined writer.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('Undefined writer.'));
         }
         return Mage::getModel($this->_writers[$type], $arguments);
     }

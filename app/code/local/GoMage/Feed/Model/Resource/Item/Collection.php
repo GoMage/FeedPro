@@ -11,13 +11,14 @@
  * @license      https://www.gomage.com/licensing  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
  * @version      Release: 3.7.0
- * @since        Class available since Release 4.0.0
+ * @since        Class available since Release 1.0
  */
-class GoMage_Feed_Model_Mysql4_Attribute extends Mage_Core_Model_Mysql4_Abstract
+class GoMage_Feed_Model_Resource_Item_Collection extends Mage_Rule_Model_Resource_Rule_Collection_Abstract
 {
     public function _construct()
     {
-        $this->_init('gomage_feed/attribute', 'id');
+        parent::_construct();
+        $this->_init('gomage_feed/item');
     }
 
 }

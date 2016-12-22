@@ -36,7 +36,7 @@ class GoMage_Feed_Model_Reader_Review implements GoMage_Feed_Model_Reader_Reader
      * @param  int $limit
      * @return Mage_Review_Model_Resource_Review_Collection
      */
-    public function read($page, $limit)
+    public function read($page = 1, $limit = 0)
     {
         $collection = $this->_getCollection();
 

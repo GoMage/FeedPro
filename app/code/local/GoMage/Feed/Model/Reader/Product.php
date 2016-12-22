@@ -38,7 +38,7 @@ class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_Reade
      * @param  int $limit
      * @return GoMage_Feed_Model_Product_Collection
      */
-    public function read($page, $limit)
+    public function read($page = 1, $limit = 0)
     {
         $collection = $this->_getCollection();
 

@@ -30,7 +30,7 @@ class GoMage_Feed_Model_Reader_Factory
     public function create($entityType, $params)
     {
         if (!isset($this->_readers[$entityType])) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Undefined reader.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('Undefined reader.'));
         }
         return Mage::getModel($this->_readers[$entityType], $params);
     }

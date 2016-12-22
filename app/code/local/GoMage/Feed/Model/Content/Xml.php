@@ -56,7 +56,7 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
         }
 
         if (!isset($match[2])) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Invalid XML Content.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('Invalid XML Content.'));
         }
 
         $this->_block = trim($match[2]);

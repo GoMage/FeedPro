@@ -154,10 +154,10 @@
 		<models>
 		    <gomage_feed>
 		        <class>GoMage_Feed_Model</class>
-		        <resourceModel>gomage_feed_mysql4</resourceModel>
+		        <resourceModel>gomage_feed_resource</resourceModel>
 		    </gomage_feed>
-		    <gomage_feed_mysql4>
-		        <class>GoMage_Feed_Model_Mysql4</class>
+		    <gomage_feed_resource>
+		        <class>GoMage_Feed_Model_Resource</class>
 		        <entities>
 		            <item>
                         <table>gomage_feed_entity</table>
@@ -166,7 +166,7 @@
                         <table>gomage_feed_custom_attribute</table>
 		            </attribute>
 		        </entities>
-		    </gomage_feed_mysql4>
+		    </gomage_feed_resource>
 		</models>
 		<blocks>
             <gomage_feed>

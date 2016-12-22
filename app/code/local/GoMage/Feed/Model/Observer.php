@@ -116,10 +116,9 @@ class GoMage_Feed_Model_Observer
         }
     }
 
-    public static function checkK($event)
+    public static function checkK()
     {
-        $key = Mage::getStoreConfig('gomage_activation/feed/key');
-        Mage::helper('gomage_feed')->a($key);
+        Mage::helper('gomage_feed')->a(Mage::getStoreConfig('gomage_activation/feed/key'));
     }
 
 }

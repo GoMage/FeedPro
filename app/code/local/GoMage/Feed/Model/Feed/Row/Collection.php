@@ -73,7 +73,7 @@ class GoMage_Feed_Model_Feed_Row_Collection implements \Iterator
     public function add(GoMage_Feed_Model_Feed_Row $row)
     {
         if (isset($this->_items[$row->getName()])) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Duplicate row.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('Duplicate row.'));
         }
         $this->_items[$row->getName()] = $row;
     }

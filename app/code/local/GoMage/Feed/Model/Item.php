@@ -34,7 +34,7 @@ class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
         }
         if ($id = Mage::getModel('gomage_feed/item')->load($this->getFilename(), 'filename')->getId()) {
             if ($id != $this->getId()) {
-                throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Filename "%s" exists', $this->getFilename()));
+                Mage::throwException(Mage::helper('gomage_feed')->__('Filename "%s" exists', $this->getFilename()));
             }
         }
         return parent::save();

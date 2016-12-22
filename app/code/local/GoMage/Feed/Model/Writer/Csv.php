@@ -69,7 +69,7 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
     public function setHeaderCols(array $headerColumns)
     {
         if (null !== $this->_headerCols) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('The header column names are already set.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('The header column names are already set.'));
         }
         if ($headerColumns) {
             foreach ($headerColumns as $columnName) {

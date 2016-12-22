@@ -106,7 +106,7 @@ class GoMage_Feed_Model_Generator
                 }
                 $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId());
                 if ($generate_info->getData('stopped')) {
-                    throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Stopped generation.'));
+                    Mage::throwException(Mage::helper('gomage_feed')->__('Stopped generation.'));
                 }
                 if ($limit) {
                     $generate_info->addGeneratedRecords($limit)->save();
@@ -117,7 +117,7 @@ class GoMage_Feed_Model_Generator
             $this->_finish();
         } catch (Exception $e) {
             $this->log($e->getMessage());
-            throw new Mage_Core_Exception($e->getMessage());
+            Mage::throwException($e->getMessage());
         }
     }
 

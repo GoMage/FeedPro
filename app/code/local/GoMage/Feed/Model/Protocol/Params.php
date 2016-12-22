@@ -42,10 +42,10 @@ class GoMage_Feed_Model_Protocol_Params extends Varien_Object
     protected function validate(array $data)
     {
         if (!isset($data['host']) || !$data['host']) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Host is not specified.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('Host is not specified.'));
         }
         if (!isset($data['user']) || !$data['user']) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('User is not specified.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('User is not specified.'));
         }
         if (!isset($data['port']) || !$data['port']) {
             $data['port'] = self::PORT;

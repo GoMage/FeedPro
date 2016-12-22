@@ -24,18 +24,18 @@ class GoMage_Feed_Model_Protocol_Ftp extends GoMage_Feed_Model_Protocol_Abstract
         $helper = Mage::helper('gomage_feed');
 
         if (!extension_loaded('ftp')) {
-            throw new Mage_Core_Exception($helper->__('FTP extension is not loaded.'));
+            Mage::throwException($helper->__('FTP extension is not loaded.'));
         }
 
         $this->_connection = ftp_connect($this->_params->getHost(), $this->_params->getPort());
         if (!$this->_connection) {
-            throw new Mage_Core_Exception($helper->__('Invalid FTP/FTPS access (Host Name or Port).'));
+            Mage::throwException($helper->__('Invalid FTP/FTPS access (Host Name or Port).'));
         }
         if (!ftp_login($this->_connection, $this->_params->getUser(), $this->_params->getPassword())) {
-            throw new Mage_Core_Exception($helper->__('Invalid FTP/FTPS access (User Name or Password).'));
+            Mage::throwException($helper->__('Invalid FTP/FTPS access (User Name or Password).'));
         }
         if (!ftp_pasv($this->_connection, $this->_params->getPassiveMode())) {
-            throw new Mage_Core_Exception($helper->__('Invalid FTP/FTPS access (Passive/Active Mode).'));
+            Mage::throwException($helper->__('Invalid FTP/FTPS access (Passive/Active Mode).'));
         }
     }
 

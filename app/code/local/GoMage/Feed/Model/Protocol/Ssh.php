@@ -23,15 +23,15 @@ class GoMage_Feed_Model_Protocol_Ssh extends GoMage_Feed_Model_Protocol_Abstract
     {
         $helper = Mage::helper('gomage_feed');
         if (!extension_loaded('ssh2')) {
-            throw new Mage_Core_Exception($helper->__('SSH2 extension is not loaded.'));
+            Mage::throwException($helper->__('SSH2 extension is not loaded.'));
         }
 
         $this->_connection = ssh2_connect($this->_params->getHost(), $this->_params->getPort());
         if (!$this->_connection) {
-            throw new Mage_Core_Exception($helper->__('Invalid SFTP/SSH access (Host Name or Port).'));
+            Mage::throwException($helper->__('Invalid SFTP/SSH access (Host Name or Port).'));
         }
         if (!ssh2_auth_password($this->_connection, $this->_params->getUser(), $this->_params->getPassword())) {
-            throw new Mage_Core_Exception($helper->__('Invalid SFTP/SSH access (User Name or Password).'));
+            Mage::throwException($helper->__('Invalid SFTP/SSH access (User Name or Password).'));
         }
     }
 

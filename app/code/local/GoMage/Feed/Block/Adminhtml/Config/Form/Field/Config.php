@@ -20,18 +20,13 @@ class GoMage_Feed_Block_Adminhtml_Config_Form_Field_Config extends Mage_Adminhtm
 
     public function __construct()
     {
-
         $data = Mage::getStoreConfig('gomage_feedpro/amazon/config');
 
         if (empty($data)) {
-            $inchooSwitch = new Mage_Core_Model_Config();
-
-            $inchooSwitch->saveConfig('gomage_feedpro/amazon/config', 'a:3:{s:32:"generator_settings_' . uniqid() . '";a:4:{s:4:"type";s:1:"0";s:5:"value";s:0:"";s:6:"action";s:1:"0";s:10:"input_code";s:3:"upc";}s:32:"generator_settings_' . uniqid() . '";a:4:{s:4:"type";s:1:"0";s:5:"value";s:0:"";s:6:"action";s:1:"0";s:10:"input_code";s:3:"ean";}s:32:"generator_settings_' . uniqid() . '";a:4:{s:4:"type";s:1:"0";s:5:"value";s:0:"";s:6:"action";s:1:"0";s:10:"input_code";s:3:"mpn";}}', 'default', 0);
-
-
+            $config = Mage::getModel('core/config');
+            $config->saveConfig('gomage_feedpro/amazon/config', 'a:3:{s:32:"generator_settings_' . uniqid() . '";a:4:{s:4:"type";s:1:"0";s:5:"value";s:0:"";s:6:"action";s:1:"0";s:10:"input_code";s:3:"upc";}s:32:"generator_settings_' . uniqid() . '";a:4:{s:4:"type";s:1:"0";s:5:"value";s:0:"";s:6:"action";s:1:"0";s:10:"input_code";s:3:"ean";}s:32:"generator_settings_' . uniqid() . '";a:4:{s:4:"type";s:1:"0";s:5:"value";s:0:"";s:6:"action";s:1:"0";s:10:"input_code";s:3:"mpn";}}', 'default', 0);
             Mage::app()->getFrontController()->getResponse()->setRedirect('#');
         }
-
 
         $layout = Mage::app()->getFrontController()->getAction()->getLayout();
 
@@ -40,10 +35,10 @@ class GoMage_Feed_Block_Adminhtml_Config_Form_Field_Config extends Mage_Adminhtm
         );
         $renderer->setOptions(Mage::getModel('gomage_feed/adminhtml_config_form_renderer_type')->toOptionArray());
         $this->addColumn('type', array(
-            'label'    => Mage::helper('gomage_feed')->__('Type'),
-            'style'    => 'width:120px',
-            'renderer' => $renderer
-        )
+                'label'    => Mage::helper('gomage_feed')->__('Type'),
+                'style'    => 'width:120px',
+                'renderer' => $renderer
+            )
         );
         $this->_renders['type'] = $renderer;
 
@@ -53,11 +48,11 @@ class GoMage_Feed_Block_Adminhtml_Config_Form_Field_Config extends Mage_Adminhtm
         );
         $renderer->setOptions(Mage::getModel('gomage_feed/adminhtml_config_form_renderer_value')->toOptionArray());
         $this->addColumn('value', array(
-            'label'    => Mage::helper('gomage_feed')->__('Value'),
-            'style'    => 'width:145px;',
-            'renderer' => $renderer,
+                'label'    => Mage::helper('gomage_feed')->__('Value'),
+                'style'    => 'width:145px;',
+                'renderer' => $renderer,
 
-        )
+            )
         );
 
 
@@ -69,19 +64,19 @@ class GoMage_Feed_Block_Adminhtml_Config_Form_Field_Config extends Mage_Adminhtm
         );
         $renderer->setOptions(Mage::getModel('gomage_feed/adminhtml_config_form_renderer_action')->toOptionArray());
         $this->addColumn('action', array(
-            'label'    => Mage::helper('gomage_feed')->__('Action'),
-            'style'    => 'width:145px',
-            'renderer' => $renderer
-        )
+                'label'    => Mage::helper('gomage_feed')->__('Action'),
+                'style'    => 'width:145px',
+                'renderer' => $renderer
+            )
         );
         $this->_renders['action'] = $renderer;
 
 
         $this->addColumn('input_code', array(
-            'label' => Mage::helper('gomage_feed')->__('code'),
-            'style' => 'width:45px'
+                'label' => Mage::helper('gomage_feed')->__('code'),
+                'style' => 'width:45px'
 
-        )
+            )
         );
         $this->_renders['input_code'] = $renderer;
 

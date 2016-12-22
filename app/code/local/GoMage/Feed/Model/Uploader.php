@@ -58,11 +58,11 @@ class GoMage_Feed_Model_Uploader
         $helper = Mage::helper('gomage_feed');
 
         if (!$feed->getFtpActive()) {
-            throw new Mage_Core_Exception($helper->__('FTP Uploading is disabled for this feed.'));
+            Mage::throwException($helper->__('FTP Uploading is disabled for this feed.'));
         }
 
         if (!file_exists(Mage::helper('gomage_feed/generator')->getBaseDir() . DS . $feed->getFileNameWithExt())) {
-            throw new Mage_Core_Exception($helper->__('File not found. Please generate a feed.'));
+            Mage::throwException($helper->__('File not found. Please generate a feed.'));
         }
 
         return true;

@@ -41,7 +41,7 @@ class GoMage_Feed_Model_Reader_Params extends Varien_Object
     protected function validate(array $data)
     {
         if (!isset($data['store_id']) || !$data['store_id']) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Store is not specified.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('Store is not specified.'));
         }
         $data['is_disabled'] = isset($data['is_disabled']) && boolval($data['is_disabled']);
         return $data;

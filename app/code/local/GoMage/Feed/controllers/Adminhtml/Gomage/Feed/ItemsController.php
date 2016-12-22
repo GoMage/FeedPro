@@ -196,7 +196,8 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                     $content_data_sorted = array();
 
                     foreach ($data['field'] as $field) {
-                        $field['output_type'] = $this->prepareOutputType($field['output_type']);
+                        $output_type          = isset($field['output_type']) ? $field['output_type']: array();
+                        $field['output_type'] = $this->prepareOutputType($output_type);
                         if (intval($field['order']) && !isset($content_data_sorted[$field['order']])) {
                             $content_data_sorted[intval($field['order'])] = $field;
                         } else {
@@ -231,8 +232,10 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                     $data['generate_hour_to'] = null;
                 }
 
-                $data['conditions'] = $data['rule']['conditions'];
-                unset($data['rule']);
+                if (isset($data['rule'])) {
+                    $data['conditions'] = $data['rule']['conditions'];
+                    unset($data['rule']);
+                }
 
                 $model->loadPost($data);
                 $model->setId($id)->save();

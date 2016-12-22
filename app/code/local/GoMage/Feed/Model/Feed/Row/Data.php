@@ -38,7 +38,7 @@ class GoMage_Feed_Model_Feed_Row_Data extends Varien_Object
     protected function validate(array $data)
     {
         if (!isset($data['name']) || !$data['name']) {
-            throw new Mage_Core_Exception(Mage::helper('gomage_feed')->__('Name is required field.'));
+            Mage::throwException(Mage::helper('gomage_feed')->__('Name is required field.'));
         }
         if (isset($data['format'])) {
             $data['output_type'] = $data['format'];
