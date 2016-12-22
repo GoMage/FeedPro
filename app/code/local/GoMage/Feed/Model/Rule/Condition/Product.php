@@ -17,6 +17,13 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
 {
 
     /**
+     * Rule condition SQL builder
+     *
+     * @var GoMage_Feed_Model_Rule_Condition_SqlBuilder
+     */
+    protected $_ruleResourceHelper;
+
+    /**
      * Collect validated attributes
      *
      * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $productCollection
@@ -55,7 +62,7 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
         $alias     = 'at_' . $attribute;
         $field     = 'value';
 
-        /** @var $ruleResource Mage_Rule_Model_Resource_Rule_Condition_SqlBuilder */
+        /** @var $ruleResource GoMage_Feed_Model_Rule_Condition_SqlBuilder */
         $ruleResource = $this->getRuleResourceHelper();
         /** @var Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $productCollection */
         $productCollection = Mage::getResourceModel('catalog/product_collection');
@@ -76,6 +83,58 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
         }
 
         return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
+    }
+
+    /**
+     * Correct '==' and '!=' operators
+     * Categories can't be equal because product is included categories selected by administrator and in their parents
+     *
+     * @param string $operator
+     * @param string $inputType
+     * @return string
+     */
+    public function correctOperator($operator, $inputType)
+    {
+        if ($inputType == 'category') {
+            if ($operator == '==') {
+                $operator = '{}';
+            } elseif ($operator == '!=') {
+                $operator = '!{}';
+            }
+        }
+
+        return $operator;
+    }
+
+    /**
+     * Prepare bind array of ids from string or array
+     *
+     * @param string|int|array $value
+     * @return array
+     */
+    public function bindArrayOfIds($value)
+    {
+        if (!is_array($value)) {
+            $value = explode(',', $value);
+        }
+
+        $value = array_map('trim', $value);
+        $value = array_filter($value, 'is_numeric');
+
+        return $value;
+    }
+
+    /**
+     * Rule condition SQL builder getter
+     *
+     * @return GoMage_Feed_Model_Rule_Condition_SqlBuilder
+     */
+    public function getRuleResourceHelper()
+    {
+        if (!$this->_ruleResourceHelper) {
+            $this->_ruleResourceHelper = Mage::getModel('gomage_feed/rule_condition_sqlBuilder');
+        }
+        return $this->_ruleResourceHelper;
     }
 
 }

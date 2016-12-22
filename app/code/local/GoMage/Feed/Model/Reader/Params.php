@@ -11,7 +11,7 @@
  * @license      https://www.gomage.com/license-agreement/  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
  * @version      Release: 3.7.0
- * @since        Class available since Release 1.0
+ * @since        Class available since Release 4.0.0
  */
 
 /**
@@ -22,7 +22,7 @@
  * @method int getVisibility()
  * @method bool getUseLayer()
  * @method bool getIsDisabled()
- * @method Mage_Rule_Model_Condition_Combine getConditions()
+ * @method GoMage_Feed_Model_Rule_Condition_Combine getConditions()
  */
 class GoMage_Feed_Model_Reader_Params extends Varien_Object
 {

@@ -75,7 +75,7 @@ class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
     /**
      * Getter for rule combine conditions instance
      *
-     * @return Mage_Rule_Model_Condition_Combine
+     * @return GoMage_Feed_Model_Rule_Condition_Combine
      */
     public function getConditionsInstance()
     {

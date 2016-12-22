@@ -18,7 +18,10 @@ abstract class GoMage_Feed_Model_Mapper_Custom_AbstractImage implements GoMage_F
     /**
      * @return int
      */
-    abstract public static function getImageIndex();
+    public static function getImageIndex()
+    {
+        return 1;
+    }
 
     /**
      * @param  Varien_Object $object

@@ -45,4 +45,25 @@ class GoMage_Feed_Model_Rule_Condition_Combine extends Mage_Rule_Model_Condition
         }
         return $this;
     }
+
+    /**
+     * Prepare sql where by condition
+     *
+     * @return string
+     */
+    public function prepareConditionSql()
+    {
+        $wheres = array();
+        foreach ($this->getConditions() as $condition) {
+            /** @var $condition Mage_Rule_Model_Condition_Abstract */
+            $wheres[] = $condition->prepareConditionSql();
+        }
+
+        if (empty($wheres)) {
+            return '';
+        }
+        $delimiter = $this->getAggregator() == "all" ? ' AND ' : ' OR ';
+        return ' (' . implode($delimiter, $wheres) . ') ';
+    }
+
 }
