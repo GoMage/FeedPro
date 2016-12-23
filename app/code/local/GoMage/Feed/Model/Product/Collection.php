@@ -13,10 +13,11 @@
  * @version      Release: 3.6
  * @since        Class available since Release 2.0
  */
-class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
+class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_Product_Collection
 {
-    protected function _productLimitationPrice($joinLeft = true)
+    protected function _productLimitationPrice($joinLeft = false)
     {
+        $joinLeft = true;
         return parent::_productLimitationPrice($joinLeft);
     }
 }

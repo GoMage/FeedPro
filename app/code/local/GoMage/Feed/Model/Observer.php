@@ -18,8 +18,9 @@ class GoMage_Feed_Model_Observer
 
     public static function generateFeeds()
     {
+        /** @var GoMage_Feed_Model_Resource_Item_Collection $collection */
         $collection = Mage::getResourceModel('gomage_feed/item_collection');
-        $collection->getSelect()->where('`generate_day` like "%' . strtolower(date('D')) . '%"');
+        $collection->addFieldToFilter('generate_day', array('like' => '%' . strtolower(date('D')) . '%'));
 
         foreach ($collection as $feed) {
 
@@ -72,8 +73,9 @@ class GoMage_Feed_Model_Observer
 
     public static function uploadFeeds()
     {
+        /** @var GoMage_Feed_Model_Resource_Item_Collection $collection */
         $collection = Mage::getResourceModel('gomage_feed/item_collection');
-        $collection->getSelect()->where('`upload_day` like "%' . strtolower(date('D')) . '%"');
+        $collection->addFieldToFilter('upload_day', array('like' => '%' . strtolower(date('D')) . '%'));
 
         foreach ($collection as $feed) {
 

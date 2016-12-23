@@ -185,6 +185,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AttributesController extends Mage_Adminh
 
     public function mappingimportAction()
     {
+
         if (($post = $this->getRequest()->getPost()) && ($id = $this->getRequest()->getParam('id')) && isset($_FILES['mappingfile']) && $_FILES['mappingfile']) {
             try {
                 $data       = file_get_contents($_FILES['mappingfile']['tmp_name']);

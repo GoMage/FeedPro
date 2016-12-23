@@ -26,7 +26,7 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
     /**
      * Collect validated attributes
      *
-     * @param Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $productCollection
+     * @param Mage_Catalog_Model_Resource_Product_Collection $productCollection
      * @return Mage_CatalogRule_Model_Rule_Condition_Product
      */
     public function collectValidatedAttributes($productCollection)
@@ -64,7 +64,7 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
 
         /** @var $ruleResource GoMage_Feed_Model_Rule_Condition_SqlBuilder */
         $ruleResource = $this->getRuleResourceHelper();
-        /** @var Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection $productCollection */
+        /** @var Mage_Catalog_Model_Resource_Product_Collection $productCollection */
         $productCollection = Mage::getResourceModel('catalog/product_collection');
 
         $value    = $this->getValueParsed();

@@ -87,7 +87,7 @@ class GoMage_Feed_Model_Mapper_Factory
      */
     protected function _getCustomMapper($value)
     {
-        if (isset($this->_customMappers[$value])) {
+        if (is_string($value) && isset($this->_customMappers[$value])) {
             return $this->_customMappers[$value];
         }
         return false;

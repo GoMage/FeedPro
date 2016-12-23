@@ -16,15 +16,35 @@
 class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml_Block_Widget_Form
 {
 
-    protected function _prepareForm()
+    /**
+     * @return array
+     */
+    protected function _getHours()
     {
         $hours  = array();
         $locale = Mage::getSingleton('core/locale');
         for ($i = 0; $i < 24; $i++) {
             $hours[] = array('label' => sprintf('%02d:00', $i), 'value' => date('H', mktime($i, 0, 0, 1, 1, 1970) + $locale->date()->getGmtOffset()));
         }
+        return $hours;
+    }
 
-        $form = new Varien_Data_Form();
+    /**
+     * @return array
+     */
+    protected function _getRestartCron()
+    {
+        $result = array();
+        for ($i = 1; $i <= 5; $i++) {
+            $result[] = array('label' => $i, 'value' => $i);
+        }
+        return $result;
+    }
+
+    protected function _prepareForm()
+    {
+        $form  = new Varien_Data_Form();
+        $hours = $this->_getHours();
 
         if (Mage::registry('gomage_feed')) {
             $item = Mage::registry('gomage_feed');
@@ -134,7 +154,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
                 'label'    => $this->__('Active From, hour'),
                 'title'    => $this->__('Active From, hour'),
                 'required' => false,
-                'values'   => $hours
+                'values'   => $hours,
             )
         );
 
@@ -167,13 +187,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
                 'label'    => $this->__('Restart Cron, times'),
                 'title'    => $this->__('Restart Cron, times'),
                 'required' => false,
-                'values'   => array(
-                    array('label' => $this->__('1'), 'value' => 1),
-                    array('label' => $this->__('2'), 'value' => 2),
-                    array('label' => $this->__('3'), 'value' => 3),
-                    array('label' => $this->__('4'), 'value' => 4),
-                    array('label' => $this->__('5'), 'value' => 5),
-                )
+                'values'   => $this->_getRestartCron(),
             )
         );
 

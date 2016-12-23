@@ -62,8 +62,6 @@ class GoMage_Feed_Model_Reader_Review implements GoMage_Feed_Model_Reader_Reader
                 $this->_collection->addStoreFilter($this->_params->getStoreId());
             }
             $this->_collection->addStatusFilter(Mage_Review_Model_Review::STATUS_APPROVED);
-
-            Mage::log($this->_collection->getSelect()->__toString(), null, 'f.log');
         }
         return $this->_collection->clear();
     }
