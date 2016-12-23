@@ -10,7 +10,7 @@
  * @author       GoMage.com
  * @license      https://www.gomage.com/licensing  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
- * @version      Release: 3.7.0
+ * @version      Release: 4.0.0
  * @since        Class available since Release 3.6
  */
 class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_Controller_Action
