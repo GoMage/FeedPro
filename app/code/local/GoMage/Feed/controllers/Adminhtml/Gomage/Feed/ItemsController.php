@@ -97,20 +97,16 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
 
                 $array_data = json_decode($data);
 
-                if (empty($array_data)) {
+                if (empty($array_data) || !is_array($array_data)) {
                     $result['error']      = true;
                     $result['error_text'] = Mage::helper('core')->__('Empty or Invalid data file');
                 } else {
-                    $feed = Mage::getModel('gomage_feed/item')->load($id)->setContent($data);
+                    $result['feed'] = $array_data;
                 }
 
             } catch (Exception $e) {
                 $result['error']      = true;
                 $result['error_text'] = Mage::helper('core')->__('Unknown error');
-            }
-
-            if (!$result['error']) {
-                $result['feed'] = $this->getLayout()->createBlock('adminhtml/template')->setData('feed', $feed)->setTemplate('gomage/feed/item/edit/content/mapping.phtml')->toHtml();
             }
             echo Zend_Json::encode($result);
         }

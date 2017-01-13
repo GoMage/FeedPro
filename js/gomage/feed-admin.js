@@ -137,29 +137,24 @@ GomageFeedAdminSettings = Class.create({
 
     },
     submit: function (section, file) {
-
         if (section && !file) {
             alert('Please select Section');
             return;
         }
-
         params = {
             file: file,
             section: section
         };
 
-        var request = new Ajax.Request(this.url, {
+        new Ajax.Request(this.url, {
             method: 'GET',
             parameters: params,
             onSuccess: function (transport) {
-
-                var response = eval('('
-                    + (transport.responseText || false) + ')');
-
+                var response = eval('(' + (transport.responseText || false) + ')');
                 if (response.error) {
                     alert(response.error_text);
                 } else {
-                    $('mapping-table-body').innerHTML = response.feed;
+                    window.GoMageCsvRows.reload(response.feed);
                 }
 
             },

@@ -34,6 +34,13 @@ GoMage.CsvRows.prototype = {
         }
         this.bindActions();
     },
+    reload: function (rowsData) {
+        this.config.rowsData = rowsData;
+        this.container.innerHTML = '';
+        this.config.rowsData.forEach(function (data) {
+            this.add(data);
+        }, this);
+    },
     add: function (data) {
         var element;
         data.row_id = this.index;

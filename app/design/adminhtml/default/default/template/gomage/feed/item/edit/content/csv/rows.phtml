@@ -219,7 +219,7 @@ $_attributes        = $this->getProductAttributes();
 
 <script type="text/javascript">
     document.observe("dom:loaded", function(){
-        new GoMage.CsvRows({
+        window.GoMageCsvRows = new GoMage.CsvRows({
             "rowsData": <?php echo $this->getRows(); ?>,
             "htmlName": "<?php echo $_htmlName ?>"
         });
