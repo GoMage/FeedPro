@@ -92,7 +92,7 @@ class GoMage_Feed_Model_Generator
             $page  = 1;
             $limit = $this->_feed->getIterationLimit();
             if (!$limit) {
-                $limit = round($total_records / 100);
+                $limit = max(array(round($total_records / 100), 100));
             }
 
             while ($items = $this->_getReader()->read($page, $limit)) {
@@ -224,7 +224,7 @@ class GoMage_Feed_Model_Generator
      */
     protected function log($text = '', $rewrite = false)
     {
-        $text .= "\n";
+        $text     .= "\n";
         $log_file = Mage::helper('gomage_feed/generator')->getLogDir() . DS . 'log-' . $this->_feed->getId() . '.txt';
         if ($rewrite || !file_exists($log_file)) {
             @file_put_contents($log_file, $text);

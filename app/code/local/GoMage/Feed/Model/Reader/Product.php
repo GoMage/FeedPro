@@ -49,6 +49,7 @@ class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_Reade
         if ($page > $collection->getLastPageNumber()) {
             return false;
         }
+
         return $collection;
     }
 
@@ -62,6 +63,7 @@ class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_Reade
 
             if ($this->_params->getStoreId()) {
                 $this->_collection->setStoreId($this->_params->getStoreId());
+                $this->_collection->addStoreFilter($this->_params->getStoreId());
             }
 
             $visibility = Mage::getModel('gomage_feed/adminhtml_system_config_source_visibility')
@@ -89,6 +91,7 @@ class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_Reade
 
             $this->_collection->addAttributeToSelect($this->_params->getAttributes())
                 ->addAttributeToSort(self::SORT_ATTRIBUTE);
+
         }
         return $this->_collection->clear();
     }
