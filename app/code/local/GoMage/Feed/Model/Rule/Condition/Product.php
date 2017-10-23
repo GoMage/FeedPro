@@ -80,9 +80,15 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
         if ($productCollection->getEntity()->getAttribute($attribute)->isStatic()) {
             $alias = 'e';
             $field = $attribute;
+            return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
         }
 
-        return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
+        if ($productCollection->getEntity()->getAttribute($attribute)->isScopeGlobal()) {
+            return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
+        }
+
+        return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value) . ' OR ' .
+            $ruleResource->getOperatorCondition($alias . '_default.' . $field, $operator, $value);
     }
 
     /**
@@ -120,6 +126,10 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
 
         $value = array_map('trim', $value);
         $value = array_filter($value, 'is_numeric');
+
+        if (empty($value)) {
+            $value[] = 0;
+        }
 
         return $value;
     }

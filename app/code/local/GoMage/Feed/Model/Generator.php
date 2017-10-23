@@ -85,15 +85,12 @@ class GoMage_Feed_Model_Generator
             $this->_feed = Mage::getModel('gomage_feed/item')->load($feedId);
             $this->_start();
 
-            $total_records = $this->_getReader()->read()->count();
+            $total_records = $this->_getReader()->read() ? $this->_getReader()->read()->count() : 0;
             $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId());
             $generate_info->setData('total_records', $total_records)->save();
 
             $page  = 1;
-            $limit = $this->_feed->getIterationLimit();
-            if (!$limit) {
-                $limit = max(array(round($total_records / 100), 100));
-            }
+            $limit = $this->_feed->getIterationLimit() ?: $total_records;
 
             while ($items = $this->_getReader()->read($page, $limit)) {
                 $this->log(Mage::helper('gomage_feed')->__('Page - %s', $page));
@@ -108,10 +105,13 @@ class GoMage_Feed_Model_Generator
                 if ($generate_info->getData('stopped')) {
                     Mage::throwException(Mage::helper('gomage_feed')->__('Stopped generation.'));
                 }
-                if ($limit) {
-                    $generate_info->addGeneratedRecords($limit)->save();
-                }
+                $generate_info->addGeneratedRecords($limit)->save();
                 $page++;
+            }
+
+            if ($total_records == 0) {
+                $data = $this->_getRows()->calc(new Varien_Object());
+                $this->_getWriter()->write($data);
             }
 
             $this->_finish();
