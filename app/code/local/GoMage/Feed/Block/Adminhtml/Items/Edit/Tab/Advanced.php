@@ -66,6 +66,19 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
 
         $fieldset->setHeaderBar($headerBar->toHtml());
 
+        $field = $fieldset->addField('generate_type', 'select', array(
+                'name'     => 'generate_type',
+                'label'    => $this->__('Generate Products'),
+                'title'    => $this->__('Generate Products'),
+                'required' => false,
+                'values'   => Mage::getModel('gomage_feed/adminhtml_system_config_source_generate')->toOptionArray(),
+            )
+        );
+        if (!$item->getId()) {
+            $field->setValue(GoMage_Feed_Model_Adminhtml_System_Config_Source_Generate::ALL);
+        }
+
+
         $field = $fieldset->addField('iteration_limit', 'text', array(
                 'name'     => 'iteration_limit',
                 'label'    => $this->__('Number of Products'),

@@ -16,7 +16,7 @@
 <config>
     <modules>
         <GoMage_Feed>
-            <version>4.0.0</version>
+            <version>4.0.1</version>
         </GoMage_Feed>
     </modules>
 	<frontend>

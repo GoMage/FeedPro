@@ -135,7 +135,7 @@ class GoMage_Feed_Model_Generator
         $this->_time = microtime(true) - $this->_time;
         $this->_time = max(array($this->_time, 1));
         $this->_feed->setData('generation_time', date('H:i:s', $this->_time))
-            ->setData('generated_at', $this->_dateTime->gmtDate('Y-m-j H:i:s'))
+            ->setData('generated_at', $this->_dateTime->gmtDate('Y-m-d H:i:s'))
             ->save();
         $this->log(Mage::helper('gomage_feed')->__('Finish'));
         $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId());
@@ -150,12 +150,14 @@ class GoMage_Feed_Model_Generator
         if (is_null($this->_reader)) {
             /** @var GoMage_Feed_Model_Reader_Params $params */
             $params        = Mage::getModel('gomage_feed/reader_params', array(
-                    'attributes'  => $this->_getRows()->getAttributes(),
-                    'conditions'  => $this->_feed->getConditions(),
-                    'store_id'    => $this->_feed->getStoreId(),
-                    'visibility'  => $this->_feed->getVisibility(),
-                    'use_layer'   => $this->_feed->getUseLayer(),
-                    'is_disabled' => $this->_feed->getUseDisabled(),
+                    'attributes'    => $this->_getRows()->getAttributes(),
+                    'conditions'    => $this->_feed->getConditions(),
+                    'store_id'      => $this->_feed->getStoreId(),
+                    'visibility'    => $this->_feed->getVisibility(),
+                    'use_layer'     => $this->_feed->getUseLayer(),
+                    'is_disabled'   => $this->_feed->getUseDisabled(),
+                    'generate_type' => $this->_feed->getGenerateType(),
+                    'generated_at'  => $this->_feed->getGeneratedAt(),
                 )
             );
             $this->_reader = $this->_readerFactory->create($this->_getContent()->getEntityType(), $params);

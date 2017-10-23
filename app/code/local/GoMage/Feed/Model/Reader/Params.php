@@ -23,6 +23,8 @@
  * @method bool getUseLayer()
  * @method bool getIsDisabled()
  * @method GoMage_Feed_Model_Rule_Condition_Combine getConditions()
+ * @method int getGenerateType()
+ * @method string getGeneratedAt()
  */
 class GoMage_Feed_Model_Reader_Params extends Varien_Object
 {

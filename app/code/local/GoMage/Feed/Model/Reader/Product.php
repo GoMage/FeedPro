@@ -89,6 +89,11 @@ class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_Reade
                 $this->_collection->getSelect()->where($where);
             }
 
+            if (($this->_params->getGenerateType() == GoMage_Feed_Model_Adminhtml_System_Config_Source_Generate::CHANGED) &&
+                $this->_params->getGeneratedAt()) {
+                $this->_collection->addFieldToFilter('updated_at', array('gt' => $this->_params->getGeneratedAt()));
+            }
+
             $this->_collection->addAttributeToSelect($this->_params->getAttributes())
                 ->addAttributeToSort(self::SORT_ATTRIBUTE);
 
