@@ -74,10 +74,11 @@ class GoMage_Feed_Model_Mapper_ParentAttribute implements GoMage_Feed_Model_Mapp
             $collection = Mage::getModel('gomage_feed/product_collection');
             if ($object->getStoreId()) {
                 $collection->setStoreId($object->getStoreId());
+                $collection->addStoreFilter($object->getStoreId());
             }
             return $collection->addAttributeToSelect($this->getUsedAttributes())
                 ->addIdFilter($parentId)
-                ->fetchItem();
+                ->getFirstItem();
         }
         return false;
     }
