@@ -16,6 +16,29 @@
 class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
 {
 
+    /** @var array */
+    protected $_contentModifiedFields = array(
+        'store_id',
+        'type',
+        'filename',
+        'content',
+        'show_headers',
+        'enclosure',
+        'delimiter',
+        'use_layer',
+        'use_disabled',
+        'visibility',
+        'addition_header',
+        'filename_ext',
+        'delimiter_prefix',
+        'delimiter_sufix',
+        'conditions_serialized',
+        'generate_type',
+    );
+
+    /**
+     * {@inheritdoc}
+     */
     public function _construct()
     {
         parent::_construct();
@@ -23,8 +46,12 @@ class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
         $this->setIdFieldName('id');
     }
 
-    public function save()
+    /**
+     * {@inheritdoc}
+     */
+    protected function _beforeSave()
     {
+        parent::_beforeSave();
         if (!$this->getFilename()) {
             $this->setFilename(preg_replace('/[^\w\d]/', '-', trim(strtolower($this->getName()))));
         }
@@ -37,9 +64,15 @@ class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
                 Mage::throwException(Mage::helper('gomage_feed')->__('Filename "%s" exists', $this->getFilename()));
             }
         }
-        return parent::save();
+        if ($this->_isContentModified() && ($this->getData('generate_type') == GoMage_Feed_Model_Adminhtml_System_Config_Source_Generate::CHANGED)) {
+            $this->setData('generated_at', '0000-00-00 00:00:00');
+        }
+        return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function delete()
     {
         if ($this->getFileNameWithExt()) {
@@ -91,4 +124,21 @@ class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
     {
         return Mage::getModel('catalogrule/rule_action_collection');
     }
+
+    /**
+     * @return bool
+     */
+    protected function _isContentModified()
+    {
+        if ($this->getId()) {
+            $feed = Mage::getModel('gomage_feed/item')->load($this->getId());
+            foreach ($this->_contentModifiedFields as $field) {
+                if ($feed->getData($field) != $this->getData($field)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
