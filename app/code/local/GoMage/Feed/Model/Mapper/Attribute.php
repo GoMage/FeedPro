@@ -37,6 +37,9 @@ class GoMage_Feed_Model_Mapper_Attribute implements GoMage_Feed_Model_Mapper_Map
      */
     public function map(Varien_Object $object)
     {
+        if ($resource = $object->getResource()) {
+            $this->_attribute->setEntity($resource);
+        }
         return $this->_attribute->getFrontend()->getValue($object);
     }
 

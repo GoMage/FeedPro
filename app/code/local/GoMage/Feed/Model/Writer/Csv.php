@@ -71,13 +71,12 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
         if (null !== $this->_headerCols) {
             Mage::throwException(Mage::helper('gomage_feed')->__('The header column names are already set.'));
         }
-        if ($headerColumns) {
-            foreach ($headerColumns as $columnName) {
-                $this->_headerCols[$columnName] = false;
-            }
-            if ($this->_isHeader) {
-                $this->write(array_combine(array_keys($this->_headerCols), array_keys($this->_headerCols)));
-            }
+        $this->_headerCols = array();
+        foreach ($headerColumns as $columnName) {
+            $this->_headerCols[$columnName] = false;
+        }
+        if ($this->_isHeader) {
+            $this->write(array_combine(array_keys($this->_headerCols), array_keys($this->_headerCols)));
         }
     }
 

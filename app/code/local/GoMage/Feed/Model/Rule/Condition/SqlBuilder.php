@@ -96,6 +96,9 @@ class GoMage_Feed_Model_Rule_Condition_SqlBuilder
                 $results[] = $this->_adapter->quoteInto("{$selectOperator}", $v);
             }
             $result = implode(in_array($operator, array('()', '!()')) ? ' OR ' : ' AND ', $results);
+        } elseif (is_string($value) && in_array($operator, array('{}', '!{}'))) {
+            $value  = '%' . $value . '%';
+            $result = $this->_adapter->quoteInto("{$field}{$selectOperator}", $value);
         } else {
             $result = $this->_adapter->quoteInto("{$field}{$selectOperator}", $value);
         }

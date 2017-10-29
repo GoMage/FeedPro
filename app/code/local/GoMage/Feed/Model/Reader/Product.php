@@ -96,7 +96,6 @@ class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_Reade
 
             $this->_collection->addAttributeToSelect($this->_params->getAttributes())
                 ->addAttributeToSort(self::SORT_ATTRIBUTE);
-
         }
         return $this->_collection->clear();
     }

@@ -110,8 +110,7 @@ class GoMage_Feed_Model_Generator
             }
 
             if ($total_records == 0) {
-                $data = $this->_getRows()->calc(new Varien_Object());
-                $this->_getWriter()->write($data);
+                $this->_getWriter()->write(array());
             }
 
             $this->_finish();
