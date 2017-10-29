@@ -19,7 +19,7 @@ class GoMage_Feed_IndexController extends Mage_Core_Controller_Front_Action
     public function generateAction()
     {
         $feed = Mage::getModel('gomage_feed/item')->load($this->getRequest()->getParam('feed_id'));
-        @ignore_user_abort(true);
+        ignore_user_abort(true);
         $this->getResponse()
             ->setHttpResponseCode(200)
             ->setHeader('Connection', 'close', true)

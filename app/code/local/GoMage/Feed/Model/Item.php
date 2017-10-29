@@ -77,7 +77,7 @@ class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
     {
         if ($this->getFileNameWithExt()) {
             $file_path = Mage::helper('gomage_feed/generator')->getBaseDir() . DS . $this->getFileNameWithExt();
-            @unlink($file_path);
+            unlink($file_path);
         }
         return parent::delete();
     }

@@ -228,7 +228,7 @@ class GoMage_Feed_Model_Generator
         $text     .= "\n";
         $log_file = Mage::helper('gomage_feed/generator')->getLogDir() . DS . 'log-' . $this->_feed->getId() . '.txt';
         if ($rewrite || !file_exists($log_file)) {
-            @file_put_contents($log_file, $text);
+            file_put_contents($log_file, $text);
         } else {
             $fp = fopen($log_file, 'a');
             fwrite($fp, $text);

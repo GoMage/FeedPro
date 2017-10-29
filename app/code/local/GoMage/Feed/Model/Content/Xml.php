@@ -48,15 +48,15 @@ class GoMage_Feed_Model_Content_Xml extends GoMage_Feed_Model_Content_AbstractCo
         $match = array();
         preg_match(self::BLOCK_PATTERN, $this->_content, $match);
 
+        if (!isset($match[1]) || !isset($match[2])) {
+            Mage::throwException(Mage::helper('gomage_feed')->__('Invalid XML Content.'));
+        }
+
         preg_match_all(self::PARAMS_PATTERN, $match[1], $params);
         foreach ($params[1] as $_key => $param) {
             if (trim($param) == 'type') {
                 $this->_entityType = trim($params[2][$_key]);
             }
-        }
-
-        if (!isset($match[2])) {
-            Mage::throwException(Mage::helper('gomage_feed')->__('Invalid XML Content.'));
         }
 
         $this->_block = trim($match[2]);

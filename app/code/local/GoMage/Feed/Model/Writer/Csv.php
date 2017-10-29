@@ -116,7 +116,8 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
             );
         } else {
             $enclosure = ' ';
-            for ($i = 0; $i < sizeof($fields); $i++) {
+            $count     = count($fields);
+            for ($i = 0; $i < $count; $i++) {
                 $use_enclosure = false;
                 if (strpos($fields[$i], $this->_delimiter) !== false) {
                     $use_enclosure = true;
@@ -142,7 +143,8 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
 
                 if ($use_enclosure == true) {
                     $fields[$i] = explode("\$enclosure", $fields[$i]);
-                    for ($j = 0; $j < sizeof($fields[$i]); $j++) {
+                    $num        = count($fields[$i]);
+                    for ($j = 0; $j < $num; $j++) {
                         $fields[$i][$j] = explode($enclosure, $fields[$i][$j]);
                         $fields[$i][$j] = implode("{$enclosure}", $fields[$i][$j]);
                     }

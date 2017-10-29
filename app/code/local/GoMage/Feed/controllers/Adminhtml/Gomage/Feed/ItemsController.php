@@ -108,7 +108,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                 $result['error']      = true;
                 $result['error_text'] = Mage::helper('core')->__('Unknown error');
             }
-            echo Zend_Json::encode($result);
+            $this->getResponse()->setBody(Zend_Json::encode($result));
         }
     }
 

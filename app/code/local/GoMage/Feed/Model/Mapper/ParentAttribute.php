@@ -76,9 +76,10 @@ class GoMage_Feed_Model_Mapper_ParentAttribute implements GoMage_Feed_Model_Mapp
                 $collection->setStoreId($object->getStoreId());
                 $collection->addStoreFilter($object->getStoreId());
             }
-            return $collection->addAttributeToSelect($this->getUsedAttributes())
+            $collection->addAttributeToSelect($this->getUsedAttributes())
                 ->addIdFilter($parentId)
-                ->getFirstItem();
+                ->setPageSize(1);
+            return $collection->getFirstItem();
         }
         return false;
     }

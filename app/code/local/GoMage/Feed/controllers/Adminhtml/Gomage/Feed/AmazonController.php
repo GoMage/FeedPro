@@ -28,7 +28,10 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_AmazonController extends Mage_Adminhtml_
         $code_id = $this->getRequest()->getParam('code_id');
         $amazon  = Mage::getModel('gomage_feed/amazon');
         $data    = Mage::getStoreConfig('gomage_feedpro/amazon/config');
-        $array   = @unserialize($data);
+        $array   = array();
+        if ($data) {
+            $array = unserialize($data);
+        }
 
         foreach ($array as $key => $val) {
             if ($key == $code_id) {

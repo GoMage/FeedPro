@@ -43,7 +43,7 @@ class GoMage_Feed_Model_Generator_Info
 
     public function save()
     {
-        @file_put_contents($this->file_path, serialize($this));
+        file_put_contents($this->file_path, serialize($this));
     }
 
     public function setError($error)

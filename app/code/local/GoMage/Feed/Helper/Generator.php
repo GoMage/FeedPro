@@ -16,6 +16,7 @@
 class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
 {
 
+    /** @var  Zend_Http_Client */
     protected $http_client;
 
     public function checkServerParams()
@@ -51,6 +52,7 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
             }
             chmod($base_dir, 0777);
         } catch (Exception $e) {
+            Mage::logException($e);
         }
         return $base_dir;
     }
@@ -64,6 +66,7 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
             }
             chmod($log_dir, 0777);
         } catch (Exception $e) {
+            Mage::logException($e);
         }
         return $log_dir;
     }
@@ -93,7 +96,7 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
 
         clearstatcache();
         if (file_exists($file_path) && !$init) {
-            $info = @file_get_contents($file_path);
+            $info = file_get_contents($file_path);
             $info = unserialize($info);
             if ($info instanceof GoMage_Feed_Model_Generator_Info) {
                 return $info;
@@ -104,6 +107,9 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
         return $info;
     }
 
+    /**
+     * @return Zend_Http_Client
+     */
     public function getHttpClient()
     {
         if (!$this->http_client) {
@@ -113,6 +119,13 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
         return $this->http_client;
     }
 
+    /**
+     * @param $hour
+     * @param $min
+     * @param $sec
+     * @param bool $full
+     * @return string
+     */
     public function formatGenerationTime($hour, $min, $sec, $full = false)
     {
         if ($full) {
@@ -126,6 +139,13 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
         }
     }
 
+    /**
+     * @param $interval
+     * @param $hour_from
+     * @param $hour_to
+     * @param $last_run
+     * @return bool
+     */
     public function needRunCron($interval, $hour_from, $hour_to, $last_run)
     {
         $current_time = date('G');
@@ -176,7 +196,6 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
         }
 
         return true;
-
     }
 
 }

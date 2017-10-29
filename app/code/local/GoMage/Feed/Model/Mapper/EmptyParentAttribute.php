@@ -54,9 +54,10 @@ class GoMage_Feed_Model_Mapper_EmptyParentAttribute extends GoMage_Feed_Model_Ma
                 $collection->setStoreId($object->getStoreId());
                 $collection->addStoreFilter($object->getStoreId());
             }
-            return $collection->addAttributeToSelect($this->getUsedAttributes())
+            $collection->addAttributeToSelect($this->getUsedAttributes())
                 ->addIdFilter($childId)
-                ->getFirstItem();
+                ->setPageSize(1);
+            return $collection->getFirstItem();
         }
         return false;
     }
