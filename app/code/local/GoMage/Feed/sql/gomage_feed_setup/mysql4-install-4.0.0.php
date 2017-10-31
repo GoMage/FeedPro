@@ -65,6 +65,7 @@ CREATE TABLE `{$this->getTable('gomage_feed_entity')}` (
   `ftp_port` varchar(128) DEFAULT '',
   `ftp_protocol` varchar(128) DEFAULT '',
   `conditions_serialized` text,
+  `generate_type` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='GoMage Catalog Feed' AUTO_INCREMENT=1;
 "
