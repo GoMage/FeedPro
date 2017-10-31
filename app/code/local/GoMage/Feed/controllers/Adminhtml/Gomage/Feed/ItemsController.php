@@ -182,7 +182,13 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
             try {
                 $id = $this->getRequest()->getParam('id');
 
+                /** @var GoMage_Feed_Model_Item $model */
                 $model = Mage::getModel('gomage_feed/item');
+                if ($id) {
+                    $model->load($id);
+                }
+
+                $data['type'] = $this->getRequest()->getParam('type') ?: $model->getType();
 
                 if (isset($data['field'])) {
 
@@ -192,7 +198,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                     $content_data_sorted = array();
 
                     foreach ($data['field'] as $field) {
-                        $output_type          = isset($field['output_type']) ? $field['output_type']: array();
+                        $output_type          = isset($field['output_type']) ? $field['output_type'] : array();
                         $field['output_type'] = $this->prepareOutputType($output_type);
                         if (intval($field['order']) && !isset($content_data_sorted[$field['order']])) {
                             $content_data_sorted[intval($field['order'])] = $field;
