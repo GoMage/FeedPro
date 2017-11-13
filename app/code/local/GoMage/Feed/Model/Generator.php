@@ -135,6 +135,7 @@ class GoMage_Feed_Model_Generator
         $this->_time = max(array($this->_time, 1));
         $this->_feed->setData('generation_time', date('H:i:s', $this->_time))
             ->setData('generated_at', $this->_dateTime->gmtDate('Y-m-d H:i:s'))
+            ->setData('restart_cron', 0)
             ->save();
         $this->log(Mage::helper('gomage_feed')->__('Finish'));
         $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($this->_feed->getId());

@@ -50,9 +50,6 @@ class GoMage_Feed_Model_Observer
                 $generator = Mage::getModel('gomage_feed/generator');
                 $generator->generate($feed->getId());
 
-                $feed->setData('restart_cron', 0);
-                $feed->save();
-
                 $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($feed->getId());
                 $errors        = $generate_info->getData('errors');
                 if (empty($errors)) {
