@@ -54,8 +54,10 @@ GoMage.CsvRows.prototype = {
                 .writeAttribute('selected', 'selected');
         }
         if (typeof data.attribute_value != 'undefined') {
-            $(template).down('select.attribute-value-select').down('option[value=' + data.attribute_value + ']')
-                .writeAttribute('selected', 'selected');
+            var option = $(template).down('select.attribute-value-select').down('option[value=' + data.attribute_value + ']');
+            if (typeof option != 'undefined') {
+                option.writeAttribute('selected', 'selected');
+            }
         }
         if (typeof data.output_type != 'undefined') {
             data.output_type.split(',').forEach(function (v) {
