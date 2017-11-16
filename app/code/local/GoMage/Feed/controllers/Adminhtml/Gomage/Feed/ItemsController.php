@@ -65,15 +65,13 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
 
     public function ajaxuploadAction()
     {
-        $result = array();
         try {
             $uploader = new Varien_File_Uploader('file');
             $uploader->setAllowRenameFiles(false);
             $uploader->setFilesDispersion(false);
             $path = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'tmp';
             if (!file_exists($path)) {
-                mkdir($path);
-                chmod($path, 0777);
+                mkdir($path, 0777, true);
             }
             $result = $uploader->save($path, $_FILES['file']['name']);
         } catch (Exception $e) {
@@ -133,8 +131,7 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
 
                 $fileDir = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples' . DS . $system;
                 if (!file_exists($fileDir)) {
-                    mkdir($fileDir);
-                    chmod($fileDir, 0777);
+                    mkdir($fileDir, 0777, true);
                 }
 
                 $feed = Mage::getModel('gomage_feed/item')->load($id);
