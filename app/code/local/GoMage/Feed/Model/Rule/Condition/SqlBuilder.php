@@ -68,7 +68,11 @@ class GoMage_Feed_Model_Rule_Condition_SqlBuilder
             case '![]':
             case '()':
             case '!()':
-                $selectOperator = 'FIND_IN_SET(?,' . $this->_adapter->quoteIdentifier($field) . ')';
+                if (preg_match('/^.*(qty)$/', $field) && is_array($value)) {
+                    $selectOperator = 'FIND_IN_SET(?, CAST(' . $this->_adapter->quoteIdentifier($field) . 'AS SIGNED))';
+                } else {
+                    $selectOperator = 'FIND_IN_SET(?,' . $this->_adapter->quoteIdentifier($field) . ')';
+                }
                 if (substr($operator, 0, 1) == '!') {
                     $selectOperator = 'NOT ' . $selectOperator;
                 }

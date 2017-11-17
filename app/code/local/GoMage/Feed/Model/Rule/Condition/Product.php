@@ -173,4 +173,14 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
             Mage::helper('gomage_feed')->__(ucwords($this->getAttribute()));
     }
 
+    /**
+     * @return string
+     */
+    public function getInputType()
+    {
+        if ($this->getAttribute() == 'qty') {
+            return 'numeric';
+        }
+        return parent::getInputType();
+    }
 }
