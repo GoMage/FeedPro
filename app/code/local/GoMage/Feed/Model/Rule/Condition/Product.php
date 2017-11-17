@@ -32,12 +32,7 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
     public function collectValidatedAttributes($productCollection)
     {
         $attribute = $this->getAttribute();
-        if ('category_ids' != $attribute) {
-            $attributes             = $this->getRule()->getCollectedAttributes();
-            $attributes[$attribute] = true;
-            $this->getRule()->setCollectedAttributes($attributes);
-            $productCollection->addAttributeToSelect($attribute, 'left');
-        } else {
+        if ($attribute == 'category_ids') {
             if (!$this->getRule()->getJoinedCategory()) {
                 $productCollection->getSelect()->joinLeft(
                     array('ccp' => $productCollection->getResource()->getTable('catalog/category_product')),
@@ -46,6 +41,22 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
                 );
                 $this->getRule()->setJoinedCategory(true);
             }
+        } elseif ($attribute == 'qty') {
+            if (!$this->getRule()->getJoinedQty()) {
+                $productCollection->getSelect()->joinLeft(
+                    array('csi' => $productCollection->getResource()->getTable('cataloginventory/stock_item')),
+                    'csi.product_id = e.entity_id',
+                    array()
+                );
+                $this->getRule()->setJoinedQty(true);
+            }
+        } else {
+
+            $attributes             = $this->getRule()->getCollectedAttributes();
+            $attributes[$attribute] = true;
+            $this->getRule()->setCollectedAttributes($attributes);
+            $productCollection->addAttributeToSelect($attribute, 'left');
+
         }
 
         return $this;
@@ -74,6 +85,12 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
             $field = 'category_id';
             $value = $this->bindArrayOfIds($value);
 
+            return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
+        }
+
+        if ($attribute == 'qty') {
+            $alias = 'csi';
+            $field = 'qty';
             return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
         }
 
@@ -145,6 +162,15 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
             $this->_ruleResourceHelper = Mage::getModel('gomage_feed/rule_condition_sqlBuilder');
         }
         return $this->_ruleResourceHelper;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAttributeName()
+    {
+        return $this->getAttributeOption($this->getAttribute()) ?:
+            Mage::helper('gomage_feed')->__(ucwords($this->getAttribute()));
     }
 
 }

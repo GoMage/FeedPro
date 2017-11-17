@@ -23,14 +23,17 @@ class GoMage_Feed_Model_Rule_Condition_Combine extends Mage_Rule_Model_Condition
 
     public function getNewChildSelectOptions()
     {
+        /** @var GoMage_Feed_Model_Rule_Condition_Product $productCondition */
         $productCondition  = Mage::getModel('gomage_feed/rule_condition_product');
         $productAttributes = $productCondition->loadAttributeOptions()->getAttributeOption();
         $attributes        = array();
         foreach ($productAttributes as $code => $label) {
             $attributes[] = array('value' => 'gomage_feed/rule_condition_product|' . $code, 'label' => $label);
         }
-        $conditions = parent::getNewChildSelectOptions();
-        $conditions = array_merge_recursive($conditions, array(
+        $attributes[] = array('value' => 'gomage_feed/rule_condition_product|image', 'label' => Mage::helper('gomage_feed')->__('Image'));
+        $attributes[] = array('value' => 'gomage_feed/rule_condition_product|qty', 'label' => Mage::helper('gomage_feed')->__('Qty'));
+        $conditions   = parent::getNewChildSelectOptions();
+        $conditions   = array_merge_recursive($conditions, array(
                 array('value' => 'gomage_feed/rule_condition_combine', 'label' => Mage::helper('gomage_feed')->__('Conditions Combination')),
                 array('label' => Mage::helper('gomage_feed')->__('Product Attribute'), 'value' => $attributes),
             )

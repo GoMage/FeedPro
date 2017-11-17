@@ -167,11 +167,6 @@
                     </attribute>
                 </entities>
             </gomage_feed_resource>
-            <catalog_resource>
-                <rewrite>
-                    <eav_attribute>GoMage_Feed_Model_Catalog_Resource_Eav_Attribute</eav_attribute>
-                </rewrite>
-            </catalog_resource>
         </models>
         <blocks>
             <gomage_feed>
@@ -182,7 +177,6 @@
             <gomage_feed_setup>
                 <setup>
                     <module>GoMage_Feed</module>
-                    <class>Mage_Eav_Model_Entity_Setup</class>
                 </setup>
                 <connection>
                     <use>core_setup</use>
