@@ -40,10 +40,14 @@ class GoMage_Feed_Helper_Attribute extends Mage_Core_Helper_Abstract
      */
     public function getProductAttributes($add_dynamic_attributes = false)
     {
+        /** @var GoMage_Feed_Model_Mapper_Factory $mapperFactory */
+        $mapperFactory = Mage::getSingleton('gomage_feed/mapper_factory');
+        $customMappers = $mapperFactory->getCustomMappers();
+
         $attributes = $this->getAttributeCollection()->getItems();
 
-        $attributes = array_filter($attributes, function ($attribute) {
-            return (bool)$attribute->getFrontendLabel();
+        $attributes = array_filter($attributes, function ($attribute) use ($customMappers) {
+            return (bool)$attribute->getFrontendLabel() && !isset($customMappers[$attribute->getAttributeCode()]);
         }
         );
 
@@ -55,10 +59,7 @@ class GoMage_Feed_Helper_Attribute extends Mage_Core_Helper_Abstract
         }, $attributes
         );
 
-        /** @var GoMage_Feed_Model_Mapper_Factory $mapperFactory */
-        $mapperFactory = Mage::getSingleton('gomage_feed/mapper_factory');
-
-        foreach ($mapperFactory->getCustomMappers() as $value => $class) {
+        foreach ($customMappers as $value => $class) {
             /** @var GoMage_Feed_Model_Mapper_Custom_CustomMapperInterface $model */
             $model        = Mage::getModel($class);
             $attributes[] = array(
@@ -68,7 +69,7 @@ class GoMage_Feed_Helper_Attribute extends Mage_Core_Helper_Abstract
         }
 
         usort($attributes, function ($a, $b) {
-            return strcmp($a['label'], $b['label']);
+            return strcmp(strtolower($a['label']), strtolower($b['label']));
         }
         );
 
