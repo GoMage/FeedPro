@@ -10,7 +10,7 @@
  * @author       GoMage.com
  * @license      https://www.gomage.com/license-agreement/  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
- * @version      Release: 4.0.0
+ * @version      Release: 4.1.0
  * @since        Class available since Release 4.0.0
  */
 class GoMage_Feed_Model_Mapper_ConfigurableValue implements GoMage_Feed_Model_Mapper_MapperInterface
