@@ -13,15 +13,8 @@
  * @version      Release: 4.0.0
  * @since        Class available since Release 4.0.0
  */
-class GoMage_Feed_Model_Mapper_Custom_Image extends GoMage_Feed_Model_Mapper_Custom_AbstractImage
+class GoMage_Feed_Model_Mapper_Custom_Image implements GoMage_Feed_Model_Mapper_Custom_CustomMapperInterface
 {
-    /**
-     * @return int
-     */
-    public static function getImageIndex()
-    {
-        return 1;
-    }
 
     /**
      * @return string
@@ -29,6 +22,32 @@ class GoMage_Feed_Model_Mapper_Custom_Image extends GoMage_Feed_Model_Mapper_Cus
     public static function getLabel()
     {
         return Mage::helper('gomage_feed')->__('Image');
+    }
+
+    /**
+     * @param  Varien_Object $object
+     * @return mixed
+     */
+    public function map(Varien_Object $object)
+    {
+        $width  = intval(Mage::getStoreConfig('gomage_feedpro/imagesettings/width'));
+        $height = intval(Mage::getStoreConfig('gomage_feedpro/imagesettings/height'));
+
+        /** @var Mage_Catalog_Helper_Image $helper */
+        $helper = Mage::helper('catalog/image')->init($object, 'image');
+
+        if ($width || $height) {
+            $helper->resize($width, $height);
+        }
+        return (string)$helper;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsedAttributes()
+    {
+        return array('image');
     }
 
 }

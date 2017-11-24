@@ -37,11 +37,13 @@ abstract class GoMage_Feed_Model_Mapper_Custom_AbstractImage implements GoMage_F
         }
         foreach ($object->getMediaGalleryImages() as $image) {
             if ($i == $this->getImageIndex()) {
+
+                /** @var Mage_Catalog_Helper_Image $helper */
+                $helper = Mage::helper('catalog/image')->init($object, 'image', $image->getFile());
                 if ($width || $height) {
-                    return (string)Mage::helper('catalog/image')->init($object, 'image', $image->getPath())->resize($width, $height);
-                } else {
-                    return $image->getUrl();
+                    $helper->resize($width, $height);
                 }
+                return (string)$helper;
             }
             $i++;
         }
