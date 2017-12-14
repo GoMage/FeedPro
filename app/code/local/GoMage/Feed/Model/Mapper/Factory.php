@@ -43,41 +43,48 @@ class GoMage_Feed_Model_Mapper_Factory
     public function create($type, $value)
     {
         $className = $this->_getCustomMapper($value);
-        if (!$className) {
-            switch ($type) {
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE:
-                    $className = 'gomage_feed/mapper_attribute';
-                    if (strpos($value, 'custom:') === 0) {
-                        $value     = trim(str_replace('custom:', '', $value));
-                        $className = 'gomage_feed/mapper_dynamicAttribute';
-                    }
-                    break;
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::PARENT_ATTRIBUTE:
-                    $className = 'gomage_feed/mapper_parentAttribute';
-                    break;
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::EMPTY_PARENT_ATTRIBUTE:
-                    $className = 'gomage_feed/mapper_emptyParentAttribute';
-                    break;
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::EMPTY_CHILD_ATTRIBUTE:
-                    $className = 'gomage_feed/mapper_emptyChildAttribute';
-                    break;
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::STATIC_VALUE:
-                    $className = 'gomage_feed/mapper_staticValue';
-                    break;
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::PERCENT:
-                    $className = 'gomage_feed/mapper_attributePercent';
-                    break;
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE_SET:
-                    $className = 'gomage_feed/mapper_attributeSet';
-                    break;
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::CONFIGURABLE_VALUES:
-                    $className = 'gomage_feed/mapper_configurableValue';
-                    break;
-                case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::REVIEW:
-                    $className = 'gomage_feed/mapper_review';
-                    break;
-            }
+
+        if ($className && !in_array($type, array(GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::PARENT_ATTRIBUTE,
+                    GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::EMPTY_PARENT_ATTRIBUTE,
+                    GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::EMPTY_CHILD_ATTRIBUTE)
+            )) {
+            return Mage::getModel($className, $value);
         }
+
+        switch ($type) {
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE:
+                $className = 'gomage_feed/mapper_attribute';
+                if (strpos($value, 'custom:') === 0) {
+                    $value     = trim(str_replace('custom:', '', $value));
+                    $className = 'gomage_feed/mapper_dynamicAttribute';
+                }
+                break;
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::PARENT_ATTRIBUTE:
+                $className = 'gomage_feed/mapper_parentAttribute';
+                break;
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::EMPTY_PARENT_ATTRIBUTE:
+                $className = 'gomage_feed/mapper_emptyParentAttribute';
+                break;
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::EMPTY_CHILD_ATTRIBUTE:
+                $className = 'gomage_feed/mapper_emptyChildAttribute';
+                break;
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::STATIC_VALUE:
+                $className = 'gomage_feed/mapper_staticValue';
+                break;
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::PERCENT:
+                $className = 'gomage_feed/mapper_attributePercent';
+                break;
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE_SET:
+                $className = 'gomage_feed/mapper_attributeSet';
+                break;
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::CONFIGURABLE_VALUES:
+                $className = 'gomage_feed/mapper_configurableValue';
+                break;
+            case GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::REVIEW:
+                $className = 'gomage_feed/mapper_review';
+                break;
+        }
+
         return Mage::getModel($className, $value);
     }
 
