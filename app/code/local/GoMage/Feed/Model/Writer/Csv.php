@@ -105,6 +105,7 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
             $this->setHeaderCols(array_keys($data));
         }
 
+        $data = $this->_prepareData($data);
         $fields = array_merge($this->_headerCols, array_intersect_key($data, $this->_headerCols));
 
         if ($this->_enclosure != '') {
