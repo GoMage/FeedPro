@@ -40,7 +40,8 @@ class GoMage_Feed_Model_Mapper_Attribute implements GoMage_Feed_Model_Mapper_Map
         if ($resource = $object->getResource()) {
             $this->_attribute->setEntity($resource);
         }
-        return $this->_attribute->getFrontend()->getValue($object);
+
+        return $object->getData($this->_attribute->getAttributeCode());
     }
 
     /**
