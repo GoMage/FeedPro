@@ -116,46 +116,50 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
                 $this->_enclosure
             );
         } else {
-            $enclosure = ' ';
-            $count     = count($fields);
-            for ($i = 0; $i < $count; $i++) {
-                $use_enclosure = false;
-                if (strpos($fields[$i], $this->_delimiter) !== false) {
-                    $use_enclosure = true;
+            foreach ($fields as &$field) {
+                if (strpos($field, $this->_delimiter) !== false) {
+                    $field = $this->applyEnclosure($field, $this->_delimiter);
                 }
-                if (strpos($fields[$i], $enclosure) !== false) {
-                    $use_enclosure = true;
+                if (strpos($field, "\\") !== false) {
+                    $field = $this->applyEnclosure($field, "\\");
                 }
-                if (strpos($fields[$i], "\\") !== false) {
-                    $use_enclosure = true;
+                if (strpos($field, "\n") !== false) {
+                    $field = $this->applyEnclosure($field, "\n");
                 }
-                if (strpos($fields[$i], "\n") !== false) {
-                    $use_enclosure = true;
+                if (strpos($field, "\r") !== false) {
+                    $field = $this->applyEnclosure($field, "\r");
                 }
-                if (strpos($fields[$i], "\r") !== false) {
-                    $use_enclosure = true;
-                }
-                if (strpos($fields[$i], "\t") !== false) {
-                    $use_enclosure = true;
-                }
-                if (strpos($fields[$i], " ") !== false) {
-                    $use_enclosure = true;
+                if (strpos($field, "\t") !== false) {
+                    $field = $this->applyEnclosure($field, "\t");
                 }
 
-                if ($use_enclosure == true) {
-                    $fields[$i] = explode("\$enclosure", $fields[$i]);
-                    $num        = count($fields[$i]);
-                    for ($j = 0; $j < $num; $j++) {
-                        $fields[$i][$j] = explode($enclosure, $fields[$i][$j]);
-                        $fields[$i][$j] = implode("{$enclosure}", $fields[$i][$j]);
-                    }
-                    $fields[$i] = implode("\$enclosure", $fields[$i]);
-                    $fields[$i] = "{$fields[$i]}";
-                }
+                $field = str_replace('   ', ' ', $field);
             }
 
             fwrite($this->_fileHandler, implode($this->_delimiter, $fields) . "\n");
         }
     }
 
+    /**
+     * @param $field
+     * @param $symbol
+     *
+     * @return string
+     */
+    private function applyEnclosure($field, $symbol)
+    {
+        $enclosure = ' ';
+        $fieldPieces = explode($symbol, $field);
+        $field = '';
+
+        foreach ($fieldPieces as $key => $piece) {
+            $field .= $piece;
+
+            if (count($fieldPieces) - 1 != $key) {
+                $field .= $enclosure . $symbol . $enclosure;
+            }
+        }
+
+        return $field;
+    }
 }
