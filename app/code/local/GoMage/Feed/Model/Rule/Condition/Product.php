@@ -50,13 +50,11 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
                 );
                 $this->getRule()->setJoinedQty(true);
             }
-        } else {
-
-            $attributes             = $this->getRule()->getCollectedAttributes();
+        } elseif ($attribute !== 'type_id') {
+            $attributes = $this->getRule()->getCollectedAttributes();
             $attributes[$attribute] = true;
             $this->getRule()->setCollectedAttributes($attributes);
             $productCollection->addAttributeToSelect($attribute, 'left');
-
         }
 
         return $this;
@@ -70,15 +68,15 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
     public function prepareConditionSql()
     {
         $attribute = $this->getAttribute();
-        $alias     = 'at_' . $attribute;
-        $field     = 'value';
+        $alias = 'at_' . $attribute;
+        $field = 'value';
 
         /** @var $ruleResource GoMage_Feed_Model_Rule_Condition_SqlBuilder */
         $ruleResource = $this->getRuleResourceHelper();
         /** @var Mage_Catalog_Model_Resource_Product_Collection $productCollection */
         $productCollection = Mage::getResourceModel('catalog/product_collection');
 
-        $value    = $this->getValueParsed();
+        $value = $this->getValueParsed();
         $operator = $this->correctOperator($this->getOperator(), $this->getInputType());
         if ($attribute == 'category_ids') {
             $alias = 'ccp';
@@ -91,12 +89,14 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
         if ($attribute == 'qty') {
             $alias = 'csi';
             $field = 'qty';
+
             return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
         }
 
         if ($productCollection->getEntity()->getAttribute($attribute)->isStatic()) {
             $alias = 'e';
             $field = $attribute;
+
             return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
         }
 
@@ -161,6 +161,7 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
         if (!$this->_ruleResourceHelper) {
             $this->_ruleResourceHelper = Mage::getModel('gomage_feed/rule_condition_sqlBuilder');
         }
+
         return $this->_ruleResourceHelper;
     }
 
@@ -169,8 +170,14 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
      */
     public function getAttributeName()
     {
-        return $this->getAttributeOption($this->getAttribute()) ?:
-            Mage::helper('gomage_feed')->__(ucwords($this->getAttribute()));
+        if ($this->getAttribute() == 'type_id') {
+            $name = 'Product Type';
+        } else {
+            $name = $this->getAttributeOption($this->getAttribute()) ?:
+                Mage::helper('gomage_feed')->__(ucwords($this->getAttribute()));
+        }
+
+        return $name;
     }
 
     /**
@@ -181,6 +188,62 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
         if ($this->getAttribute() == 'qty') {
             return 'numeric';
         }
+        if ($this->getAttribute() === 'type_id') {
+            return 'select';
+        }
+
         return parent::getInputType();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getValueElementType()
+    {
+        if ($this->getAttribute() === 'type_id') {
+            return 'select';
+        }
+
+        return parent::getValueElementType();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function _prepareValueOptions()
+    {
+        if ($this->getAttribute() === 'type_id') {
+            $selectOptions = $this->getAllProductTypesOptionsArray();
+            $this->setData('value_select_options', $selectOptions);
+
+            $hashedOptions = array();
+            foreach ($selectOptions as $o) {
+                if (is_array($o['value'])) {
+                    continue; // We cannot use array as index
+                }
+                $hashedOptions[$o['value']] = $o['label'];
+            }
+            $this->setData('value_option', $hashedOptions);
+        }
+        parent::_prepareValueOptions();
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    private function getAllProductTypesOptionsArray()
+    {
+        $productTypesOptionsArray = [];
+
+        foreach (Mage_Catalog_Model_Product_Type::getTypes() as $value => $availableType) {
+            $productTypesOptionsArray[] = [
+                'value' => $value,
+                'label' => $availableType['label']
+            ];
+        }
+
+        return $productTypesOptionsArray;
     }
 }

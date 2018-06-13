@@ -32,6 +32,7 @@ class GoMage_Feed_Model_Rule_Condition_Combine extends Mage_Rule_Model_Condition
         }
         $attributes[] = array('value' => 'gomage_feed/rule_condition_product|image', 'label' => Mage::helper('gomage_feed')->__('Image'));
         $attributes[] = array('value' => 'gomage_feed/rule_condition_product|qty', 'label' => Mage::helper('gomage_feed')->__('Qty'));
+        $attributes[] = array('value' => 'gomage_feed/rule_condition_product|type_id', 'label' => Mage::helper('gomage_feed')->__('Product Type'));
         $conditions   = parent::getNewChildSelectOptions();
         $conditions   = array_merge_recursive($conditions, array(
                 array('value' => 'gomage_feed/rule_condition_combine', 'label' => Mage::helper('gomage_feed')->__('Conditions Combination')),
