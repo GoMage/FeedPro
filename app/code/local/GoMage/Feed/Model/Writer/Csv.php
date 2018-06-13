@@ -132,8 +132,6 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
                 if (strpos($field, "\t") !== false) {
                     $field = $this->applyEnclosure($field, "\t");
                 }
-
-                $field = str_replace('   ', ' ', $field);
             }
 
             fwrite($this->_fileHandler, implode($this->_delimiter, $fields) . "\n");
@@ -153,6 +151,8 @@ class GoMage_Feed_Model_Writer_Csv extends GoMage_Feed_Model_Writer_AbstractWrit
         $field = '';
 
         foreach ($fieldPieces as $key => $piece) {
+            $piece = str_replace('  ', '', $piece);
+
             $field .= $piece;
 
             if (count($fieldPieces) - 1 != $key) {
