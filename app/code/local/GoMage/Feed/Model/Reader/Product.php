@@ -84,6 +84,8 @@ class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_Reade
             }
 
             $this->_params->getConditions()->collectValidatedAttributes($this->_collection);
+
+            $this->joinImageTableForFlat();
             $where = $this->_params->getConditions()->prepareConditionSql();
             if (!empty($where)) {
                 $this->_collection->getSelect()->where($where);
@@ -126,4 +128,47 @@ class GoMage_Feed_Model_Reader_Product implements GoMage_Feed_Model_Reader_Reade
         return true;
     }
 
+    /**
+     * As in flat there isn't such attribute as image need to join tables with image data.
+     *
+     * @return void
+     */
+    private function joinImageTableForFlat()
+    {
+        if (Mage::getStoreConfigFlag('catalog/frontend/flat_catalog_product')) {
+            $attribute = 'image';
+            $issetImageCondition = false;
+
+            $conditions = $this->_params->getConditions()->getConditions();
+            foreach ($conditions as $condition) {
+                if ($condition->getAttribute() === $attribute) {
+                    $issetImageCondition = true;
+                    break;
+                }
+            }
+
+            if ($issetImageCondition === true) {
+                $storeId = $this->_params->getStoreId();
+                $defaultStoreId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
+
+                /** @var Mage_Catalog_Model_Resource_Product_Collection $productCollection */
+                $productCollection = Mage::getResourceModel('catalog/product_collection');
+                $attributeId = $productCollection->getEntity()->getAttribute($attribute)->getId();
+                $tableName = Mage::getSingleton('core/resource')->getTableName('catalog_product_entity_varchar');
+
+                $this->_collection->getSelect()->joinLeft(
+                    ['at_image' => $tableName],
+                    '(at_image.entity_id = e.entity_id) AND (at_image.attribute_id = ' . $attributeId
+                    . ') AND (at_image.store_id = ' . $storeId . ')',
+                    ['IF(at_image.value_id > 0, at_image.value, at_image_default.value) AS image']
+                );
+                $this->_collection->getSelect()->joinLeft(
+                    ['at_image_default' => $tableName],
+                    '(at_image_default.entity_id = e.entity_id) AND (at_image_default.attribute_id = ' . $attributeId
+                    . ') AND (at_image_default.store_id = ' . $defaultStoreId . ')',
+                    []
+                );
+            }
+        }
+    }
 }
