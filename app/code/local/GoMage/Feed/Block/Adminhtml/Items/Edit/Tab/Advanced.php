@@ -60,7 +60,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
                     'label'   => $this->__('Feed Pro Help'),
                     'class'   => 'go',
                     'id'      => 'feed_pro_help',
-                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
+                    'onclick' => 'window.open(\'https://wiki.gomage.com/hc/en-us/articles/115002746512-Advanced-Settings\')'
                 )
             );
 
@@ -130,17 +130,6 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
 
         $fieldset = $form->addFieldset('generate_settings', array('legend' => $this->__('Auto-generate Settings')));
 
-        $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
-            ->setData(array(
-                    'label'   => $this->__('Feed Pro Help'),
-                    'class'   => 'go',
-                    'id'      => 'feed_pro_help_2',
-                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
-                )
-            );
-
-        $fieldset->setHeaderBar($headerBar->toHtml());
-
         $fieldset->addField('generate_status', 'select',
             array(
                 'name'   => 'generate_status',
@@ -209,16 +198,6 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Advanced extends Mage_Adminhtml
         }
 
         $fieldset  = $form->addFieldset('upload_settings', array('legend' => $this->__('Auto-upload Settings')));
-        $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
-            ->setData(array(
-                    'label'   => $this->__('Feed Pro Help'),
-                    'class'   => 'go',
-                    'id'      => 'feed_pro_help_3',
-                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
-                )
-            );
-
-        $fieldset->setHeaderBar($headerBar->toHtml());
 
         $fieldset->addField('upload_status', 'select',
             array(

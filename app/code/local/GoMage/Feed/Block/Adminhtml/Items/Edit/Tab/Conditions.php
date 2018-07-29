@@ -70,13 +70,21 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Conditions
         $form->setHtmlIdPrefix('rule_');
 
         $renderer = Mage::getBlockSingleton('adminhtml/widget_form_renderer_fieldset')
-            ->setTemplate('promo/fieldset.phtml')
+            ->setTemplate('gomage/feed/fieldset.phtml')
             ->setNewChildUrl($this->getUrl('*/promo_catalog/newConditionHtml/form/rule_conditions_fieldset'));
 
         $fieldset = $form->addFieldset('conditions_fieldset', array(
                 'legend' => Mage::helper('catalogrule')->__('Conditions (leave blank for all products)'))
         )->setRenderer($renderer);
-
+        $headerBar = $this->getLayout()->createBlock('adminhtml/widget_button')
+            ->setData(array(
+                    'label'   => $this->__('Feed Pro Help'),
+                    'class'   => 'go',
+                    'id'      => 'feed_pro_help_4',
+                    'onclick' => 'window.open(\'https://wiki.gomage.com/hc/en-us/articles/115002749991-Conditions\')'
+                )
+            );
+        $fieldset->setHeaderBar($headerBar->toHtml());
         $fieldset->addField('conditions', 'text', array(
                 'name'     => 'conditions',
                 'label'    => Mage::helper('catalogrule')->__('Conditions'),

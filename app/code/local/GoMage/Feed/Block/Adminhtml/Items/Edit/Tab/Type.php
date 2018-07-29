@@ -73,7 +73,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Type extends Mage_Adminhtml_Blo
                     'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
                     'class'   => 'go',
                     'id'      => 'feed_pro_help',
-                    'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
+                    'onclick' => 'window.open(\'https://wiki.gomage.com/hc/en-us/articles/115002745732-Content-Settings-for-XML\')'
                 )
             );
 

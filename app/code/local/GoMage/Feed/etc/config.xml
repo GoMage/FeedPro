@@ -20,6 +20,13 @@
         </GoMage_Feed>
     </modules>
     <frontend>
+        <product>
+            <collection>
+                <attributes>
+                    <image />
+                </attributes>
+            </collection>
+        </product>
         <routers>
             <gomage_feed>
                 <use>standard</use>
