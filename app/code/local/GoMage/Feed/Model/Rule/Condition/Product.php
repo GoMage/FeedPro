@@ -61,12 +61,16 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
     }
 
     /**
-     * Prepare sql where by condition
-     *
-     * @return string
-     */
+ * Prepare sql where by condition
+ *
+ * @return string
+ */
     public function prepareConditionSql()
     {
+        if (Mage::helper('catalog/product_flat')->isEnabled()) {
+            return $this->prepareConditionSqlFlat();
+        }
+
         $attribute = $this->getAttribute();
         $alias = 'at_' . $attribute;
         $field = 'value';
@@ -106,6 +110,54 @@ class GoMage_Feed_Model_Rule_Condition_Product extends Mage_CatalogRule_Model_Ru
 
         return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value) . ' OR ' .
             $ruleResource->getOperatorCondition($alias . '_default.' . $field, $operator, $value);
+    }
+
+    /**
+     * Prepare sql where by condition
+     *
+     * @return string
+     */
+    public function prepareConditionSqlFlat()
+    {
+        $attribute = $this->getAttribute();
+        $alias = 'e' ;
+        $field = $attribute;
+
+        /** @var $ruleResource GoMage_Feed_Model_Rule_Condition_SqlBuilder */
+        $ruleResource = $this->getRuleResourceHelper();
+        /** @var Mage_Catalog_Model_Resource_Product_Collection $productCollection */
+        $productCollection = Mage::getResourceModel('catalog/product_collection');
+
+        $value = $this->getValueParsed();
+        $operator = $this->correctOperator($this->getOperator(), $this->getInputType());
+        if ($attribute == 'category_ids') {
+            $alias = 'ccp';
+            $field = 'category_id';
+            $value = $this->bindArrayOfIds($value);
+
+            return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
+        }
+
+        if ($attribute == 'qty') {
+            $alias = 'csi';
+            $field = 'qty';
+
+            return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
+        }
+
+        if ($productCollection->getEntity()->getAttribute($attribute)->isStatic()) {
+            $alias = 'e';
+            $field = $attribute;
+
+            return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
+        }
+
+        if ($productCollection->getEntity()->getAttribute($attribute)->isScopeGlobal()) {
+            return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
+        }
+
+        return $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value) . ' OR ' .
+            $ruleResource->getOperatorCondition($alias . '.' . $field, $operator, $value);
     }
 
     /**

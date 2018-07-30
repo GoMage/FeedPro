@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-/**
+/**     
  * GoMage.com
  *
  * GoMage Feed Pro
@@ -11,7 +11,7 @@
  * @terms of use https://www.gomage.com/terms-of-use
  * @version      Release: 4.1.0
  * @since        Class available since Release 1.0
- */
+ */ 
  -->
 <config>
     <modules>
@@ -24,8 +24,6 @@
             <collection>
                 <attributes>
                     <image />
-                    <description />
-                    <gender />
                 </attributes>
             </collection>
         </product>
