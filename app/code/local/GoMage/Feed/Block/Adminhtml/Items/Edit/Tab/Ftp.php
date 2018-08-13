@@ -10,7 +10,7 @@
  * @author       GoMage.com
  * @license      https://www.gomage.com/licensing  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
- * @version      Release: 4.1.0
+ * @version      Release: 4.2.0
  * @since        Class available since Release 1.0
  */
 class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Ftp extends Mage_Adminhtml_Block_Widget_Form
@@ -36,7 +36,7 @@ class GoMage_Feed_Block_Adminhtml_Items_Edit_Tab_Ftp extends Mage_Adminhtml_Bloc
                 'label'   => Mage::helper('catalog')->__('Feed Pro Help'),
                 'class'   => 'go',
                 'id'      => 'feed_pro_help',
-                'onclick' => 'window.open(\'https://www.gomage.com/faq/extensions/feed-pro\')'
+                'onclick' => 'window.open(\'https://wiki.gomage.com/hc/en-us/articles/115002750131-FTP-settings\')'
             )
             );
 
