@@ -8,7 +8,7 @@
  * @author       GoMage
  * @license      https://www.gomage.com/license-agreement/  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
- * @version      Release: 4.2.0
+ * @version      Release: 4.3.0
  * @since        Class available since Release 2.0
  */
 class GoMage_Feed_Block_Adminhtml_Config_Form_Renderer_Website extends Mage_Adminhtml_Block_System_Config_Form_Field
