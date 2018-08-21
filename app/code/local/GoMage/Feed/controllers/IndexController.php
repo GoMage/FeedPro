@@ -35,7 +35,7 @@ class GoMage_Feed_IndexController extends Mage_Core_Controller_Front_Action
             } catch (Exception $e) {
                 $generate_info = Mage::helper('gomage_feed/generator')->getGenerateInfo($feed->getId());
                 if (Mage::helper('catalog/product_flat')->isEnabled()) {
-                    $generate_info->setError('Please follow a few steps _here_ in order to be able to generate the feed file successfully when Use Flat Catalog Product option is enabled https://wiki.gomage.com/hc/en-us/articles/360011593992-Feed-generation-fails-with-Use-Flat-Catalog-Product-Yes-')->save();
+                    $generate_info->setError('Please follow a few steps https://wiki.gomage.com/hc/en-us/articles/360011593992-Feed-generation-fails-with-Use-Flat-Catalog-Product-Yes- in order to be able to generate the feed file successfully when Use Flat Catalog Product option is enabled')->save();
                 } else {
                     $generate_info->setError($e->getMessage())->save();
                 }
