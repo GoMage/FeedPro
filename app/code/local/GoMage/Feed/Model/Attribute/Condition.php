@@ -34,13 +34,27 @@ class GoMage_Feed_Model_Attribute_Condition
     public function __construct(GoMage_Feed_Model_Attribute_Condition_Data $conditionData)
     {
         $this->_operator = Mage::getSingleton('gomage_feed/operator_factory')->get($conditionData->getOperator());
-        $this->_field    = Mage::getModel('gomage_feed/feed_field',
+        $this->_field = Mage::getModel('gomage_feed/feed_field',
             array(
-                'type'  => GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE,
+                'type' => GoMage_Feed_Model_Adminhtml_System_Config_Source_Field_TypeInterface::ATTRIBUTE,
                 'value' => $conditionData->getCode()
             )
         );
-        $this->_value    = $conditionData->getValue();
+
+        $attributeOptions = Mage::getModel('eav/config')->getAttribute(
+            Mage_Catalog_Model_Product::ENTITY,
+            $conditionData->getCode()
+        )->getSource()->getAllOptions();
+
+        $value = null;
+        foreach ($attributeOptions as $attributeOption) {
+            if ($attributeOption['value'] == $conditionData->getValue()) {
+                $value = $attributeOption['label'];
+                break;
+            }
+        }
+
+        $this->_value = $value;
     }
 
     /**
