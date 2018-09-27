@@ -6,11 +6,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2017 GoMage.com (https://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2018 GoMage.com (https://www.gomage.com)
  * @author       GoMage.com
  * @license      https://www.gomage.com/licensing  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
- * @version      Release: 4.2.0
+ * @version      Release: 4.3.0
  * @since        Class available since Release 3.6
  */
 class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_Controller_Action
@@ -428,11 +428,8 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
                 $result['time'] = Mage::helper('gomage_feed/generator')->formatGenerationTime($hour, $min, $sec);
 
 
-                if ($generate_info->getData('finished') && !Mage::registry('feed_error')) {
+                if ($generate_info->getData('finished')) {
                     Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('core')->__('File was generated.'));
-                    $result['redirect'] = $this->getUrl('*/*/edit', array('id' => $feed_id));
-                } else {
-                    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('core')->__('File was not generated.'));
                     $result['redirect'] = $this->getUrl('*/*/edit', array('id' => $feed_id));
                 }
             }
