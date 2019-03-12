@@ -83,6 +83,7 @@ class GoMage_Feed_Model_Generator
     {
         try {
             $this->_feed = Mage::getModel('gomage_feed/item')->load($feedId);
+            Mage::app()->setCurrentStore($this->_feed->getStoreId());
             $this->_start();
 
             $total_records = $this->_getReader()->read() ? $this->_getReader()->read()->count() : 0;
