@@ -32,15 +32,44 @@ class GoMage_Feed_Model_Feed_Row
     protected $_outputs;
 
     /**
+     * @var array
+     */
+    protected $_outputsArray;
+
+    /**
      * @var GoMage_Feed_Model_Collection
      */
     protected $_fields;
 
+    /**
+     * @var
+     */
+    protected $_prefixValue;
 
+    /**
+     * @var
+     */
+    protected $_suffixValue;
+
+    /**
+     * GoMage_Feed_Model_Feed_Row constructor.
+     * @param GoMage_Feed_Model_Feed_Row_Data $rowData
+     */
     public function __construct(GoMage_Feed_Model_Feed_Row_Data $rowData)
     {
         $this->_name  = $rowData->getName();
         $this->_limit = (int)$rowData->getLimit();
+
+        if ($rowData->getPrefixType() == 'static') {
+            $this->_prefixValue = $rowData->getPrefixValue();
+        } else {
+            $this->_prefixValue = $rowData->getAttributePrefixValue();
+        }
+        if ($rowData->getSuffixType() == 'static') {
+            $this->_suffixValue = $rowData->getSuffixValue();
+        } else {
+            $this->_suffixValue = $rowData->getAttributeSuffixValue();
+        }
 
         /** @var GoMage_Feed_Model_Output_Factory $outputFactory */
         $outputFactory = Mage::getSingleton('gomage_feed/output_factory');
@@ -51,6 +80,7 @@ class GoMage_Feed_Model_Feed_Row
             $output = $outputFactory->get($value);
             $this->_outputs->add($output);
         }
+        $this->_outputsArray = $rowData->getOutputType();
 
         $this->_fields = Mage::getModel('gomage_feed/collection');
         foreach ($rowData->getFields() as $data) {
@@ -69,8 +99,8 @@ class GoMage_Feed_Model_Feed_Row
     }
 
     /**
-     * @param  Varien_Object $object
-     * @return mixed
+     * @param Varien_Object $object
+     * @return bool|mixed|string
      */
     public function map(Varien_Object $object)
     {
@@ -79,11 +109,37 @@ class GoMage_Feed_Model_Feed_Row
         }, iterator_to_array($this->_fields)
         );
 
-        return $this->format(implode('', $array));
+        if (in_array(GoMage_Feed_Model_Output_OutputInterface::DATE_TIME, $this->_outputsArray) ||
+            in_array(GoMage_Feed_Model_Output_OutputInterface::FLOATS, $this->_outputsArray) ||
+            in_array(GoMage_Feed_Model_Output_OutputInterface::INTEGER, $this->_outputsArray)) {
+            if ($this->_prefixValue && $this->_suffixValue) {
+                $array[1] = $this->format($array[1]);
+            } elseif ($this->_prefixValue) {
+                $array[1] = $this->format($array[1]);
+            } elseif ($this->_suffixValue) {
+                $array[0] = $this->format($array[0]);
+            } else {
+                $array[0] = $this->format($array[0]);
+            }
+
+            if ($this->_limit) {
+                return substr(implode('', $array), 0, $this->_limit);
+            }
+
+            return implode('', $array);
+        }
+
+        $formatedValue = $this->format(implode('', $array));
+
+        if ($this->_limit) {
+            return substr($formatedValue, 0, $this->_limit);
+        }
+
+        return $formatedValue;
     }
 
     /**
-     * @param  $value
+     * @param $value
      * @return mixed
      */
     protected function format($value)
@@ -91,9 +147,6 @@ class GoMage_Feed_Model_Feed_Row
         foreach ($this->_outputs as $output) {
             /** @var GoMage_Feed_Model_Output_OutputInterface $output */
             $value = $output->format($value);
-        }
-        if ($this->_limit) {
-            return substr($value, 0, $this->_limit);
         }
         return $value;
     }
@@ -110,5 +163,4 @@ class GoMage_Feed_Model_Feed_Row
         }
         return $attributes;
     }
-
 }
