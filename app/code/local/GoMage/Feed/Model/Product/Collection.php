@@ -10,7 +10,7 @@
  * @author       GoMage.com
  * @license      http://www.gomage.com/licensing  Single domain license
  * @terms of use http://www.gomage.com/terms-of-use
- * @version      Release: 4.3.0
+ * @version      Release: 4.3.1
  * @since        Class available since Release 2.0
  */
 class GoMage_Feed_Model_Product_Collection extends Mage_Catalog_Model_Resource_Product_Collection

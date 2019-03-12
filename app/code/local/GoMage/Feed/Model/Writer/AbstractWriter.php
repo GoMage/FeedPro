@@ -6,11 +6,11 @@
  * GoMage Feed Pro
  *
  * @category     Extension
- * @copyright    Copyright (c) 2010-2018 GoMage.com (https://www.gomage.com)
+ * @copyright    Copyright (c) 2010-2019 GoMage.com (https://www.gomage.com)
  * @author       GoMage.com
  * @license      https://www.gomage.com/license-agreement/  Single domain license
  * @terms of use https://www.gomage.com/terms-of-use
- * @version      Release: 4.3.0
+ * @version      Release: 4.3.1
  * @since        Class available since Release 4.0.0
  */
 abstract class GoMage_Feed_Model_Writer_AbstractWriter implements GoMage_Feed_Model_Writer_WriterInterface
