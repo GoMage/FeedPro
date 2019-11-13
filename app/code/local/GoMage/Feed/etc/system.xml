@@ -179,6 +179,15 @@
 							<show_in_store>1</show_in_store>
 							<comment>If set to zero, no time limit is imposed.</comment>
 						</time_limit>
+						<feed_folder>
+							<label>Folder to store feed files</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>30</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<comment>Inside the document root of Magento. If field is empty 'media' will be used</comment>
+						</feed_folder>
 					</fields>
 				</configuration>
 				<imagesettings translate="label">

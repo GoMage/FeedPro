@@ -69,7 +69,8 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
             $uploader = new Varien_File_Uploader('file');
             $uploader->setAllowRenameFiles(false);
             $uploader->setFilesDispersion(false);
-            $path = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'tmp';
+            $customFeedDirectory = Mage::helper('gomage_feed')->getCustomFeedDirectory();
+            $path = Mage::getBaseDir('base') . DS . $customFeedDirectory . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'tmp';
             if (!file_exists($path)) {
                 mkdir($path, 0777, true);
             }
@@ -84,13 +85,14 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
     {
         $result          = array();
         $result['error'] = false;
+        $customFeedDirectory = Mage::helper('gomage_feed')->getCustomFeedDirectory();
 
         if (($file = $this->getRequest()->getParam('file')) && ($id = $this->getRequest()->getParam('id'))) {
             try {
                 if ($this->getRequest()->getParam('section') == 1) {
-                    $data = file_get_contents(Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples' . DS . $file);
+                    $data = file_get_contents(Mage::getBaseDir('base') . DS . $customFeedDirectory . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples' . DS . $file);
                 } else {
-                    $data = file_get_contents(Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'tmp' . DS . $file);
+                    $data = file_get_contents(Mage::getBaseDir('base') . DS . $customFeedDirectory . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'tmp' . DS . $file);
                 }
 
                 $array_data = json_decode($data);
@@ -128,8 +130,9 @@ class GoMage_Feed_Adminhtml_Gomage_Feed_ItemsController extends Mage_Adminhtml_C
             try {
                 $system  = basename($this->getRequest()->getParam('feed_system'));
                 $section = basename($this->getRequest()->getParam('feed_section'));
+                $customFeedDirectory = Mage::helper('gomage_feed')->getCustomFeedDirectory();
 
-                $fileDir = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples' . DS . $system;
+                $fileDir = Mage::getBaseDir('base') . DS . $customFeedDirectory . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples' . DS . $system;
                 if (!file_exists($fileDir)) {
                     mkdir($fileDir, 0777, true);
                 }

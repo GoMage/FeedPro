@@ -98,9 +98,11 @@ class GoMage_Feed_Model_Item extends Mage_Rule_Model_Abstract
 
     public function getUrl()
     {
+        $customFeedDirectory = Mage::helper('gomage_feed')->getCustomFeedDirectory();
         $file_path = sprintf('productsfeed/%s', $this->getFileNameWithExt());
-        if (file_exists(Mage::getBaseDir('media') . '/' . $file_path)) {
-            return Mage::app()->getStore($this->getStoreId())->getBaseUrl('media', false) . $file_path;
+        if (file_exists(Mage::getBaseDir('base') . DS . $customFeedDirectory . DS . $file_path)) {
+            $baseUrl = str_replace('index.php/', '', Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, true));
+            return $baseUrl . $customFeedDirectory . DS . $file_path;
         }
         return '';
     }

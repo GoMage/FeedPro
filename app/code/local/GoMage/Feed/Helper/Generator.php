@@ -19,6 +19,19 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
     /** @var  Zend_Http_Client */
     protected $http_client;
 
+    /**
+     * @var
+     */
+    protected $customFeedDirectory;
+
+    /**
+     * GoMage_Feed_Helper_Generator constructor.
+     */
+    public function __construct()
+    {
+        $this->customFeedDirectory = Mage::helper('gomage_feed')->getCustomFeedDirectory();
+    }
+
     public function checkServerParams()
     {
         $errors   = array();
@@ -35,8 +48,8 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
             }
             chmod($log_dir, 0777);
         } catch (Exception $e) {
-            $errors[] = Mage::helper('gomage_feed')->__('Check the Permission for the "Media" directory.
-							Check that the "media" directory of your Magento has permission equal to 750 or 0750.'
+            $errors[] = Mage::helper('gomage_feed')->__('Check the Permission for the "' . $this->customFeedDirectory . '" directory.
+							Check that the "' . $this->customFeedDirectory . '" directory of your Magento has permission equal to 750 or 0750.'
             );
         }
 
@@ -45,10 +58,10 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
 
     public function getBaseDir()
     {
-        $base_dir = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY;
+        $base_dir = Mage::getBaseDir('base') . DS . $this->customFeedDirectory . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY;
         try {
             if (!file_exists($base_dir)) {
-                mkdir($base_dir);
+                mkdir($base_dir, 0777, true);
             }
             chmod($base_dir, 0777);
         } catch (Exception $e) {
@@ -59,10 +72,10 @@ class GoMage_Feed_Helper_Generator extends Mage_Core_Helper_Abstract
 
     public function getLogDir()
     {
-        $log_dir = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'logs';
+        $log_dir = Mage::getBaseDir('base') . DS .$this->customFeedDirectory . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'logs';
         try {
             if (!file_exists($log_dir)) {
-                mkdir($log_dir);
+                mkdir($log_dir, 0777, true);
             }
             chmod($log_dir, 0777);
         } catch (Exception $e) {

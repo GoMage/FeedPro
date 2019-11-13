@@ -199,7 +199,8 @@ class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract
     public function getSystemSections()
     {
         $data    = array();
-        $fileDir = Mage::getBaseDir('media') . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples';
+        $customFeedDirectory = $this->getCustomFeedDirectory();
+        $fileDir = Mage::getBaseDir('base') . DS . $customFeedDirectory . DS . GoMage_Feed_Model_Writer_WriterInterface::DIRECTORY . DS . 'examples';
         if (is_dir($fileDir) && $handle = opendir($fileDir)) {
             while (false !== ($dir = readdir($handle))) {
                 if ($dir != '.' && $dir != '..') {
@@ -294,4 +295,13 @@ class GoMage_Feed_Helper_Data extends Mage_Core_Helper_Abstract
         Mage::app()->saveCache(time(), 'gomage_notifications_last_update');
     }
 
+    public function getCustomFeedDirectory()
+    {
+        $feedDirectory = trim(Mage::getStoreConfig('gomage_feedpro/configuration/feed_folder'), " \t\n\r\0\x0B/\\");
+        if ($feedDirectory == '') {
+            $feedDirectory = 'media';
+        }
+
+        return $feedDirectory;
+    }
 }
