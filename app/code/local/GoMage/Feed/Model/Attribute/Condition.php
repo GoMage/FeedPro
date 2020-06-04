@@ -31,6 +31,10 @@ class GoMage_Feed_Model_Attribute_Condition
      */
     protected $_value;
 
+    /**
+     * GoMage_Feed_Model_Attribute_Condition constructor.
+     * @param GoMage_Feed_Model_Attribute_Condition_Data $conditionData
+     */
     public function __construct(GoMage_Feed_Model_Attribute_Condition_Data $conditionData)
     {
         $this->_operator = Mage::getSingleton('gomage_feed/operator_factory')->get($conditionData->getOperator());
@@ -41,20 +45,23 @@ class GoMage_Feed_Model_Attribute_Condition
             )
         );
 
-        $attributeOptions = Mage::getModel('eav/config')->getAttribute(
+        $attribute = Mage::getModel('eav/config')->getAttribute(
             Mage_Catalog_Model_Product::ENTITY,
             $conditionData->getCode()
-        )->getSource()->getAllOptions();
-
-        $value = null;
-        foreach ($attributeOptions as $attributeOption) {
-            if ($attributeOption['value'] == $conditionData->getValue()) {
-                $value = $attributeOption['label'];
-                break;
+        );
+        if ($attribute && in_array($attribute->getFrontendInput(), array('select', 'multiselect'))) {
+            $attributeOptions = $attribute->getSource()->getAllOptions();
+            $value = null;
+            foreach ($attributeOptions as $attributeOption) {
+                if ($attributeOption['value'] == $conditionData->getValue()) {
+                    $value = $attributeOption['label'];
+                    break;
+                }
             }
+            $this->_value = $value;
+        } else {
+            $this->_value = $conditionData->getValue();
         }
-
-        $this->_value = $value;
     }
 
     /**
